@@ -21,8 +21,18 @@ npm init react-app . --legacy-peer-deps # create CRA
 - [@ant-design/icons](https://ant.design/components/icon/)
 - [react-router-dom](https://reactrouter.com/web/guides/quick-start)
 - [axios](https://www.npmjs.com/package/axios)
-- [DEV] eslint eslint-config-airbnb eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-react-hooks
-- [DEV] prettier eslint-config-prettier eslint-plugin-prettier
+
+DEV
+
+- [eslint](https://eslint.org/docs/user-guide/getting-started) eslint-config-airbnb eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-react-hooks
+- [prettier](https://prettier.io/docs/en/index.html) eslint-config-prettier eslint-plugin-prettier
+
+## Insights...
+
+- [React.Memo](https://dmitripavlutin.com/use-react-memo-wisely/)
+- [useContext](https://it.reactjs.org/docs/hooks-reference.html#usecontext)
+- [React.StrictMode](https://it.reactjs.org/docs/strict-mode.html)
+- [Web Vitalis](https://create-react-app.dev/docs/measuring-performance/)
 
 ## References
 

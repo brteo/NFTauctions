@@ -10,6 +10,17 @@
 - [ajv](https://ajv.js.org/)
 - [jest](https://jestjs.io)
 
+DEV
+
+- [eslint](https://eslint.org/docs/user-guide/getting-started) eslint-config-airbnb eslint-plugin-import
+- [prettier](https://prettier.io/docs/en/index.html) eslint-config-prettier eslint-plugin-prettier
+- [jest](https://jestjs.io/docs/getting-started) eslint-plugin-jest
+
+## Utilities
+
+- Client MongoDB: [Robo3T](https://robomongo.org)
+- Client RESTApi: [Postman](https://www.postman.com)
+
 ## AUTH
 
 - [JWT](https://jwt.io)

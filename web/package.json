@@ -2,7 +2,7 @@
   "name": "web",
   "version": "0.1.0",
   "author": "Brocca/Mancini/Achilli",
-  "description": "Single Page Application NTFauctions with React",
+  "description": "Single Page Application with React",
   "private": true,
   "license": "UNLICENSED",
   "dependencies": {

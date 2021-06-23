@@ -1,4 +1,4 @@
-# NFTauctions
+# TradingVG
 
 Web application for real-time auctions on NFT (Non-Fungible Token) to exchange digital properties.
 
@@ -29,19 +29,19 @@ Stack MERN with Docker Compose:
 
 ## Install
 
-1. install api npm package on "api" folder
+1. Install api npm package on "api" folder
 
 ```sh
 npm i
 ```
 
-2. install api npm package on "web" folder
+2. Install api npm package on "web" folder
 
 ```sh
 npm i --legacy-peer-deps
 ```
 
-3. lunch docker in the "main" folder
+3. Launch docker in the "main" folder
 
 ```sh
 docker compose up -d
