@@ -17,7 +17,7 @@
     "eslint.workingDirectories": ["./api","./web"],
     "editor.formatOnSave": true,
     "editor.tabSize": 2,
-    "editor.insertSpaces": true,
+    "editor.insertSpaces": false,
     "jest.autoRun": {"watch": false, "onSave": "test-file"},
     "jest.disabledWorkspaceFolders": ["Root"],
     "files.exclude": {

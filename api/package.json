@@ -13,6 +13,7 @@
     "seed": "docker-compose exec -T mongo sh -c 'mongorestore -u user -p meb0201 --drop --db test -c movies /movies.bson'"
   },
   "dependencies": {
+    "ajv": "^6.12.6",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
