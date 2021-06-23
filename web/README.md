@@ -21,6 +21,7 @@ npm init react-app . --legacy-peer-deps # create CRA
 - [@ant-design/icons](https://ant.design/components/icon/)
 - [react-router-dom](https://reactrouter.com/web/guides/quick-start)
 - [axios](https://www.npmjs.com/package/axios)
+- @craco/craco craco-less ([Less ant customization](https://ant.design/docs/react/use-with-create-react-app))
 
 DEV
 
