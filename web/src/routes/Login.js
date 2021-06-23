@@ -4,6 +4,7 @@ import { LoginOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 
 import AppContext from '../helpers/AppContext';
+import logo from '../img/logo.svg';
 
 const Login = props => {
 	const { t, i18n } = useTranslation();
@@ -24,6 +25,7 @@ const Login = props => {
 
 	return (
 		<section>
+			<img src={logo} alt="Trading Virtual Goods" id="logo" />
 			<Card title={t('title')} extra={langButtons}>
 				<Button type="primary" onClick={() => context.setAuth(1)} icon={<LoginOutlined />}>
 					{t('login')}
