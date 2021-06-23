@@ -22,6 +22,7 @@ npm init react-app . --legacy-peer-deps # create CRA
 - [react-router-dom](https://reactrouter.com/web/guides/quick-start)
 - [axios](https://www.npmjs.com/package/axios)
 - @craco/craco craco-less ([Less ant customization](https://ant.design/docs/react/use-with-create-react-app))
+- i18next react-i18next i18next-browser-languagedetector i18next-http-backend ([Langs](https://react.i18next.com/latest/using-with-hooks))
 
 DEV
 

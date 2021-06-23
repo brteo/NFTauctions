@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import Routes from './routes';
 import reportWebVitals from './reportWebVitals';
 
-import { AppProvider } from './components/AppContext';
+import { AppProvider } from './helpers/AppContext';
+import './helpers/i18n';
 import './styles/app.less';
 
 ReactDOM.render(

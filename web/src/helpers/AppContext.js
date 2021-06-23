@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import FullpageLoading from './extra/FullpageLoading';
+import FullpageLoading from '../components/extra/FullpageLoading';
 
 /* CONTEXT */
 const AppContext = React.createContext({});

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Layout } from 'antd';
 
-import AppContext from '../components/AppContext';
+import AppContext from '../helpers/AppContext';
 import ErrorPage from '../components/extra/ErrorPage';
 import Home from './Home';
 import Login from './Login';
