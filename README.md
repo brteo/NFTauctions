@@ -1,29 +1,31 @@
 # NFTauctions
 
-Realizzazione di un portale web per le aste in tempo reale su NFT (Non-Fungible Token) per lo scambio di proprietà digitali.
+Web application for real-time auctions on NFT (Non-Fungible Token) to exchange digital properties.
 
-Stack MERN (Mongo-Express-React-Node) con Docker Compose:
+Stack MERN with Docker Compose:
 
-- BackEnd: REST Api sviluppata in Node+Express collegata con il database MongoDB
-- FrontEnd: Single Page Application in React
+- BackEnd: RESTApi with MongoDB
+- FrontEnd: React Single Page Application
 
-### Specifiche funzionali:
+### Functional specifications
 
-- Registrazione utenti
-- Login utenti con autorizzazione JWT + RefreshToken
-- Gestione di diversi ruoli utente tramite RBAC (Role Base Access Control)
-- Profilo utente con possibilità di definire il wallet per lo scambio di NFT
-- Possibilità di creare un’asta:
-- Titolo, descrizione, categoria, tags, immagine
-- Sarà creato un NFT collegato all’immagine inserita utilizzando l’API di [EOS](https://developers.eos.io)
-- Pagina con la lista delle aste in corso con possibilità di ricerca e filtri
-- Pagina dell’asta con dettagli e possibilità di partecipare con delle proposte. La gestione del prezzo dell’asta sarà in real-time utilizzando Web Socket e si presterà particolare attenzione al salvataggio di dati su MongoDB al fine di non avere problemi di - concorrenza.
-- Una volta conclusa l’asta arriverà una email al vincitore con un link per il pagamento. (il pagamento sarà solo emulato e non sarà integrato nessun servizio esterno come PayPal o Stripe). Cliccando verrà eseguita la transazione sulla blockchain per lo scambio - del NFT
+- User registration
+- User login with `JWT` + `RefreshToken` authorization
+- Management of different user roles via `RBAC` (Role Base Access Control)
+- User profile with the possibility to define the wallet for the NFT exchange
+- Auction creation:
+  - Fields: `Title`, `description`, `category`, `tags`, `image`
+  - An NFT linked to the inserted image will be created using the [EOS Api](https://developers.eos.io)
+- Page with the list of auctions in progress with the possibility of searching and filters
+- Auction page with details and the possibility to participate with proposals. The auction price will be managed in real-time using Web Socket and particular attention will be paid to saving data on MongoDB in order to avoid competition problems.
+- Once the auction has ended, the winner will receive an email with a payment link. (the payment will only be emulated and no external services such as PayPal or Stripe will be integrated). Clicking will execute the transaction on the blockchain for the exchange of the NFT
 
-Caratteristiche aggiuntive tempo permettendo:
+### Additional features:
 
-- Pannello di controllo per monitorare le aste e tutti gli utenti registrati
-- Trasformare la Single Page Application in Progressive Web App per abilitare le Push Notification su browser per avvisare l’utente quando avviene una puntata sull’asta che segue.
+- Control panel to monitor auctions and all registered users
+- Transforming the Single Page Application into Progressive Web App to enable Push Notification on the browser to notify the user when a bid on the following auction takes place.
+
+---
 
 ## Install
 
@@ -44,6 +46,10 @@ npm i --legacy-peer-deps
 ```sh
 docker compose up -d
 ```
+
+## VScode
+
+Open the workspace in the folder roots
 
 ## Docker commands
 
