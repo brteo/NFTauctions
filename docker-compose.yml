@@ -1,0 +1,48 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    env_file: ./api/.env
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./api/db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./api/db/data:/data/db
+    networks:
+      - boilerplate-network
+
+  api:
+    image: node:12-alpine
+    container_name: api
+    env_file: ./api/.env
+    depends_on:
+      - mongo
+    ports:
+      - "5000:3000"
+      - "587:587"
+    volumes:
+      - ./api:/data
+    working_dir: /data
+    networks:
+      - boilerplate-network
+    command: ./node_modules/.bin/nodemon
+
+  web:
+    image: node:12-alpine
+    container_name: web
+    env_file: ./web/.env
+    ports:
+      - "80:3000"
+    volumes:
+      - ./web:/data
+    working_dir: /data
+    networks:
+      - boilerplate-network
+    command: npm start
+    stdin_open: true
+
+networks:
+  boilerplate-network:
