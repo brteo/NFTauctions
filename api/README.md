@@ -1,5 +1,9 @@
 # Api
 
+RESTApi main endpoint [http://localhost:5000](http://localhost:5000)
+
+MongoDB at localhost:27017
+
 ## NPM Packages
 
 - [espress](https://expressjs.com/it/guide/routing.html)
