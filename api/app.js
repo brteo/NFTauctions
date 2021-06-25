@@ -4,15 +4,14 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const response = require('./middlewares/response');
+const { SendData, NotFound } = require('./helpers/response');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
-	const response = { message: `RestAPI is live!` };
-	res.status(200).send(response);
-});
+app.get('/', (req, res, next) => next(SendData({ message: 'RestAPI is live!' })));
 
 // dynamic routes for express
 fs.readdirSync(path.join(__dirname, '/routes'))
@@ -21,5 +20,9 @@ fs.readdirSync(path.join(__dirname, '/routes'))
 		const f = path.parse(file).name;
 		app.use(`/${f}`, require(`./routes/${f}`));
 	});
+
+app.all('*', (req, res, next) => next(NotFound()));
+
+app.use((toSend, req, res, next) => response(toSend, res));
 
 module.exports = app;

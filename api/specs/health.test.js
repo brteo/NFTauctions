@@ -19,3 +19,15 @@ describe('GET /', () => {
 			});
 	});
 });
+
+describe('GET /not_found', () => {
+	test('Inexistente routes should be Not Found', done => {
+		agent
+			.get('/not_found')
+			.expect(404)
+			.then(res => {
+				expect(res.body).toMatchObject({ message: 'Not found', data: {}, error: 404 });
+				done();
+			});
+	});
+});
