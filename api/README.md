@@ -19,11 +19,17 @@ DEV
 - [eslint](https://eslint.org/docs/user-guide/getting-started) eslint-config-airbnb eslint-plugin-import
 - [prettier](https://prettier.io/docs/en/index.html) eslint-config-prettier eslint-plugin-prettier
 - [jest](https://jestjs.io/docs/getting-started) eslint-plugin-jest
+- [supertest](https://www.npmjs.com/package/supertest)
+- [mongodb-memory-server](https://github.com/nodkz/mongodb-memory-server)
 
 ## Utilities
 
 - Client MongoDB: [Robo3T](https://robomongo.org)
 - Client RESTApi: [Postman](https://www.postman.com)
+
+## Test
+
+[Setup in-memory database for testing Node.js and Mongoose](https://dev.to/ryuuto829/setup-in-memory-database-for-testing-node-js-and-mongoose-1kop)
 
 ## AUTH
 

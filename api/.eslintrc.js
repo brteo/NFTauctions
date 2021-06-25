@@ -20,6 +20,9 @@ module.exports = {
 		'prettier/prettier': ['error'],
 		'max-len': ['error', { code: 140, ignoreComments: true }],
 		'no-unused-vars': ['warn', { vars: 'all', args: 'none', ignoreRestSiblings: true }],
-		'prefer-template': ['off']
+		'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+		'prefer-template': ['off'],
+		'no-console': ['off'],
+		'no-return-await': ['off']
 	}
 };
