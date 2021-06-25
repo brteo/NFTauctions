@@ -3,9 +3,7 @@ db.createUser({
 	user: 'user',
 	pwd: 'user0201',
 	roles: [
-		{ role: 'dbOwner', db: 'test' },
-		{ role: 'restore', db: 'admin' },
-		{ role: 'backup', db: 'admin' },
-		{ role: 'readWrite', db: 'test' }
+		{ role: 'dbOwner', db: 'tradingvg' },
+		{ role: 'readWrite', db: 'tradingvg' }
 	]
 });

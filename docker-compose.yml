@@ -9,10 +9,8 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - ./api/db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./api/db/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
       - ./api/db/data:/data/db
-    networks:
-      - boilerplate-network
 
   api:
     image: node:12-alpine
@@ -26,8 +24,6 @@ services:
     volumes:
       - ./api:/data
     working_dir: /data
-    networks:
-      - boilerplate-network
     command: ./node_modules/.bin/nodemon
 
   web:
@@ -39,10 +35,6 @@ services:
     volumes:
       - ./web:/data
     working_dir: /data
-    networks:
-      - boilerplate-network
     command: npm start
     stdin_open: true
 
-networks:
-  boilerplate-network:
