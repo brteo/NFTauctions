@@ -25,6 +25,7 @@ exports.getById = (req, res) => {
 	});
 };
 
+/* Update an auction by id */
 exports.update = (req, res) => {
 	Auction.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, doc) => {
 		if (err) res.status(500).json(err);
