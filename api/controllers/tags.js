@@ -1,8 +1,8 @@
-const Category = require('../models/category');
+const Tag = require('../models/tag');
 
-/* Get all categories */
+/* Get all tags */
 exports.get = (req, res) => {
-	Category.find({}, (err, doc) => {
+	Tag.find({}, (err, doc) => {
 		if (err) res.status(500).json(err);
 		else res.json(doc);
 	});
@@ -10,8 +10,8 @@ exports.get = (req, res) => {
 
 /* Add new category */
 exports.add = (req, res) => {
-	const category = new Category(req.body);
-	category.save((err, doc) => {
+	const tag = new Tag(req.body);
+	tag.save((err, doc) => {
 		if (err) res.status(500).json(err);
 		else res.json(doc);
 	});
@@ -19,7 +19,7 @@ exports.add = (req, res) => {
 
 /* Get category by id */
 exports.getById = (req, res) => {
-	Category.findById(req.params.id, (err, doc) => {
+	Tag.findById(req.params.id, (err, doc) => {
 		if (err) res.status(500).json(err);
 		else res.json(doc);
 	});
@@ -27,7 +27,7 @@ exports.getById = (req, res) => {
 
 /* Update category by id */
 exports.update = (req, res) => {
-	Category.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, doc) => {
+	Tag.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, doc) => {
 		if (err) res.status(500).json(err);
 		else res.json(doc);
 	});
@@ -35,7 +35,7 @@ exports.update = (req, res) => {
 
 /* Remove category by id */
 exports.delete = (req, res) => {
-	Category.findByIdAndUpdate(req.params.id, { deleted: true, active: false }, { new: true }, (err, doc) => {
+	Tag.findByIdAndUpdate(req.params.id, { deleted: true, active: false }, { new: true }, (err, doc) => {
 		if (err) res.status(500).json(err);
 		else res.json(doc);
 	});
