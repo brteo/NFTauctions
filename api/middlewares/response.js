@@ -3,10 +3,10 @@ module.exports = (toSend, res) => {
 	const successCode = [200, 201, 202];
 
 	if (successCode.indexOf(statusCode) >= 0) {
-		return res.status(200).json(data);
+		return res.status(statusCode).json(data);
 	}
 
-	console.error('[ERROR]', toSend);
+	// console.log('[ERROR]', toSend);
 
 	return res.status(statusCode).json({
 		error,

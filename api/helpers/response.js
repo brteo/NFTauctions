@@ -7,7 +7,7 @@ const Response = (message, statusCode = 500, data = {}, error = 1) => ({
 
 module.exports = {
 	/* OK */
-	SendData: data => Response('Success', 200, data),
+	SendData: (data, statusCode = 200) => Response('Success', statusCode, data),
 
 	/* ERRORS */
 	CustomError: (message, statusCode, data, error) => Response(message, statusCode, data, error),
