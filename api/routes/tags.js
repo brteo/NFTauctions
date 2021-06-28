@@ -15,7 +15,7 @@ router
 	// get tag by id
 	.get(controller.getById)
 	// update tag by id
-	.patch(controller.update)
+	.put(controller.update)
 	// remove tag by id
 	.delete(controller.delete);
 

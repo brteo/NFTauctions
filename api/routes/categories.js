@@ -15,7 +15,7 @@ router
 	// get category by id
 	.get(controller.getById)
 	// update category by id
-	.patch(controller.update)
+	.put(controller.update)
 	// remove category by id
 	.delete(controller.delete);
 
