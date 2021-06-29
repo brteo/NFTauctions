@@ -1,5 +1,5 @@
 const passport = require('passport');
-const { Unauthorized } = require('../../lib/MebResponse');
+const { Unauthorized } = require('../helpers/response');
 
 module.exports = (req, res, next) =>
 	passport.authenticate('jwt', { session: false }, (err, user) => {

@@ -2,6 +2,7 @@ const supertest = require('supertest');
 const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 const agent = supertest.agent(app);
 
@@ -33,7 +34,7 @@ describe('Login Errors', () => {
 			.post('/auth/login')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ message: 'Missing credentials', error: 300 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 300 }));
 			});
 	});
 
@@ -45,7 +46,7 @@ describe('Login Errors', () => {
 			.send({ email: 'wrong@email.it', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ message: 'Wrong email', error: 301 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 301 }));
 			});
 	});
 
@@ -57,7 +58,7 @@ describe('Login Errors', () => {
 			.send({ email: 'test@meblabs.com', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ message: 'Wrong password', error: 302 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 302 }));
 			});
 	});
 
@@ -69,7 +70,7 @@ describe('Login Errors', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(401)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ message: 'Inactive account', error: 303 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 303 }));
 			});
 	});
 
@@ -81,12 +82,60 @@ describe('Login Errors', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ message: 'Deleted account', error: 307 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 307 }));
 			});
 	});
 });
 
 describe('Login Auth', () => {
-	test.todo('login successfully');
-	test.todo('auth middleware check');
+	test('Login successfully', async () => {
+		await seedUser();
+		let token;
+
+		await agent
+			.post('/auth/login')
+			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.expect(200)
+			.then(res => {
+				expect(res.body.token).toBeTruthy();
+				token = res.body.token;
+			});
+
+		return agent
+			.get('/auth/check')
+			.set('Authorization', 'bearer ' + token)
+			.expect(200)
+			.then(res => {
+				expect(res.body.message).toBe('Token valid!');
+			});
+	});
+
+	test('Check without token should be unauthorized', async () => {
+		return agent
+			.get('/auth/check')
+			.expect(401)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 401 }));
+			});
+	});
+
+	test('Check with invalid token should be unauthorized', async () => {
+		const token = jwt.sign(
+			{
+				id: 1,
+				iat: Math.floor(Date.now() / 1000)
+			},
+			process.env.JWT_SECRET,
+			{
+				expiresIn: parseInt(process.env.JWT_EXPIRES_TIME)
+			}
+		);
+		return agent
+			.get('/auth/check')
+			.set('Authorization', 'bearer ' + token)
+			.expect(401)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 401 }));
+			});
+	});
 });

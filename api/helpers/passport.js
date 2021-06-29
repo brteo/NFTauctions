@@ -37,11 +37,11 @@ module.exports = passport => {
 				secretOrKey: process.env.JWT_SECRET
 			},
 			(jwtPayload, done) => {
-				return User.findById(jwtPayload.id)
+				User.findById(jwtPayload.id)
 					.then(user => {
 						/* if (user.auth_reset && moment.unix(jwtPayload.iat).isBefore(user.auth_reset)) {
-						return done(new MebError({ n: 305 }), false);
-					} */
+							return done(new MebError({ n: 305 }), false);
+						} */
 
 						return done(null, user);
 					})

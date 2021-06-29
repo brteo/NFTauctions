@@ -1,6 +1,6 @@
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-const User = require('../models/user');
 const { SendData, MissingCredentials, InactiveAccount, DeletedAccount } = require('../helpers/response');
 
 exports.login = (req, res, next) => {
@@ -20,10 +20,14 @@ exports.login = (req, res, next) => {
 			},
 			process.env.JWT_SECRET,
 			{
-				expiresIn: process.env.JWT_EXPIRES_TIME
+				expiresIn: parseInt(process.env.JWT_EXPIRES_TIME)
 			}
 		);
 
 		next(SendData({ token }));
 	})(req, res, next);
+};
+
+exports.check = (req, res, next) => {
+	next(SendData({ id: res.locals.user.id, message: 'Token valid!' }));
 };
