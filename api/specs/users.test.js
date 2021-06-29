@@ -16,12 +16,6 @@ const user = {
 	name: 'Matteo',
 	lastname: 'Brocca'
 };
-const user2 = {
-	email: 'alan@meblabs.com',
-	password: 'testtest',
-	name: 'Matteo',
-	lastname: 'Brocca'
-};
 
 describe('POST /users', () => {
 	test('New user should be added', done => {

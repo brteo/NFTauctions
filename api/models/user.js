@@ -60,11 +60,16 @@ schema.pre('save', async function save(next) {
 	}
 });
 
-schema.methods.comparePassword = (pwd, callback) => {
+/* 
+Arrow function with 'this'
+https://www.codementor.io/@dariogarciamoya/understanding-this-in-javascript-with-arrow-functions-gcpjwfyuc
+*/
+schema.methods.comparePassword = function (pwd, callback) {
 	bcrypt.compare(pwd, this.password, (err, isMatch) => {
 		if (err) return callback(err);
 		return callback(null, isMatch);
 	});
 };
+schema.methods.comparePassword.bind(this);
 
 module.exports = mongoose.model('User', schema);
