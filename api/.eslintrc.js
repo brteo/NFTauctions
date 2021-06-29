@@ -23,6 +23,7 @@ module.exports = {
 		'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
 		'prefer-template': ['off'],
 		'no-console': ['off'],
-		'no-return-await': ['off']
+		'no-return-await': ['off'],
+		'func-names': ['error', { generators: 'as-needed' }]
 	}
 };

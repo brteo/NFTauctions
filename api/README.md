@@ -12,7 +12,8 @@ MongoDB at localhost:27017
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
 - [mongoose](https://mongoosejs.com)
 - [ajv](https://ajv.js.org/)
-- [jest](https://jestjs.io)
+- [jsonwebtoken](https://jwt.io)
+- [Passport](http://www.passportjs.org) passport-jwt passport-local
 
 DEV
 
@@ -21,6 +22,7 @@ DEV
 - [jest](https://jestjs.io/docs/getting-started) eslint-plugin-jest
 - [supertest](https://www.npmjs.com/package/supertest)
 - [mongodb-memory-server](https://github.com/nodkz/mongodb-memory-server)
+- [dotenv](https://www.npmjs.com/package/dotenv) (for jest test)
 
 ## Utilities
 
@@ -32,9 +34,6 @@ DEV
 [Setup in-memory database for testing Node.js and Mongoose](https://dev.to/ryuuto829/setup-in-memory-database-for-testing-node-js-and-mongoose-1kop)
 
 ## AUTH
-
-- [JWT](https://jwt.io)
-- [Passport](http://www.passportjs.org)
 
 1. On login get Token + Refresh Token
 

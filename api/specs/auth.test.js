@@ -85,3 +85,8 @@ describe('Login Errors', () => {
 			});
 	});
 });
+
+describe('Login Auth', () => {
+	test.todo('login successfully');
+	test.todo('auth middleware check');
+});

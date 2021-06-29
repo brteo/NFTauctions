@@ -5,11 +5,16 @@ const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
 const response = require('./middlewares/response');
+const passport = require('./middlewares/passport');
 const { SendData, NotFound } = require('./helpers/response');
+const trimmer = require('./helpers/trimmer');
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(trimmer());
+app.use(passport());
 
 app.get('/', (req, res, next) => next(SendData({ message: 'RestAPI is live!' })));
 

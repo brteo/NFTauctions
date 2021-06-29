@@ -70,6 +70,6 @@ schema.methods.comparePassword = function (pwd, callback) {
 		return callback(null, isMatch);
 	});
 };
-schema.methods.comparePassword.bind(this);
 
-module.exports = mongoose.model('User', schema);
+/* How to Fix Mongoose Cannot Overwrite Model Once Compiled Error */
+module.exports = mongoose.models.User || mongoose.model('User', schema);
