@@ -10,7 +10,7 @@
     "start": "node index.js",
     "test": "jest --verbose --runInBand",
     "test:coverage": "jest --coverage --verbose --runInBand --silent",
-    "seed": "docker-compose exec -T mongo sh -c 'mongorestore -u user -p meb0201 --drop --db test -c movies /movies.bson'"
+    "seed": "docker exec mongo /collections/init.sh"
   },
   "dependencies": {
     "ajv": "^6.12.6",
