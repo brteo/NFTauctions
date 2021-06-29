@@ -10,7 +10,7 @@
     "start": "node index.js",
     "test": "jest --verbose --runInBand",
     "test:coverage": "jest --coverage --verbose --runInBand --silent",
-    "seed": "docker exec mongo /collections/init.sh"
+    "seed": "docker exec mongo /seed/init.sh"
   },
   "dependencies": {
     "ajv": "^6.12.6",

@@ -14,15 +14,17 @@ const schema = new mongoose.Schema(
 			required: true
 		},
 		category: {
-			type: String,
-			maxlength: 128,
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Category',
 			required: true
 		},
-		tags: {
-			type: Array,
-			required: true,
-			default: []
-		},
+		tags: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: 'Tag',
+				required: true
+			}
+		],
 		image: {
 			type: Buffer,
 			required: true
