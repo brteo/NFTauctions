@@ -9,15 +9,19 @@ beforeAll(async () => await db.connect());
 beforeEach(async () => await db.clear());
 afterAll(async () => await db.close());
 
-const tag = {
-	name: 'IMAGE'
+const auction = {
+	title: 'File Txt',
+	description: 'A file txt',
+	category: '60dcafc1ec866b4ce2e15a13',
+	tags: ['60dcafc19fb861e45782fb23'],
+	image: 'image'
 };
 
-describe('POST /tags', () => {
-	test('New tag should be added', done => {
+describe('POST /auctions', () => {
+	test('New auction should be added', done => {
 		agent
-			.post('/tags')
-			.send(tag)
+			.post('/auctions')
+			.send(auction)
 			.expect(201)
 			.then(res => {
 				expect(res.body._id).toBeTruthy();
@@ -26,10 +30,10 @@ describe('POST /tags', () => {
 	});
 });
 
-describe('GET /tags', () => {
+describe('GET /auctions', () => {
 	test('collection should be empty', done => {
 		agent
-			.get('/tags')
+			.get('/auctions')
 			.expect(200)
 			.then(res => {
 				expect(res.body).toEqual(expect.arrayContaining([]));
@@ -39,21 +43,21 @@ describe('GET /tags', () => {
 
 	test('add a tag and get it', async () => {
 		await agent
-			.post('/tags')
-			.send(tag)
+			.post('/auctions')
+			.send(auction)
 			.expect(201)
 			.then(res => {
 				expect(res.body).toBeTruthy();
 			});
 
 		return agent
-			.get('/tags')
+			.get('/auctions')
 			.expect(200)
 			.then(res => {
 				expect(res.body).toEqual(
 					expect.arrayContaining([
 						expect.objectContaining({
-							name: tag.name
+							title: auction.title
 						})
 					])
 				);

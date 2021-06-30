@@ -15,7 +15,7 @@ exports.add = (req, res, next) => {
 	const tag = new Tag(req.body);
 	tag.save((err, doc) => {
 		if (err) next(ServerError());
-		else next(SendData(doc));
+		else next(SendData(doc, 201));
 	});
 };
 

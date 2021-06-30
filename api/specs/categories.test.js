@@ -9,15 +9,15 @@ beforeAll(async () => await db.connect());
 beforeEach(async () => await db.clear());
 afterAll(async () => await db.close());
 
-const tag = {
-	name: 'IMAGE'
+const category = {
+	name: 'Image'
 };
 
-describe('POST /tags', () => {
-	test('New tag should be added', done => {
+describe('POST /categories', () => {
+	test('New category should be added', done => {
 		agent
-			.post('/tags')
-			.send(tag)
+			.post('/categories')
+			.send(category)
 			.expect(201)
 			.then(res => {
 				expect(res.body._id).toBeTruthy();
@@ -29,7 +29,7 @@ describe('POST /tags', () => {
 describe('GET /tags', () => {
 	test('collection should be empty', done => {
 		agent
-			.get('/tags')
+			.get('/categories')
 			.expect(200)
 			.then(res => {
 				expect(res.body).toEqual(expect.arrayContaining([]));
@@ -39,21 +39,21 @@ describe('GET /tags', () => {
 
 	test('add a tag and get it', async () => {
 		await agent
-			.post('/tags')
-			.send(tag)
+			.post('/categories')
+			.send(category)
 			.expect(201)
 			.then(res => {
 				expect(res.body).toBeTruthy();
 			});
 
 		return agent
-			.get('/tags')
+			.get('/categories')
 			.expect(200)
 			.then(res => {
 				expect(res.body).toEqual(
 					expect.arrayContaining([
 						expect.objectContaining({
-							name: tag.name
+							name: category.name
 						})
 					])
 				);

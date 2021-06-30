@@ -15,7 +15,7 @@ exports.add = (req, res, next) => {
 	const category = new Category(req.body);
 	category.save((err, doc) => {
 		if (err) next(ServerError());
-		else next(SendData(doc));
+		else next(SendData(doc, 201));
 	});
 };
 
