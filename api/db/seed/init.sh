@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# Import dei tag
-mongoimport -u $MONGO_DATABASE_USERNAME -p $MONGO_DATABASE_PASSWORD --collection tags --db $MONGO_INITDB_DATABASE /seed/tags.json --jsonArray
+# Importa tutti i json presenti nella cartella seed/ nelle collection del db
 
-# Import delle categorie
-mongoimport -u $MONGO_DATABASE_USERNAME -p $MONGO_DATABASE_PASSWORD --collection categories --db $MONGO_INITDB_DATABASE /seed/categories.json --jsonArray
+cd seed
+
+dir=$(ls *.json)
+for file in $dir; do
+	mongoimport -u $MONGO_DATABASE_USERNAME -p $MONGO_DATABASE_PASSWORD --collection "${file%.*}" --db $MONGO_INITDB_DATABASE /seed/$file --jsonArray
+done
