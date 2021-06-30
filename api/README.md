@@ -14,6 +14,7 @@ MongoDB at localhost:27017
 - [ajv](https://ajv.js.org/)
 - [jsonwebtoken](https://jwt.io)
 - [Passport](http://www.passportjs.org) passport-jwt passport-local
+- [uuid](https://www.npmjs.com/package/uuid)
 
 DEV
 
@@ -32,6 +33,12 @@ DEV
 ## Test
 
 [Setup in-memory database for testing Node.js and Mongoose](https://dev.to/ryuuto829/setup-in-memory-database-for-testing-node-js-and-mongoose-1kop)
+
+## MongoDB
+
+- [populate](https://mongoosejs.com/docs/populate.html)
+- [data-modeling-introduction/](https://docs.mongodb.com/manual/core/data-modeling-introduction/)
+- [mongodb-relationships-embed-or-reference](https://stackoverflow.com/questions/5373198/mongodb-relationships-embed-or-reference)
 
 ## AUTH
 

@@ -1,8 +1,7 @@
-/* eslint-disable no-underscore-dangle */
 const supertest = require('supertest');
+
 const app = require('../app');
 const db = require('../db/connect-test');
-const User = require('../models/user');
 
 const agent = supertest.agent(app);
 

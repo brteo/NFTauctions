@@ -1,33 +1,34 @@
 const passport = require('passport');
-const jwt = require('jsonwebtoken');
 
-const { SendData, MissingCredentials, InactiveAccount, DeletedAccount } = require('../helpers/response');
+const { SendData, MissingCredentials, ServerError } = require('../helpers/response');
+const { genereteAuthToken, genereteRefreshToken } = require('../helpers/auth');
 
 exports.login = (req, res, next) => {
 	if (!req.body.email || !req.body.password) return next(MissingCredentials());
 
-	passport.authenticate('local', { session: false }, (err, user) => {
+	return passport.authenticate('local', { session: false }, async (err, user) => {
 		if (err) return next(err);
-		if (!user.active) return next(InactiveAccount());
-		if (user.deleted) return next(DeletedAccount());
 
-		/* REFRESH TOKEN */
-
-		const token = jwt.sign(
-			{
-				id: user.id,
-				iat: Math.floor(Date.now() / 1000)
-			},
-			process.env.JWT_SECRET,
-			{
-				expiresIn: parseInt(process.env.JWT_EXPIRES_TIME)
-			}
-		);
-
-		next(SendData({ token }));
+		try {
+			const token = genereteAuthToken(user);
+			const rt = await genereteRefreshToken(user);
+			return next(SendData({ token, rt }));
+		} catch (e) {
+			return next(ServerError(e));
+		}
 	})(req, res, next);
 };
 
 exports.check = (req, res, next) => {
-	next(SendData({ id: res.locals.user.id, message: 'Token valid!' }));
+	next(SendData({ id: res.locals.user.id, message: 'Token is valid!' }));
+};
+
+exports.refreshToken = async (req, res, next) => {
+	try {
+		const token = genereteAuthToken(res.locals.user);
+		const rt = await genereteRefreshToken(res.locals.user);
+		return next(SendData({ token, rt }));
+	} catch (e) {
+		return next(ServerError(e));
+	}
 };

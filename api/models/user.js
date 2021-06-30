@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const { Schema } = mongoose;
+
 const roles = ['user', 'admin'];
 
-const schema = new mongoose.Schema(
+const schema = Schema(
 	{
 		email: {
 			type: String,
@@ -11,6 +13,7 @@ const schema = new mongoose.Schema(
 			required: true,
 			unique: true,
 			trim: true,
+			index: true,
 			lowercase: true
 		},
 		password: {
@@ -20,21 +23,21 @@ const schema = new mongoose.Schema(
 		name: {
 			type: String,
 			maxlength: 128,
-			index: true,
 			trim: true
 		},
 		lastname: {
 			type: String,
 			maxlength: 128,
-			index: true,
 			trim: true
 		},
+		birthdate: Date,
 		role: {
 			type: String,
 			enum: roles,
 			default: 'user'
 		},
-		birthdate: Date,
+		rt: [{ token: String, expires: Date }],
+		authReset: Date,
 		active: {
 			type: Boolean,
 			default: false
@@ -49,10 +52,11 @@ const schema = new mongoose.Schema(
 	}
 );
 
-schema.pre('save', async function save(next) {
+schema.pre('save', async function (next) {
 	try {
-		if (!this.isModified('password')) return next();
-		this.password = await bcrypt.hash(this.password, 10);
+		if (this.isModified('password')) {
+			this.password = await bcrypt.hash(this.password, 10);
+		}
 
 		return next();
 	} catch (error) {

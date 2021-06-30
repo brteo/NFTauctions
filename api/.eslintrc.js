@@ -24,6 +24,9 @@ module.exports = {
 		'prefer-template': ['off'],
 		'no-console': ['off'],
 		'no-return-await': ['off'],
-		'func-names': ['error', { generators: 'as-needed' }]
+		'no-underscore-dangle': ['off'],
+		'no-param-reassign': ['off'],
+		'func-names': ['error', 'never'],
+		radix: ['error', 'as-needed']
 	}
 };
