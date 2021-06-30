@@ -19,4 +19,9 @@ router
 	// remove auction by id
 	.delete(controller.delete);
 
+router
+	.route('/:title')
+	// get auction by title
+	.get(controller.getByTitle);
+
 module.exports = router;
