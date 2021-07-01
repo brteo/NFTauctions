@@ -6,8 +6,9 @@ const fs = require('fs');
 const cors = require('cors');
 const response = require('./middlewares/response');
 const passport = require('./middlewares/passport');
+const trimmer = require('./middlewares/trimmer');
+
 const { SendData, NotFound } = require('./helpers/response');
-const trimmer = require('./helpers/trimmer');
 
 const app = express();
 app.use(cors());
