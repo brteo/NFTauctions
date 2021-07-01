@@ -32,3 +32,7 @@ exports.refreshToken = async (req, res, next) => {
 		return next(ServerError(e));
 	}
 };
+
+exports.logout = async (req, res, next) => {
+	next(SendData({ message: 'Logout succesfully!' }));
+};

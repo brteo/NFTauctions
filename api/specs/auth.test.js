@@ -195,7 +195,7 @@ describe('GET /auth/rt', () => {
 		}
 	});
 
-	test('Get new auth with invalid refresh should be unauthorized', async () => {
+	test('Get new auth with invalid refresh should be Unauthorized', async () => {
 		await seedUser();
 		const rt = jwt.sign(
 			{
@@ -218,7 +218,7 @@ describe('GET /auth/rt', () => {
 			});
 	});
 
-	test('Get new auth with expired refresh should be unauthorized', async () => {
+	test('Get new auth with expired refresh should be Unauthorized', async () => {
 		const user = await seedUser();
 		let rt;
 
@@ -311,5 +311,38 @@ describe('GET /auth/rt', () => {
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 305 }));
 			});
+	});
+});
+
+describe('GET /auth/logout', () => {
+	test('Destroy refresh token on logout', async () => {
+		const user = await seedUser();
+		let rt;
+
+		await agent
+			.post('/auth/login')
+			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.expect(200)
+			.then(res => {
+				expect(res.body.token).toBeTruthy();
+				expect(res.body.rt).toBeTruthy();
+				rt = res.body.rt;
+			});
+
+		await agent
+			.get('/auth/logout')
+			.set('Authorization', 'bearer ' + rt)
+			.expect(200)
+			.then(res => {
+				expect(res.body.message).toBe('Logout succesfully!');
+			});
+
+		try {
+			const refreshUser = await User.findById(user._id).exec();
+			expect(refreshUser.authReset).not.toBeDefined();
+			expect(refreshUser.rt.length).toEqual(0);
+		} catch (e) {
+			throw new Error(e);
+		}
 	});
 });
