@@ -1,0 +1,18 @@
+[
+	{
+		"email": "admin@meblabs.com",
+		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
+		"name": "Super",
+		"lastname": "Admin",
+		"role": "admin",
+		"active": true
+	},
+	{
+		"email": "user@meblabs.com",
+		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
+		"name": "John",
+		"lastname": "Doe",
+		"role": "user",
+		"active": true
+	}
+]

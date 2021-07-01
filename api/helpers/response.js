@@ -73,5 +73,9 @@ module.exports = {
 
 	NotFound: () => Response('Not found', 404, {}, 404),
 
-	NotAcceptable: () => Response('Not acceptable', 406, {}, 406)
+	NotAcceptable: () => Response('Not acceptable', 406, {}, 406),
+
+	InvalidRole: () => Response('Forbidden', 403, {}, 410),
+
+	ForbiddenResources: () => Response('Forbidden', 403, {}, 411)
 };

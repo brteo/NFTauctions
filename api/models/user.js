@@ -3,8 +3,6 @@ const bcrypt = require('bcryptjs');
 
 const { Schema } = mongoose;
 
-const roles = ['user', 'admin'];
-
 const schema = Schema(
 	{
 		email: {
@@ -33,7 +31,7 @@ const schema = Schema(
 		birthdate: Date,
 		role: {
 			type: String,
-			enum: roles,
+			enum: ['user', 'admin'],
 			default: 'user'
 		},
 		rt: [{ token: String, expires: Date }],
