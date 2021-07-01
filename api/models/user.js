@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const softDelete = require('../helpers/softdelete');
 
 const { Schema } = mongoose;
 
@@ -39,16 +40,13 @@ const schema = Schema(
 		active: {
 			type: Boolean,
 			default: false
-		},
-		deleted: {
-			type: Boolean,
-			default: false
 		}
 	},
 	{
 		timestamps: true
 	}
 );
+schema.plugin(softDelete);
 
 schema.pre('save', async function (next) {
 	try {

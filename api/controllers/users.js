@@ -2,9 +2,9 @@ const User = require('../models/user');
 const { SendData, ServerError, Forbidden, NotFound } = require('../helpers/response');
 
 exports.get = (req, res, next) => {
-	User.find({}, (err, user) => {
+	User.find({}, (err, users) => {
 		if (err) next(ServerError());
-		else next(SendData(user));
+		else next(SendData(users));
 	});
 };
 
@@ -30,6 +30,7 @@ exports.update = (req, res, next) => {
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err) return next(NotFound());
+		if (user.deleted) return next(NotFound());
 		return next(SendData(user));
 	});
 };
@@ -41,8 +42,7 @@ exports.delete = (req, res, next) => {
 		if (err) return next(NotFound());
 		if (user.deleted) return next(NotFound());
 
-		user.deleted = true;
-		await user.save();
+		await user.softdelete();
 		return next(SendData({ message: 'User deleted sucessfully!' }));
 	});
 };

@@ -56,7 +56,7 @@ describe('Role: admin', () => {
 				.set('Authorization', 'bearer ' + adminToken)
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.arrayContaining([]));
+					expect(res.body.length).toBe(2);
 					done();
 				});
 		});
@@ -81,6 +81,25 @@ describe('Role: admin', () => {
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 					done();
+				});
+		});
+
+		test('Get deleted user should be not found', async () => {
+			await agent
+				.delete('/users/' + admin.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.send({ name: 'edit' })
+				.expect(200)
+				.then(res => {
+					expect(res.body.message).toBe('User deleted sucessfully!');
+				});
+
+			return agent
+				.get('/users/' + admin.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.expect(404)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 				});
 		});
 	});
@@ -127,7 +146,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Change wrong userId should be not found', done => {
+		test('Update wrong userId should be not found', done => {
 			agent
 				.put('/users/1234')
 				.set('Authorization', 'bearer ' + adminToken)
@@ -136,6 +155,26 @@ describe('Role: admin', () => {
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 					done();
+				});
+		});
+
+		test('Update deleted user should be not found', async () => {
+			await agent
+				.delete('/users/' + admin.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.send({ name: 'edit' })
+				.expect(200)
+				.then(res => {
+					expect(res.body.message).toBe('User deleted sucessfully!');
+				});
+
+			return agent
+				.put('/users/' + admin.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.send({ name: 'edit' })
+				.expect(404)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 				});
 		});
 	});
@@ -188,6 +227,25 @@ describe('Role: admin', () => {
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 					done();
+				});
+		});
+
+		test('Soft deleted: after delete user with GET does not return', async () => {
+			await agent
+				.delete('/users/' + admin.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.send({ name: 'edit' })
+				.expect(200)
+				.then(res => {
+					expect(res.body.message).toBe('User deleted sucessfully!');
+				});
+
+			return agent
+				.get('/users')
+				.set('Authorization', 'bearer ' + adminToken)
+				.expect(200)
+				.then(res => {
+					expect(res.body.length).toBe(1);
 				});
 		});
 	});
