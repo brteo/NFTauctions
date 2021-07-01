@@ -41,7 +41,7 @@ describe('GET /auctions', () => {
 			});
 	});
 
-	test('add a tag and get it', async () => {
+	test('add an auction and get it', async () => {
 		await agent
 			.post('/auctions')
 			.send(auction)

@@ -37,7 +37,7 @@ describe('GET /tags', () => {
 			});
 	});
 
-	test('add a tag and get it', async () => {
+	test('add a category and get it', async () => {
 		await agent
 			.post('/categories')
 			.send(category)
