@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/auctions');
+const { auctionValidator } = require('../middlewares/ajv');
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router
 	// get all auctions
 	.get(controller.get)
 	// add new auction
-	.post(controller.add);
+	.post(auctionValidator, controller.add);
 
 router
 	.route('/:id')

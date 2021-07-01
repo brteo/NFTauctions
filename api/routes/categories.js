@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/categories');
+const { categoryValidator } = require('../middlewares/ajv');
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router
 	// get all categories
 	.get(controller.get)
 	// add new category
-	.post(controller.add);
+	.post(categoryValidator, controller.add);
 
 router
 	.route('/:id')

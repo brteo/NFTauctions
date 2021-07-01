@@ -1,5 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/tags');
+const { tagValidator } = require('../middlewares/ajv');
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ router
 	// get all tags
 	.get(controller.get)
 	// add new tag
-	.post(controller.add);
+	.post(tagValidator, controller.add);
 
 router
 	.route('/:id')

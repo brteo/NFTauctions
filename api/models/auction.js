@@ -26,7 +26,7 @@ const schema = new mongoose.Schema(
 			}
 		],
 		image: {
-			type: Buffer,
+			type: String,
 			required: true
 		},
 		active: {
