@@ -4,5 +4,23 @@
 		"read:any": ["*"],
 		"update:any": ["*"],
 		"delete:any": ["*"]
+	},
+	"tags": {
+		"create:any": ["*"],
+		"read:any": ["*"],
+		"update:any": ["*"],
+		"delete:any": ["*"]
+	},
+	"categories": {
+		"create:any": ["*"],
+		"read:any": ["*"],
+		"update:any": ["*"],
+		"delete:any": ["*"]
+	},
+	"auctions": {
+		"create:any": ["*"],
+		"read:any": ["*"],
+		"update:any": ["*"],
+		"delete:any": ["*"]
 	}
 }

@@ -2,5 +2,17 @@
 	"users": {
 		"read:own": ["*"],
 		"update:own": ["*"]
+	},
+	"tags": {
+		"read:any": ["*"]
+	},
+	"categories": {
+		"read:any": ["*"]
+	},
+	"auctions": {
+		"create:own": ["*"],
+		"read:any": ["*"],
+		"update:own": ["*"],
+		"delete:own": ["*"]
 	}
 }
