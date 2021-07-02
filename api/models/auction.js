@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const softDelete = require('../helpers/softDelete');
 
 const schema = new mongoose.Schema(
 	{
@@ -32,15 +33,26 @@ const schema = new mongoose.Schema(
 		active: {
 			type: Boolean,
 			default: true
-		},
-		deleted: {
-			type: Boolean,
-			default: false
 		}
 	},
 	{
 		timestamps: true
 	}
 );
+schema.plugin(softDelete);
+
+const PUBLIC_FIELDS = ['_id', 'title', 'description', 'category', 'tags', 'image'];
+
+schema.methods.getPublicFields = function () {
+	return PUBLIC_FIELDS.reduce((acc, item) => {
+		acc[item] = this[item];
+		return acc;
+	}, {});
+};
+
+schema.pre(['find'], function (next) {
+	if (!this.selected()) this.select(PUBLIC_FIELDS);
+	return next();
+});
 
 module.exports = mongoose.model('Auction', schema);
