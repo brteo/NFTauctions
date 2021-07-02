@@ -86,7 +86,7 @@ describe('Role: admin', () => {
 
 		test('Get deleted user should be not found', async () => {
 			await agent
-				.delete('/users/' + admin.id)
+				.delete('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.send({ name: 'edit' })
 				.expect(200)
@@ -95,7 +95,7 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.get('/users/' + admin.id)
+				.get('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.expect(404)
 				.then(res => {
@@ -160,7 +160,7 @@ describe('Role: admin', () => {
 
 		test('Update deleted user should be not found', async () => {
 			await agent
-				.delete('/users/' + admin.id)
+				.delete('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.send({ name: 'edit' })
 				.expect(200)
@@ -169,7 +169,7 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.put('/users/' + admin.id)
+				.put('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.send({ name: 'edit' })
 				.expect(404)
@@ -189,19 +189,11 @@ describe('Role: admin', () => {
 				.then(res => {
 					expect(res.body.message).toBe('User deleted sucessfully!');
 				});
-
-			return agent
-				.get('/users/' + admin.id)
-				.set('Authorization', 'bearer ' + adminToken)
-				.expect(404)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
-				});
 		});
 
 		test('Any users should be deleted', async () => {
 			await agent
-				.delete('/users/' + admin.id)
+				.delete('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.send({ name: 'edit' })
 				.expect(200)
@@ -210,7 +202,7 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.get('/users/' + admin.id)
+				.get('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.expect(404)
 				.then(res => {
@@ -232,7 +224,7 @@ describe('Role: admin', () => {
 
 		test('Soft deleted: after delete user with GET does not return', async () => {
 			await agent
-				.delete('/users/' + admin.id)
+				.delete('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.send({ name: 'edit' })
 				.expect(200)

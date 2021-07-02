@@ -12,8 +12,7 @@ exports.getById = (req, res, next) => {
 	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) return next(Forbidden());
 
 	return User.findById(req.params.id, (err, user) => {
-		if (err) return next(NotFound());
-		if (user.deleted) return next(NotFound());
+		if (err || !user) return next(NotFound());
 		return next(SendData(user));
 	});
 };
@@ -29,8 +28,7 @@ exports.update = (req, res, next) => {
 	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) return next(Forbidden());
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
-		if (err) return next(NotFound());
-		if (user.deleted) return next(NotFound());
+		if (err || !user) return next(NotFound());
 		return next(SendData(user));
 	});
 };
@@ -39,9 +37,7 @@ exports.delete = (req, res, next) => {
 	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) next(Forbidden());
 
 	return User.findById(req.params.id, async (err, user) => {
-		if (err) return next(NotFound());
-		if (user.deleted) return next(NotFound());
-
+		if (err || !user) return next(NotFound());
 		await user.softdelete();
 		return next(SendData({ message: 'User deleted sucessfully!' }));
 	});

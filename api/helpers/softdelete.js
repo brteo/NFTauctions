@@ -20,19 +20,26 @@ module.exports = schema => {
 		this.save(callback);
 	};
 
-	const typesFindQueryMiddleware = ['count', 'find'];
-	/*		'',
+	const typesFindQueryMiddleware = [
+		'count',
+		'find',
+		'findOne',
 		'findOneAndDelete',
 		'findOneAndRemove',
 		'findOneAndUpdate',
 		'update',
 		'updateOne',
-		'updateMany' */
+		'updateMany'
+	];
 
 	schema.pre(typesFindQueryMiddleware, function (next) {
 		if (this.getFilter().deleted === true) return next();
 
 		this.setQuery({ ...this.getFilter(), deleted: false });
 		return next();
+	});
+
+	schema.pre('aggregate', function () {
+		this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
 	});
 };
