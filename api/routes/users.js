@@ -2,6 +2,7 @@ const express = require('express');
 const controller = require('../controllers/users');
 const { isAuth } = require('../middlewares/isAuth');
 const rbac = require('../middlewares/rbac');
+const { validator } = require('../middlewares/validator');
 
 const router = express.Router();
 
@@ -10,14 +11,14 @@ router
 	// get
 	.get(isAuth, rbac('users', 'read:any'), controller.get)
 	// add
-	.post(isAuth, rbac('users', 'create:any'), controller.add);
+	.post(isAuth, rbac('users', 'create:any'), validator('user'), controller.add);
 
 router
 	.route('/:id')
 	// get by id
 	.get(isAuth, rbac('users', 'read'), controller.getById)
 	// put
-	.put(isAuth, rbac('users', 'update'), controller.update)
+	.put(isAuth, rbac('users', 'update'), validator('user-update'), controller.update)
 	// delete
 	.delete(isAuth, rbac('users', 'delete'), controller.delete);
 
