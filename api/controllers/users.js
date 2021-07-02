@@ -13,7 +13,7 @@ exports.getById = (req, res, next) => {
 
 	return User.findById(req.params.id, (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user));
+		return next(SendData(user.getPublicFields()));
 	});
 };
 

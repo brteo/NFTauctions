@@ -57,7 +57,7 @@ schema.methods.getPublicFields = function () {
 	}, {});
 };
 
-schema.pre(['find', 'findOne'], function (next) {
+schema.pre(['find'], function (next) {
 	if (!this.selected()) this.select(PUBLIC_FIELDS);
 	return next();
 });
