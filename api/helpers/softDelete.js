@@ -40,6 +40,6 @@ module.exports = schema => {
 	});
 
 	schema.pre('aggregate', function () {
-		this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
+		this.pipeline().unshift({ $match: { deleted: false } });
 	});
 };

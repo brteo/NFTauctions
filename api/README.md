@@ -93,7 +93,7 @@ When user are logged, Passport load his grants from json file
 {
 	"users": {
 		"read:own": ["*"],
-		"update:own": ["*","!active"] // cant change active fields
+		"update:own": ["*","!active"] // cant change active field
 	}
 }
 ```
@@ -107,7 +107,7 @@ If the client can't have grants for the routes, the response is `403 [Forbidden,
 router.route('/').get(isAuth, rbac('users', 'read:any'), controller.get);
 ```
 
-If you want to check any or own inside controllers
+If you want to check "any" or "own" inside controllers
 
 ```js
 // route.js

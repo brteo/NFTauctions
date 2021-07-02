@@ -34,7 +34,7 @@ exports.update = (req, res, next) => {
 };
 
 exports.delete = (req, res, next) => {
-	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) next(Forbidden());
+	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) return next(Forbidden());
 
 	return User.findById(req.params.id, async (err, user) => {
 		if (err || !user) return next(NotFound());

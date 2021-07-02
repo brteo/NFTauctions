@@ -61,7 +61,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get any specific userId should done with correct public fields', done => {
+		test('Get any specific userId should be done with correct public fields', done => {
 			agent
 				.get('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
@@ -260,7 +260,7 @@ describe('Role: user', () => {
 				});
 		});
 
-		test('Get only his userID should done', async () => {
+		test('Get only his userID should be done', async () => {
 			await agent
 				.get('/users/' + user.id)
 				.set('Authorization', 'bearer ' + userToken)
