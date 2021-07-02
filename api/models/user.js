@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const softDelete = require('../helpers/softdelete');
+const softDelete = require('../helpers/softDelete');
 
 const { Schema } = mongoose;
 
@@ -47,6 +47,20 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
+
+const PUBLIC_FIELDS = ['_id', 'email', 'name', 'lastname', 'birthdate', 'role'];
+
+schema.methods.getPublicFields = function () {
+	return PUBLIC_FIELDS.reduce((acc, item) => {
+		acc[item] = this[item];
+		return acc;
+	}, {});
+};
+
+schema.pre(['find', 'findOne'], function (next) {
+	if (!this.selected()) this.select(PUBLIC_FIELDS);
+	return next();
+});
 
 schema.pre('save', async function (next) {
 	try {

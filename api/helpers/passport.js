@@ -24,7 +24,7 @@ module.exports = passport => {
 				passwordField: 'password'
 			},
 			(email, password, done) => {
-				User.findOne({ email })
+				User.findOne({ email, deleted: { $in: [false, true] } })
 					.then(user => {
 						if (!user) return done(WrongEmail());
 						if (!user.active) return done(InactiveAccount());
@@ -55,6 +55,7 @@ module.exports = passport => {
 			(jwtPayload, done) => {
 				User.findById(jwtPayload.id)
 					.then(user => {
+						if (!user) done(Unauthorized());
 						if (user.authReset) done(AuthReset());
 						else done(null, user);
 					})
@@ -73,6 +74,8 @@ module.exports = passport => {
 			async (jwtPayload, done) => {
 				User.findById(jwtPayload.userId)
 					.then(async user => {
+						if (!user) done(Unauthorized());
+
 						const found = user.rt.find(rt => rt.token === jwtPayload.rt);
 						const valid = found ? moment().isBefore(found.expires) : true;
 

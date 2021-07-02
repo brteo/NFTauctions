@@ -61,14 +61,15 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get any specific userId should done', done => {
+		test('Get any specific userId should done with correct public fields', done => {
 			agent
 				.get('/users/' + user.id)
 				.set('Authorization', 'bearer ' + adminToken)
 				.expect(200)
 				.then(res => {
 					const { email, name, lastname } = user;
-					expect(res.body).toEqual(expect.objectContaining({ email, name, lastname }));
+					const { _id, role } = res.body;
+					expect(res.body).toMatchObject({ _id, email, name, lastname, role });
 					done();
 				});
 		});

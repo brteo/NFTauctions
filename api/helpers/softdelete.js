@@ -33,7 +33,7 @@ module.exports = schema => {
 	];
 
 	schema.pre(typesFindQueryMiddleware, function (next) {
-		if (this.getFilter().deleted === true) return next();
+		if (this.getFilter().deleted !== undefined) return next();
 
 		this.setQuery({ ...this.getFilter(), deleted: false });
 		return next();

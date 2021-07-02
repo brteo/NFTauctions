@@ -20,7 +20,7 @@ exports.getById = (req, res, next) => {
 exports.add = (req, res, next) => {
 	new User(req.body).save((err, user) => {
 		if (err) next(ServerError());
-		else next(SendData(user, 201));
+		else next(SendData(user.getPublicFields(), 201));
 	});
 };
 
@@ -29,7 +29,7 @@ exports.update = (req, res, next) => {
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user));
+		return next(SendData(user.getPublicFields()));
 	});
 };
 
