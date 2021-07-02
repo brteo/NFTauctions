@@ -1,6 +1,6 @@
 const express = require('express');
 const controller = require('../controllers/auctions');
-const { auctionValidator } = require('../middlewares/ajv');
+const { validator } = require('../middlewares/validator');
 
 const router = express.Router();
 
@@ -9,14 +9,14 @@ router
 	// get all auctions
 	.get(controller.get)
 	// add new auction
-	.post(auctionValidator, controller.add);
+	.post(validator('auction'), controller.add);
 
 router
 	.route('/:id')
 	// get auction by id
 	.get(controller.getById)
 	// update auction by id
-	.patch(controller.update)
+	.patch(validator('auction-update'), controller.update)
 	// remove auction by id
 	.delete(controller.delete);
 
