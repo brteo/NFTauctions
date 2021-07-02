@@ -7,14 +7,6 @@ const schema = new mongoose.Schema(
 			index: true,
 			maxlength: 128,
 			required: true
-		},
-		active: {
-			type: Boolean,
-			default: true
-		},
-		deleted: {
-			type: Boolean,
-			default: false
 		}
 	},
 	{

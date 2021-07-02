@@ -37,7 +37,7 @@ exports.update = (req, res, next) => {
 
 /* Remove category by id */
 exports.delete = (req, res, next) => {
-	Category.findByIdAndUpdate(req.params.id, { deleted: true, active: false }, { new: true }, (err, doc) => {
+	Category.findByIdAndUpdate(req.params.id, { new: true }, (err, doc) => {
 		if (err) next(ServerError());
 		else next(SendData(doc));
 	});
