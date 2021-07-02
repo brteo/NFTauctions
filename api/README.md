@@ -30,7 +30,7 @@ DEV
 - Client MongoDB: [Robo3T](https://robomongo.org)
 - Client RESTApi: [Postman](https://www.postman.com)
 
-## Test
+## Test with MongoDB
 
 [Setup in-memory database for testing Node.js and Mongoose](https://dev.to/ryuuto829/setup-in-memory-database-for-testing-node-js-and-mongoose-1kop)
 
@@ -42,33 +42,137 @@ DEV
 
 ## AUTH
 
-1. On login get Token + Refresh Token
+On login client send credentials to endpoint `/auth/login`.<br>
+Passport use local strategy and if correct the client get Auth Token + Refresh Token.
 
-- Token is JWT with userID
-- The token must have shot lifetime like 1 hour -> parameter (we use 5 minutes)
-- Refresh token can have long lifetime like 1 month -> parameter
-- The refresh token is saved on DB in a table with its expiry data
+- Auth Token is JWT with userID,
+  - Payload with userID
+  - Shot lifetime like 5 minute.
+- Refresh token is UUID V1 (timestamp)
+  - have long lifetime like 30 days
+  - saved on DB in a table with its expiry data
+  - sent to client as payload on other JWT with userID
+  - one user can have more refresh token (different devices)
 
-- 1 user can have more refresh token
+Any Route that need authorization need a middleware where Passport check JWT validate.<br>
+The client must send Auth Token as header `Authorization: bearer <token>`<br>
+If the Auth Token is not valid the response is `401 [Unauthorized, 401]`
 
-2. Check the token when there is a request that require auth
+```js
+router.route('/').get(isAuth, controller.get);
+```
 
-- Client send token in every rest api request like header -> Authorization: Bearer "token"
-- The token is verified by the isAuth middleware
-- If the token is invalid response with error status 401 [Unauthorized]
+The client can get new Auth Token with Refresh Token with endpoint `/auth/rt`<br>
+The Refresh Token inside JWT Payload as header `Authorization: bearer <token>`<br>
+Passport check if JWT is validate and check if Refresh Token exist on DB for the userID
 
-3. Request new token by refresh token + userID
-
-- When client get 401 auth error, it can call /auth/refreshToken to get a new accessToken and refresh the refreshToken
-- If the refresh token exists in table => generate new token for userID (delete from table the old one)
-- If refresh token does not exist for userID => remove all refresh token and set field auth_reset in user with current timestamp (maybe hack...)
-  - auth_reset on user must used by passport middleware to check token
+- If JWT is not valid the response is `401 [Unauthorized, 401]`
+- If Refresh Token is expired the response is `401 [Expired refresh token, 310]`
+- If Refresh Token does not exis the response is `401 [Refresh token does not exist, 306]` (maybe hack...)<br>
+  In this case the client maybe hack: will remove all generetated refresh token for user and set authReset with current timestamp.<br>
+  From now this user can't access, not even with valit auth token.<br>
+  Will request to client to change the password
 
 ## RBAC
 
-- isAuth middleware to validate the accessToken
-- permit middleware to validate, through a json policy linked to the role of the user, that the callee can execute the CRUD on that kind of resurce
-- each endpoint checks if the call is legit on that particular resource
+Any user can have `role` line "user" or "admin".
+When user are logged, Passport load his grants from json file
+
+```json
+/* admin role */
+{
+	"users": { // resources
+		"create:any": ["*"],
+		"read:any": ["*"],
+		"update:any": ["*"],
+		"delete:any": ["*"]
+	}
+}
+
+/* user role */
+{
+	"users": {
+		"read:own": ["*"],
+		"update:own": ["*","!active"] // cant change active fields
+	}
+}
+```
+
+The permit file are Json Object where for each resources (like "users") can have CRUD grants with "any" or "own" and optionals attributes.
+
+Any Route that need RACB need a middleware that validate.<br>
+If the client can't have grants for the routes, the response is `403 [Forbidden, 403]`
+
+```js
+router.route('/').get(isAuth, rbac('users', 'read:any'), controller.get);
+```
+
+If you want to check any or own inside controllers
+
+```js
+// route.js
+router.route('/:id').get(isAuth, rbac('users', 'read'), controller.getByID);
+
+// controller.js
+exports.getById = (req, res, next) => {
+	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) return next(Forbidden());
+
+	return User.findById(req.params.id, (err, user) => {
+		// ...
+	});
+};
+```
+
+## Soft Delete Schema Plugin
+
+If you need soft delate on model
+
+```js
+const softDelete = require('../helpers/softDelete');
+const { Schema } = mongoose;
+
+const schema = Schema({
+	// schema
+});
+schema.plugin(softDelete);
+```
+
+With soft delete the model schema have automatically `deleted: boolean` and `deletedAt: Date` fields.<br>
+All find query hava a middleware that exclude deleted resource:
+
+- count
+- find
+- findOne
+- findOneAndDelete
+- findOneAndRemove
+- findOneAndUpdate
+- update
+- updateOne
+- updateMany
+
+To soft delete a resource:
+
+```js
+user.softdelete();
+```
+
+## Public fields inside Model Schema
+
+```js
+const PUBLIC_FIELDS = ['_id', 'email', 'name', 'lastname', 'birthdate', 'role'];
+
+schema.methods.getPublicFields = function () {
+	return PUBLIC_FIELDS.reduce((acc, item) => {
+		acc[item] = this[item];
+		return acc;
+	}, {});
+};
+
+schema.pre(['find'], function (next) {
+	if (!this.selected()) this.select(PUBLIC_FIELDS);
+	return next();
+});
+```
 
 ## REST
 

@@ -79,13 +79,14 @@ module.exports = passport => {
 						const found = user.rt.find(rt => rt.token === jwtPayload.rt);
 						const valid = found ? moment().isBefore(found.expires) : true;
 
-						if (!found || !valid) {
+						if (!valid) {
+							done(ExpiredRefreshToken());
+						} else if (!found) {
 							// remove all refresh token of user, security issue: someone stole his rt
 							user.authReset = moment().format();
 							user.rt = [];
 							await user.save();
-							if (!found) done(MissingRefreshToken());
-							else done(ExpiredRefreshToken());
+							done(MissingRefreshToken());
 						} else {
 							// remove used refresh token
 							user.rt = user.rt.filter(rt => rt.token !== jwtPayload.rt);
