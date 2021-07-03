@@ -1,44 +1,44 @@
 const Tag = require('../models/tag');
 
-const { ServerError, SendData } = require('../helpers/response');
+const { ServerError, NotFound, SendData } = require('../helpers/response');
 
 /* Get all tags */
 exports.get = (req, res, next) => {
-	Tag.find({}, (err, doc) => {
+	Tag.find({}, (err, tags) => {
 		if (err) next(ServerError());
-		else next(SendData(doc));
+		else next(SendData(tags));
 	});
 };
 
-/* Add new category */
+/* Get tag by id */
+exports.getById = (req, res, next) => {
+	Tag.findById(req.params.id, (err, tag) => {
+		if (err || !tag) next(NotFound());
+		else next(SendData(tag.getPublicFields()));
+	});
+};
+
+/* Add new tag */
 exports.add = (req, res, next) => {
 	const tag = new Tag(req.body);
-	tag.save((err, doc) => {
+	tag.save((err, tags) => {
 		if (err) next(ServerError());
-		else next(SendData(doc, 201));
+		else next(SendData(tag.getPublicFields(), 201));
 	});
 };
 
-/* Get category by id */
-exports.getById = (req, res, next) => {
-	Tag.findById(req.params.id, (err, doc) => {
-		if (err) next(ServerError());
-		else next(SendData(doc));
-	});
-};
-
-/* Update category by id */
+/* Update tag by id */
 exports.update = (req, res, next) => {
-	Tag.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, doc) => {
-		if (err) next(ServerError());
-		else next(SendData(doc));
+	Tag.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, tag) => {
+		if (err || !tag) next(NotFound());
+		else next(SendData(tag.getPublicFields()));
 	});
 };
 
-/* Remove category by id */
+/* Remove tag by id */
 exports.delete = (req, res, next) => {
-	Tag.findByIdAndUpdate(req.params.id, { new: true }, (err, doc) => {
-		if (err) next(ServerError());
-		else next(SendData(doc));
+	Tag.findByIdAndUpdate(req.params.id, { new: true }, (err, tag) => {
+		if (err || !tag) next(NotFound());
+		else next(SendData({ message: 'Tag deleted sucessfully!' }));
 	});
 };
