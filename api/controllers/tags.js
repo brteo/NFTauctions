@@ -37,7 +37,7 @@ exports.update = (req, res, next) => {
 
 /* Remove tag by id */
 exports.delete = (req, res, next) => {
-	Tag.findByIdAndUpdate(req.params.id, { new: true }, (err, tag) => {
+	Tag.findByIdAndDelete(req.params.id, (err, tag) => {
 		if (err || !tag) next(NotFound());
 		else next(SendData({ message: 'Tag deleted sucessfully!' }));
 	});
