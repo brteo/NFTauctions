@@ -1,17 +1,20 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
 import Routes from './routes';
 import reportWebVitals from './reportWebVitals';
 
 import { AppProvider } from './helpers/AppContext';
+import FullpageLoading from './components/extra/FullpageLoading';
 import './helpers/i18n';
 import './styles/app.less';
 
 ReactDOM.render(
 	<React.StrictMode>
-		<AppProvider>
-			<Routes />
-		</AppProvider>
+		<Suspense fallback={<FullpageLoading />}>
+			<AppProvider>
+				<Routes />
+			</AppProvider>
+		</Suspense>
 	</React.StrictMode>,
 	document.getElementById('root')
 );

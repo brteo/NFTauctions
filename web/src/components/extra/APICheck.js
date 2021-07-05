@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { checkApi } from '../../helpers/api';
 
 const APICheck = props => {
 	const [message, setMessage] = useState('Loading...');
 
 	useEffect(() => {
-		axios
-			.get(process.env.REACT_APP_ENDPOINT)
+		checkApi()
 			.then(res => setMessage(res.data.message))
 			.catch(err => console.error(err));
 	});
