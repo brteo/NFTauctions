@@ -13,6 +13,10 @@ const newTag = {
 	name: 'IMAGE'
 };
 
+const wrongSchemaTag = {
+	title: 'FILE'
+};
+
 let admin;
 let adminToken;
 let user;
@@ -120,6 +124,18 @@ describe('Role: admin', () => {
 					done();
 				});
 		});
+
+		test('A wrong tag should not be added', done => {
+			agent
+				.post('/tags')
+				.set('Authorization', 'bearer ' + adminToken)
+				.send(wrongSchemaTag)
+				.expect(406)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					done();
+				});
+		});
 	});
 
 	describe('PUT /tags', () => {
@@ -143,6 +159,18 @@ describe('Role: admin', () => {
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					done();
+				});
+		});
+
+		test('Update with wrong data should not be done', done => {
+			agent
+				.put('/tags/' + tag.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.send({ title: 'tag changed' })
+				.expect(406)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
 					done();
 				});
 		});

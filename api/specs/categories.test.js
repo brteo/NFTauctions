@@ -13,6 +13,10 @@ const newCategory = {
 	name: 'Image'
 };
 
+const wrongSchemaCategory = {
+	title: 'File'
+};
+
 let admin;
 let adminToken;
 let user;
@@ -120,6 +124,18 @@ describe('Role: admin', () => {
 					done();
 				});
 		});
+
+		test('A wrong category should not be added', done => {
+			agent
+				.post('/categories')
+				.set('Authorization', 'bearer ' + adminToken)
+				.send(wrongSchemaCategory)
+				.expect(406)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					done();
+				});
+		});
 	});
 
 	describe('PUT /categories', () => {
@@ -143,6 +159,18 @@ describe('Role: admin', () => {
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					done();
+				});
+		});
+
+		test('Update with wrong data should not be done', done => {
+			agent
+				.put('/categories/' + category.id)
+				.set('Authorization', 'bearer ' + adminToken)
+				.send({ title: 'category changed' })
+				.expect(406)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
 					done();
 				});
 		});
