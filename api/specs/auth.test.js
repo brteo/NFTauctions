@@ -312,10 +312,9 @@ describe('GET /auth/rt', () => {
 			});
 	});
 
-	/*
-	With http-only cookie can't test this
 	test('Get new auth with valid refresh but already used token should be remove all refreshToken and set authReset', async () => {
 		const user = await seedUser();
+		let rt;
 
 		// login
 		await agent
@@ -324,6 +323,8 @@ describe('GET /auth/rt', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				// eslint-disable-next-line prefer-destructuring
+				rt = res.headers['set-cookie'][1].split(';')[0].split('=')[1];
 				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
@@ -337,8 +338,10 @@ describe('GET /auth/rt', () => {
 			});
 
 		// get new auth by already userd refresh token
-		await agent
+		const malwareAgent = supertest.agent(app);
+		await malwareAgent
 			.get('/auth/rt')
+			.set('Cookie', `TvgRefreshToken=${rt}`)
 			.expect(401)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 306 }));
@@ -370,7 +373,6 @@ describe('GET /auth/rt', () => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 305 }));
 			});
 	});
-	*/
 });
 
 describe('GET /auth/logout', () => {
