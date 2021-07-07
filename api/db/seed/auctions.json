@@ -1,0 +1,13 @@
+[
+	{
+		"title": "Auction title",
+		"description": "Auction description",
+		"category": {
+			"name": "File"
+		},
+		"tags": [{
+			"name": "FILE"
+		}],
+		"image": "path/to/image"
+	}
+]
