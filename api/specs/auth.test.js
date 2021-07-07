@@ -153,6 +153,80 @@ describe('GET /auth/check', () => {
 	});
 });
 
+describe('GET /auth/email/:email', () => {
+	test('Check if email exist should be OK', async () => {
+		await seedUser();
+
+		return agent
+			.get('/auth/email/' + userInfo().email)
+			.expect(200)
+			.then(res => {
+				expect(res.body.message).toBe('Email exists!');
+			});
+	});
+
+	test('Check if email exist should be Not Found', async () =>
+		agent
+			.get('/auth/email/' + userInfo().email)
+			.expect(404)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+			}));
+
+	test('Check if deleted users email exist should be Not Found', async () => {
+		await seedUser(true, true);
+
+		return agent
+			.get('/auth/email/' + userInfo().email)
+			.expect(404)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+			});
+	});
+
+	test.todo('Check without email should be ValidationError');
+	test.todo('Check with incorrect email should be InvalidEmail');
+});
+
+describe('GET /auth/register', () => {
+	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
+		let token;
+		await agent
+			.post('/auth/register')
+			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.expect(200)
+			.then(res => {
+				expect(res.body.token).toBeTruthy();
+				expect(res.body.rt).toBeTruthy();
+				token = res.body.token;
+			});
+
+		return agent
+			.get('/auth/check')
+			.set('Authorization', 'bearer ' + token)
+			.expect(200)
+			.then(res => {
+				expect(res.body.id).toBeTruthy();
+			});
+	});
+
+	test('Register new user with email that already exist should be EmailAlreadyExists', async () => {
+		await seedUser();
+
+		return agent
+			.post('/auth/register')
+			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
+			});
+	});
+
+	test.todo('Register new user without email should be ValidationError');
+	test.todo('Register new user with incorrect email should be InvalidEmail');
+	test.todo('Register new user without password should be ValidationError');
+});
+
 describe('GET /auth/rt', () => {
 	test('Get new auth with valid refresh token should be OK', async () => {
 		const user = await seedUser();

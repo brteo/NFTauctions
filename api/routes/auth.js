@@ -1,5 +1,5 @@
 const express = require('express');
-const { login, check, refreshToken, logout } = require('../controllers/auth');
+const { login, check, checkIfEmailExists, register, refreshToken, logout } = require('../controllers/auth');
 const { isAuth, isAuthRt } = require('../middlewares/isAuth');
 
 const router = express.Router();
@@ -7,6 +7,10 @@ const router = express.Router();
 router.post('/login', login);
 
 router.get('/check', isAuth, check);
+
+router.get('/email/:email', checkIfEmailExists);
+
+router.post('/register', register);
 
 router.get('/rt', isAuthRt, refreshToken);
 
