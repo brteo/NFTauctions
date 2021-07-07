@@ -31,7 +31,7 @@ beforeEach(async () => {
 		role: 'admin',
 		active: 1
 	}).save();
-	adminToken = genereteAuthToken(admin);
+	adminToken = genereteAuthToken(admin).token;
 
 	user = await new User({
 		email: 'user@meblabs.com',
@@ -41,7 +41,7 @@ beforeEach(async () => {
 		role: 'user',
 		active: 1
 	}).save();
-	userToken = genereteAuthToken(user);
+	userToken = genereteAuthToken(user).token;
 });
 afterAll(async () => await db.close());
 
@@ -53,7 +53,7 @@ describe('Role: admin', () => {
 		test('Get all and should contains two users', done => {
 			agent
 				.get('/users')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(2);
@@ -64,7 +64,7 @@ describe('Role: admin', () => {
 		test('Get any specific userId should be done with correct public fields', done => {
 			agent
 				.get('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					const { email, name, lastname } = user;
@@ -77,7 +77,7 @@ describe('Role: admin', () => {
 		test('Get wrong userId should be not found', done => {
 			agent
 				.get('/users/1234')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -88,7 +88,7 @@ describe('Role: admin', () => {
 		test('Get deleted user should be not found', async () => {
 			await agent
 				.delete('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -97,7 +97,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -109,7 +109,7 @@ describe('Role: admin', () => {
 		test('A new user should be added', done => {
 			agent
 				.post('/users')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(newUser)
 				.expect(201)
 				.then(res => {
@@ -124,7 +124,7 @@ describe('Role: admin', () => {
 		test('His data should be changed', done => {
 			agent
 				.put('/users/' + admin.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -137,7 +137,7 @@ describe('Role: admin', () => {
 		test('Any users should be changed', done => {
 			agent
 				.put('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -150,7 +150,7 @@ describe('Role: admin', () => {
 		test('Update wrong userId should be not found', done => {
 			agent
 				.put('/users/1234')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)
 				.then(res => {
@@ -162,7 +162,7 @@ describe('Role: admin', () => {
 		test('Update deleted user should be not found', async () => {
 			await agent
 				.delete('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -171,7 +171,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.put('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)
 				.then(res => {
@@ -184,7 +184,7 @@ describe('Role: admin', () => {
 		test('His data should be deleted', async () => {
 			await agent
 				.delete('/users/' + admin.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -195,7 +195,7 @@ describe('Role: admin', () => {
 		test('Any users should be deleted', async () => {
 			await agent
 				.delete('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -204,7 +204,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -214,7 +214,7 @@ describe('Role: admin', () => {
 		test('Delete wrong userId should be not found', done => {
 			agent
 				.delete('/users/1234')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)
 				.then(res => {
@@ -226,7 +226,7 @@ describe('Role: admin', () => {
 		test('Soft deleted: after delete user with GET does not return', async () => {
 			await agent
 				.delete('/users/' + user.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -235,7 +235,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/users')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(1);
@@ -252,7 +252,7 @@ describe('Role: user', () => {
 		test('Get all users should be Forbidden', done => {
 			agent
 				.get('/users')
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
@@ -263,7 +263,7 @@ describe('Role: user', () => {
 		test('Get only his userID should be done', async () => {
 			await agent
 				.get('/users/' + user.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
 					const { email, name, lastname } = user;
@@ -272,7 +272,7 @@ describe('Role: user', () => {
 
 			return agent
 				.get('/users/' + admin.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
@@ -284,7 +284,7 @@ describe('Role: user', () => {
 		test('Add new should be Forbidden', done => {
 			agent
 				.post('/users')
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newUser)
 				.expect(403)
 				.then(res => {
@@ -298,7 +298,7 @@ describe('Role: user', () => {
 		test('His own user should be changed', done => {
 			agent
 				.put('/users/' + user.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ name: 'edit' })
 				.expect(200)
 				.then(res => {
@@ -311,7 +311,7 @@ describe('Role: user', () => {
 		test('Any other user should be Forbidden', done => {
 			agent
 				.put('/users/' + admin.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ name: 'edit' })
 				.expect(403)
 				.then(res => {
@@ -325,7 +325,7 @@ describe('Role: user', () => {
 		test('Any users should be Forbidden', done => {
 			agent
 				.delete('/users/' + user.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
