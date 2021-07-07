@@ -5,7 +5,7 @@
 		"password": { "type": "string" },
 		"name": { "type": "string" },
 		"lastname": { "type": "string" },
-		"birthdate": { "type" : "date"}
+		"birthdate": { "type" : "string"}
 	},
 	"additionalProperties": true
 }

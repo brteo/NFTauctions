@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const Ajv = require('ajv');
 
-const { NotAcceptable, NotFound } = require('./response');
+const { NotAcceptable, NotFound, ServerError } = require('./response');
 
 const ajv = new Ajv();
 
@@ -21,12 +21,14 @@ const validator = fs
 exports.validate = (schemaName, req, next) =>
 	new Promise((resolve, reject) => {
 		if (schemaName in validator) {
-			const schemaCompiled = ajv.compile(validator[schemaName]);
-			const valid = schemaCompiled(req.body);
-
-			if (!valid) reject(NotAcceptable());
-
-			resolve();
+			try {
+				const schemaCompiled = ajv.compile(validator[schemaName]);
+				const valid = schemaCompiled(req.body);
+				if (!valid) reject(NotAcceptable());
+				resolve();
+			} catch (e) {
+				reject(ServerError(e));
+			}
 		}
 
 		reject(NotFound());

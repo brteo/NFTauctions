@@ -47,7 +47,7 @@ beforeEach(async () => {
 		role: 'admin',
 		active: 1
 	}).save();
-	adminToken = genereteAuthToken(admin);
+	adminToken = genereteAuthToken(admin).token;
 
 	user = await new User({
 		email: 'user@meblabs.com',
@@ -57,7 +57,7 @@ beforeEach(async () => {
 		role: 'user',
 		active: 1
 	}).save();
-	userToken = genereteAuthToken(user);
+	userToken = genereteAuthToken(user).token;
 
 	await new Category({
 		name: 'category'
@@ -100,7 +100,7 @@ describe('Role: admin', () => {
 		test('Get all and should contains an auction', done => {
 			agent
 				.get('/auctions')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(1);
@@ -111,7 +111,7 @@ describe('Role: admin', () => {
 		test('Get any specific auctionId', done => {
 			agent
 				.get('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ title: 'Auction title' }));
@@ -122,7 +122,7 @@ describe('Role: admin', () => {
 		test('Get wrong auctionId should be not found', done => {
 			agent
 				.get('/auctions/1234')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -133,7 +133,7 @@ describe('Role: admin', () => {
 		test('Get deleted auction should be not found', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Auction deleted sucessfully!');
@@ -141,7 +141,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -153,7 +153,7 @@ describe('Role: admin', () => {
 		test('A new auction should be added', done => {
 			agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
@@ -167,7 +167,7 @@ describe('Role: admin', () => {
 		test('A wrong auction should not be added', done => {
 			agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(wrongSchemaAuction)
 				.expect(406)
 				.then(res => {
@@ -180,7 +180,7 @@ describe('Role: admin', () => {
 			newAuction.category.name = 'category inexistent';
 			agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(newAuction)
 				.expect(404)
 				.then(res => {
@@ -195,7 +195,7 @@ describe('Role: admin', () => {
 			newAuction.tags[0].name = 'tag inexistent';
 			agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(newAuction)
 				.expect(404)
 				.then(res => {
@@ -211,7 +211,7 @@ describe('Role: admin', () => {
 		test('Auction data should be changed', done => {
 			agent
 				.patch('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ title: 'Title changed' })
 				.expect(200)
 				.then(res => {
@@ -223,7 +223,7 @@ describe('Role: admin', () => {
 		test('Update with wrong data should not be done', done => {
 			agent
 				.patch('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'Auction changed' })
 				.expect(406)
 				.then(res => {
@@ -235,7 +235,7 @@ describe('Role: admin', () => {
 		test('Update wrong auctionId should be not found', done => {
 			agent
 				.patch('/auctions/1234')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ title: 'Title changed' })
 				.expect(404)
 				.then(res => {
@@ -247,7 +247,7 @@ describe('Role: admin', () => {
 		test('Update deleted auction should be not found', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Auction deleted sucessfully!');
@@ -255,7 +255,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.put('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ title: 'Title changed' })
 				.expect(404)
 				.then(res => {
@@ -268,7 +268,7 @@ describe('Role: admin', () => {
 		test('Auction data should be deleted', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Auction deleted sucessfully!');
@@ -278,7 +278,7 @@ describe('Role: admin', () => {
 		test('Any auctions should be deleted', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Auction deleted sucessfully!');
@@ -286,7 +286,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -296,7 +296,7 @@ describe('Role: admin', () => {
 		test('Soft deleted: after delete auction with GET does not return', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Auction deleted sucessfully!');
@@ -304,7 +304,7 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/auctions')
-				.set('Authorization', 'bearer ' + adminToken)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(0);
@@ -322,7 +322,7 @@ describe('Role: user', () => {
 		test('Get all auctions should be Permitted', done => {
 			agent
 				.get('/auctions')
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(1);
@@ -333,7 +333,7 @@ describe('Role: user', () => {
 		test('Get a auctionId should be done', done => {
 			agent
 				.get('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ title: 'Auction title' }));
@@ -346,7 +346,7 @@ describe('Role: user', () => {
 		test('Add new auction should be Permitted', done => {
 			agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
@@ -363,7 +363,7 @@ describe('Role: user', () => {
 			let id;
 			await agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
@@ -375,7 +375,7 @@ describe('Role: user', () => {
 
 			return agent
 				.patch('/auctions/' + id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ title: 'Title changed' })
 				.expect(200)
 				.then(res => {
@@ -386,7 +386,7 @@ describe('Role: user', () => {
 		test('Update auctions of others users should be Forbidden', done => {
 			agent
 				.patch('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ title: 'Title changed' })
 				.expect(403)
 				.then(res => {
@@ -401,7 +401,7 @@ describe('Role: user', () => {
 			let id;
 			await agent
 				.post('/auctions')
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
@@ -413,7 +413,7 @@ describe('Role: user', () => {
 
 			return agent
 				.delete('/auctions/' + id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Auction deleted sucessfully!');
@@ -423,7 +423,7 @@ describe('Role: user', () => {
 		test('Delete auctions of others users should be Forbidden', done => {
 			agent
 				.delete('/auctions/' + auction.id)
-				.set('Authorization', 'bearer ' + userToken)
+				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));

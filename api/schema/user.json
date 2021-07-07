@@ -1,12 +1,12 @@
 {
 	"type": "object",
 	"properties": {
-		"email": { "type": "string"},
+		"email": { "type": "string" },
 		"password": { "type": "string" },
 		"name": { "type": "string" },
 		"lastname": { "type": "string" },
-		"birthdate": { "type" : "date"}
+		"birthdate": { "type" : "string" }
 	},
-	"required": ["email", "password", "name", "lastname", "birthdate"],
+	"required": ["email", "password"],
 	"additionalProperties": true
 }
