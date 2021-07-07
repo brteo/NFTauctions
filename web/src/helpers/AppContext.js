@@ -7,11 +7,11 @@ export default AppContext;
 /* PROVIDER */
 export const AppProvider = props => {
 	const [init, setInit] = useState(0);
-	const [isAuth, setAuth] = useState(0);
+	const [user, setUser] = useState(null);
 
 	useEffect(() => {
 		setInit(1);
 	}, []);
 
-	return <AppContext.Provider value={{ init, isAuth, setAuth }}>{props.children}</AppContext.Provider>;
+	return <AppContext.Provider value={{ init, user, setUser }}>{props.children}</AppContext.Provider>;
 };

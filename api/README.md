@@ -9,7 +9,6 @@ MongoDB at localhost:27017
 - [espress](https://expressjs.com/it/guide/routing.html)
 - [cors](https://www.npmjs.com/package/cors)
 - [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html)
-- [dotenv](https://www.npmjs.com/package/dotenv)
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
 - [mongoose](https://mongoosejs.com)
 - [ajv](https://ajv.js.org/)

@@ -33,6 +33,18 @@
 	"common": {
 		"error": "Errore",
 		"title": "titolo",
-		"login": "accedi"
+		"back": "Indietro"
+	},
+	"fields": {
+		"email": "email",
+		"password": "password"
+	},
+	"login": {
+		"btn": "accedi",
+		"title": "Accedi a TradingVG",
+		"forgot password": "Hai dimenticato la password?",
+		"continue": "Continua",
+		"login": "Accedi",
+		"register": "Registrati"
 	}
 }

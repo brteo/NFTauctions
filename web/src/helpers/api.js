@@ -35,6 +35,10 @@ export const checkApi = () => connect.get('/');
 
 export const login = (email, password) => connect.post(`/auth/login`, { email, password });
 
+export const register = (email, password) => connect.post('/auth/register', { email, password });
+
+export const checkEmail = email => connect.get(`/users/email/${email}`);
+
 export const authCheck = () => connect.get(`/auth/check`);
 
 export const refreshToken = () => connect.get('/auth/rt');
