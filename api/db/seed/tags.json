@@ -1,17 +1,11 @@
 [
 	{ 
-		"active" : true, 
-		"deleted" : false, 
 		"name" : "IMAGE"
 	},
 	{ 
-		"active" : true, 
-		"deleted" : false, 
 		"name" : "FILE"
 	},
 	{ 
-		"active" : true, 
-		"deleted" : false, 
 		"name" : "DOCUMENT"
 	}
 ]
