@@ -1,33 +1,28 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { Layout } from 'antd';
 
-import AppContext from '../helpers/AppContext';
 import ErrorPage from '../components/extra/ErrorPage';
+import Header from '../components/Header';
 import Home from './Home';
-import Login from './Login';
+
+const { Content, Footer } = Layout;
 
 const Routes = props => {
-	const context = useContext(AppContext);
-
 	return (
 		<BrowserRouter history={props.history}>
 			<Layout>
-				{context.isAuth ? (
-					<Layout>
-						<Layout.Content className="main-content">
-							<Switch>
-								<Route exact path="/" component={Home} />
-								<Route exact path="/index.html" component={Home} />
-								<Route component={() => <ErrorPage status="404" />} />
-							</Switch>
-						</Layout.Content>
-					</Layout>
-				) : (
+				<Header />
+				<Content className="main-content">
 					<Switch>
-						<Route component={() => <Login />} />
+						<Route exact path="/" component={Home} />
+						<Route exact path="/index.html" component={Home} />
+						<Route component={() => <ErrorPage status="404" />} />
 					</Switch>
-				)}
+				</Content>
+				<Footer className="footer">
+					{new Date().getFullYear()} &copy; Trading Virtual Goods - All rights reserved
+				</Footer>
 			</Layout>
 		</BrowserRouter>
 	);

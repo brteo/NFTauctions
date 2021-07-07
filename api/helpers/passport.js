@@ -1,5 +1,7 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable prefer-destructuring */
 const { Strategy: LocalStrategy } = require('passport-local');
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
+const { Strategy: JwtStrategy } = require('passport-jwt');
 const moment = require('moment');
 
 const User = require('../models/user');
@@ -14,6 +16,26 @@ const {
 	DeletedAccount,
 	InactiveAccount
 } = require('./response');
+
+const optionsJwt = {
+	jwtFromRequest: req => {
+		if (req && Object.keys(req.cookies).length && req.cookies.TvgAccessToken) {
+			return req.cookies.TvgAccessToken;
+		}
+		return null;
+	},
+	secretOrKey: process.env.JWT_SECRET
+};
+
+const optionsRefreshToken = {
+	jwtFromRequest: req => {
+		if (req && Object.keys(req.cookies).length && req.cookies.TvgRefreshToken) {
+			return req.cookies.TvgRefreshToken;
+		}
+		return null;
+	},
+	secretOrKey: process.env.RT_SECRET
+};
 
 module.exports = passport => {
 	passport.use(
@@ -47,55 +69,43 @@ module.exports = passport => {
 
 	passport.use(
 		'jwt',
-		new JwtStrategy(
-			{
-				jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-				secretOrKey: process.env.JWT_SECRET
-			},
-			(jwtPayload, done) => {
-				User.findById(jwtPayload.id)
-					.then(user => {
-						if (!user) done(Unauthorized());
-						if (user.authReset) done(AuthReset());
-						else done(null, user);
-					})
-					.catch(err => done(Unauthorized()));
-			}
-		)
+		new JwtStrategy(optionsJwt, (jwtPayload, done) => {
+			User.findById(jwtPayload.id)
+				.then(user => {
+					if (!user) done(Unauthorized());
+					if (user.authReset) done(AuthReset());
+					else done(null, user);
+				})
+				.catch(err => done(Unauthorized()));
+		})
 	);
 
 	passport.use(
 		'jwt-rt',
-		new JwtStrategy(
-			{
-				jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-				secretOrKey: process.env.RT_SECRET
-			},
-			async (jwtPayload, done) => {
-				User.findById(jwtPayload.userId)
-					.then(async user => {
-						if (!user) done(Unauthorized());
+		new JwtStrategy(optionsRefreshToken, async (jwtPayload, done) => {
+			User.findById(jwtPayload.userId)
+				.then(async user => {
+					if (!user) done(Unauthorized());
 
-						const found = user.rt.find(rt => rt.token === jwtPayload.rt);
-						const valid = found ? moment().isBefore(found.expires) : true;
+					const found = user.rt.find(rt => rt.token === jwtPayload.rt);
+					const valid = found ? moment().isBefore(found.expires) : true;
 
-						if (!valid) {
-							done(ExpiredRefreshToken());
-						} else if (!found) {
-							// remove all refresh token of user, security issue: someone stole his rt
-							user.authReset = moment().format();
-							user.rt = [];
-							await user.save();
-							done(MissingRefreshToken());
-						} else {
-							// remove used refresh token
-							user.rt = user.rt.filter(rt => rt.token !== jwtPayload.rt);
-							await user.save();
-							done(null, user);
-						}
-					})
-					.catch(err => done(Unauthorized()));
-			}
-		)
+					if (!valid) {
+						done(ExpiredRefreshToken());
+					} else if (!found) {
+						// remove all refresh token of user, security issue: someone stole his rt
+						user.authReset = moment().format();
+						user.rt = [];
+						await user.save();
+						done(MissingRefreshToken());
+					} else {
+						// remove used refresh token
+						user.rt = user.rt.filter(rt => rt.token !== jwtPayload.rt);
+						await user.save();
+						done(null, user);
+					}
+				})
+				.catch(err => done(Unauthorized()));
+		})
 	);
 };

@@ -1,4 +1,50 @@
 {
-	"title": "titolo",
-	"login": "accedi"
+	"errors": {
+		"1": "Errore di sustema: operazione non completata, aggiornare la pagina o provare in seguito",
+		"2": "Parametro non corretto",
+		"200": "Errore di validazione",
+		"201": "Email non corretta",
+		"202": "Email già esistente",
+		"203": "Valore troppo corto",
+		"204": "Valore troppo lungo",
+		"205": "Email non valita",
+		"215": "Tipologia file non accettato",
+		"300": "Mancano le credenziali di accesso",
+		"301": "Email non corretta",
+		"302": "Password non corretta",
+		"303": "Account non attivo",
+		"304": "Sei già autenticato",
+		"305": "Auth reset, aggiornare la password",
+		"306": "Il refresh token non esiste",
+		"307": "Account cancellato",
+		"308": "Parametri richiesti mancanti",
+		"309": "Parametri addizionali",
+		"310": "Refresh token scaduto",
+		"311": "Access token scaduto",
+		"400": "Richiesta sbagliata",
+		"401": "Non autorizzato",
+		"402": "Non permesso (CORS policy)",
+		"403": "Proibito",
+		"404": "Non trovato",
+		"406": "Non accettabile",
+		"410": "Proibito",
+		"411": "Proibito"
+	},
+	"common": {
+		"error": "Errore",
+		"title": "titolo",
+		"back": "Indietro"
+	},
+	"fields": {
+		"email": "email",
+		"password": "password"
+	},
+	"login": {
+		"btn": "accedi",
+		"title": "Accedi a TradingVG",
+		"forgot password": "Hai dimenticato la password?",
+		"continue": "Continua",
+		"login": "Accedi",
+		"register": "Registrati"
+	}
 }

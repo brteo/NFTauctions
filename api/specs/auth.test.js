@@ -6,7 +6,7 @@ const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
 
-const agent = supertest.agent(app);
+let agent;
 
 const userInfo = (active = 1, deleted = 0) => {
 	const info = {
@@ -23,7 +23,10 @@ const userInfo = (active = 1, deleted = 0) => {
 const seedUser = async (active = true, deleted = false) => await new User(userInfo(active, deleted)).save();
 
 beforeAll(async () => await db.connect());
-beforeEach(async () => await db.clear());
+beforeEach(async () => {
+	await db.clear();
+	agent = supertest.agent(app);
+});
 afterAll(async () => await db.close());
 
 describe('POST /auth/login', () => {
@@ -94,8 +97,8 @@ describe('POST /auth/login', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 	});
 });
@@ -103,21 +106,18 @@ describe('POST /auth/login', () => {
 describe('GET /auth/check', () => {
 	test('Check with valid token should be OK', async () => {
 		await seedUser();
-		let token;
 
 		await agent
 			.post('/auth/login')
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
-				token = res.body.token;
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		return agent
 			.get('/auth/check')
-			.set('Authorization', 'bearer ' + token)
 			.expect(200)
 			.then(res => {
 				expect(res.body.id).toBeTruthy();
@@ -143,9 +143,10 @@ describe('GET /auth/check', () => {
 				expiresIn: parseInt(process.env.JWT_EXPIRES_TIME)
 			}
 		);
+
 		return agent
 			.get('/auth/check')
-			.set('Authorization', 'bearer ' + token)
+			.set('Cookie', `TvgAccessToken=${token}`)
 			.expect(401)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 401 }));
@@ -153,35 +154,100 @@ describe('GET /auth/check', () => {
 	});
 });
 
+describe('GET /auth/email/:email', () => {
+	test('Check if email exist should be OK', async () => {
+		await seedUser();
+
+		return agent
+			.get('/auth/email/' + userInfo().email)
+			.expect(200)
+			.then(res => {
+				expect(res.body.message).toBe('Email exists!');
+			});
+	});
+
+	test('Check if email exist should be Not Found', async () =>
+		agent
+			.get('/auth/email/' + userInfo().email)
+			.expect(404)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+			}));
+
+	test('Check if deleted users email exist should be Not Found', async () => {
+		await seedUser(true, true);
+
+		return agent
+			.get('/auth/email/' + userInfo().email)
+			.expect(404)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+			});
+	});
+
+	test.todo('Check without email should be ValidationError');
+	test.todo('Check with incorrect email should be InvalidEmail');
+});
+
+describe('GET /auth/register', () => {
+	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
+		await agent
+			.post('/auth/register')
+			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.expect(200)
+			.then(res => {
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+			});
+
+		return agent
+			.get('/auth/check')
+			.expect(200)
+			.then(res => {
+				expect(res.body.id).toBeTruthy();
+			});
+	});
+
+	test('Register new user with email that already exist should be EmailAlreadyExists', async () => {
+		await seedUser();
+
+		return agent
+			.post('/auth/register')
+			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
+			});
+	});
+
+	test.todo('Register new user without email should be ValidationError');
+	test.todo('Register new user with incorrect email should be InvalidEmail');
+	test.todo('Register new user without password should be ValidationError');
+});
+
 describe('GET /auth/rt', () => {
 	test('Get new auth with valid refresh token should be OK', async () => {
 		const user = await seedUser();
-		let rt;
-		let token;
 
 		await agent
 			.post('/auth/login')
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
-				rt = res.body.rt;
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		await agent
 			.get('/auth/rt')
-			.set('Authorization', 'bearer ' + rt)
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
-				token = res.body.token;
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		await agent
 			.get('/auth/check')
-			.set('Authorization', 'bearer ' + token)
 			.expect(200)
 			.then(res => {
 				expect(res.body.id).toBeTruthy();
@@ -211,7 +277,7 @@ describe('GET /auth/rt', () => {
 
 		return agent
 			.get('/auth/rt')
-			.set('Authorization', 'bearer ' + rt)
+			.set('Cookie', `TvgRefreshToken=${rt}`)
 			.expect(401)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 401 }));
@@ -220,16 +286,14 @@ describe('GET /auth/rt', () => {
 
 	test('Get new auth with expired refresh should be Unauthorized', async () => {
 		const user = await seedUser();
-		let rt;
 
 		await agent
 			.post('/auth/login')
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
-				rt = res.body.rt;
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		try {
@@ -242,7 +306,6 @@ describe('GET /auth/rt', () => {
 
 		return agent
 			.get('/auth/rt')
-			.set('Authorization', 'bearer ' + rt)
 			.expect(401)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 310 }));
@@ -252,7 +315,6 @@ describe('GET /auth/rt', () => {
 	test('Get new auth with valid refresh but already used token should be remove all refreshToken and set authReset', async () => {
 		const user = await seedUser();
 		let rt;
-		let token;
 
 		// login
 		await agent
@@ -260,26 +322,26 @@ describe('GET /auth/rt', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
-				token = res.body.token;
-				rt = res.body.rt;
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				// eslint-disable-next-line prefer-destructuring
+				rt = res.headers['set-cookie'][1].split(';')[0].split('=')[1];
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		// get new auth by refresh token
 		await agent
 			.get('/auth/rt')
-			.set('Authorization', 'bearer ' + rt)
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		// get new auth by already userd refresh token
-		await agent
+		const malwareAgent = supertest.agent(app);
+		await malwareAgent
 			.get('/auth/rt')
-			.set('Authorization', 'bearer ' + rt)
+			.set('Cookie', `TvgRefreshToken=${rt}`)
 			.expect(401)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 306 }));
@@ -297,7 +359,6 @@ describe('GET /auth/rt', () => {
 		// old yet valid token must be blocked by authReset
 		await agent
 			.get('/auth/check')
-			.set('Authorization', 'bearer ' + token)
 			.expect(401)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 305 }));
@@ -315,23 +376,20 @@ describe('GET /auth/rt', () => {
 });
 
 describe('GET /auth/logout', () => {
-	test('Destroy refresh token on logout', async () => {
+	test('Destroy refresh token on logout and clear http only cookie', async () => {
 		const user = await seedUser();
-		let rt;
 
 		await agent
 			.post('/auth/login')
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(200)
 			.then(res => {
-				expect(res.body.token).toBeTruthy();
-				expect(res.body.rt).toBeTruthy();
-				rt = res.body.rt;
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
 		await agent
 			.get('/auth/logout')
-			.set('Authorization', 'bearer ' + rt)
 			.expect(200)
 			.then(res => {
 				expect(res.body.message).toBe('Logout succesfully!');

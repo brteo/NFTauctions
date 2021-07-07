@@ -4,6 +4,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 const response = require('./middlewares/response');
 const passport = require('./middlewares/passport');
 const trimmer = require('./middlewares/trimmer');
@@ -11,9 +13,10 @@ const trimmer = require('./middlewares/trimmer');
 const { SendData, NotFound } = require('./helpers/response');
 
 const app = express();
-app.use(cors());
+app.use(cors({ credentials: true, origin: process.env.CORS_ORIGIN }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(trimmer());
 app.use(passport());
 

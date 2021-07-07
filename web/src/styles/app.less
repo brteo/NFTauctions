@@ -1,6 +1,7 @@
 @import '~antd/dist/antd.dark.less';
 @import 'theme.less';
 
+/*FULLPAGE*/
 .fullpage {
 	width: 100%;
 	height: 100vh;
@@ -18,6 +19,43 @@
 	background: @body-background;
 }
 
-#logo{
-	height:100px;
+/*LAYOUT*/
+.topbar{
+	background:@body-background;
+	box-shadow: @box-shadow-base;
+	padding-left:20px;
+	padding-right:20px;
+
+	.logo-box{float:left;}
+	.access-box{float:right;}
+
+	#logo{height:46px;}
+
+	@media screen and (min-width: 996px) {
+		padding-left:40px;
+		padding-right:40px;
+	}
+	@media screen and (min-width: 1200px) {
+		padding-left:60px;
+		padding-right:60px;
+	}
+}
+
+.main-content{
+	padding:20px;
+	min-height: calc(100vh ~"-" 114px);
+	
+	@media screen and (min-width: 996px) {
+		padding:20px 40px;
+	}
+	@media screen and (min-width: 1200px) {
+		padding:30px 60px;
+	}
+}
+
+.footer{
+	height: 50px;
+	text-align: center;
+	font-size:0.8em;
+	color:#999;
 }

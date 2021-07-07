@@ -1,4 +1,50 @@
 {
-	"title": "title",
-	"login": "Login"
+	"errors": {
+		"1": "System error: operation not completed, please refresh the page or try again later",
+		"2": "Incorrect parameter",
+		"200": "Validation Error",
+		"201": "Incorrect Email",
+		"202": "The email already exists",
+		"203": "Value too short",
+		"204": "Value too long",
+		"205": "Email not valid",
+		"215": "Unsupported media type",
+		"300": "Missing credentials",
+		"301": "Wrong email",
+		"302": "Wrong password",
+		"303": "Inactive account",
+		"304": "You are already authenticated",
+		"305": "Auth reset, please change password",
+		"306": "Refresh token does not exist",
+		"307": "Deleted account",
+		"308": "Missing required parameter",
+		"309": "Additional parameters",
+		"310": "Expired refresh token",
+		"311": "Expired access token",
+		"400":"Bad request",
+		"401":"Unauthorized",
+		"402":"Not allowed by CORS",
+		"403":"Forbidden",
+		"404":"Not found",
+		"406":"Not acceptable",
+		"410":"Forbidden",
+		"411":"Forbidden"
+	},
+	"common": {
+		"error": "Errore",
+		"title": "titolo",
+		"back": "Back"
+	},
+	"fields": {
+		"email": "email",
+		"password": "password"
+	},
+	"login": {
+		"btn": "sign in",
+		"title": "Sign in TradingVG",
+		"forgot password": "Forgot your password?",
+		"continue": "Continue",
+		"login": "Sign In",
+		"register": "Sign Up"
+	}
 }

@@ -8,7 +8,7 @@ MongoDB at localhost:27017
 
 - [espress](https://expressjs.com/it/guide/routing.html)
 - [cors](https://www.npmjs.com/package/cors)
-- [dotenv](https://www.npmjs.com/package/dotenv)
+- [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html)
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
 - [mongoose](https://mongoosejs.com)
 - [ajv](https://ajv.js.org/)
@@ -55,7 +55,7 @@ Passport use local strategy and if correct the client get Auth Token + Refresh T
   - one user can have more refresh token (different devices)
 
 Any Route that need authorization need a middleware where Passport check JWT validate.<br>
-The client must send Auth Token as header `Authorization: bearer <token>`<br>
+The JWT is set as [cookie http-only](https://medium.com/@sadnub/simple-and-secure-api-authentication-for-spas-e46bcea592ad).<br>
 If the Auth Token is not valid the response is `401 [Unauthorized, 401]`
 
 ```js
@@ -63,7 +63,7 @@ router.route('/').get(isAuth, controller.get);
 ```
 
 The client can get new Auth Token with Refresh Token with endpoint `/auth/rt`<br>
-The Refresh Token inside JWT Payload as header `Authorization: bearer <token>`<br>
+The Refresh token is inside JWT payload as "rt" and set as [cookie http-only](https://medium.com/@sadnub/simple-and-secure-api-authentication-for-spas-e46bcea592ad).<br>
 Passport check if JWT is validate and check if Refresh Token exist on DB for the userID
 
 - If JWT is not valid the response is `401 [Unauthorized, 401]`
