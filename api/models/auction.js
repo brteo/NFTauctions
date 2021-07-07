@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const softDelete = require('../helpers/softDelete');
 
-const schema = new mongoose.Schema(
+const { Schema } = mongoose;
+
+const schema = Schema(
 	{
 		title: {
 			type: String,
@@ -15,19 +17,28 @@ const schema = new mongoose.Schema(
 			required: true
 		},
 		category: {
-			type: mongoose.Schema.Types.ObjectId,
-			ref: 'Category',
-			required: true
+			name: {
+				type: String,
+				maxlength: 128,
+				required: true
+			}
 		},
 		tags: [
 			{
-				type: mongoose.Schema.Types.ObjectId,
-				ref: 'Tag',
-				required: true
+				name: {
+					type: String,
+					maxlength: 128,
+					required: true
+				}
 			}
 		],
 		image: {
 			type: String,
+			required: true
+		},
+		owner: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'User',
 			required: true
 		},
 		active: {
@@ -41,7 +52,7 @@ const schema = new mongoose.Schema(
 );
 schema.plugin(softDelete);
 
-const PUBLIC_FIELDS = ['_id', 'title', 'description', 'category', 'tags', 'image'];
+const PUBLIC_FIELDS = ['_id', 'title', 'description', 'category', 'tags', 'image', 'owner'];
 
 schema.methods.getPublicFields = function () {
 	return PUBLIC_FIELDS.reduce((acc, item) => {
@@ -55,4 +66,4 @@ schema.pre(['find'], function (next) {
 	return next();
 });
 
-module.exports = mongoose.model('Auction', schema);
+module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);
