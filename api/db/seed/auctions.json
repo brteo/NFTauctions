@@ -8,6 +8,8 @@
 		"tags": [{
 			"name": "FILE"
 		}],
-		"image": "path/to/image"
+		"image": "path/to/image",
+		"owner": "60e5ade3ae70fe0fcacadde7",
+		"active": true
 	}
 ]
