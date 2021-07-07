@@ -1,8 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Card, Typography, Button, message } from 'antd';
+import { Typography, Button, message } from 'antd';
 
-import APICheck from '../components/extra/APICheck';
 import { connect } from '../helpers/api';
 
 const { Title } = Typography;
@@ -27,21 +26,19 @@ const Home = props => {
 
 	return (
 		<section>
-			<Card type="inner">
-				<Title>
-					{process.env.REACT_APP_NAME} ({process.env.REACT_APP_VERSION})
-				</Title>
-				<p>{t('common.title')}</p>
-				<APICheck />
-				<Button type="primary" onClick={() => globalError()}>
-					Global error
-				</Button>
-				<br />
-				<br />
-				<Button type="primary" onClick={() => menagedError()}>
-					Menaged Error
-				</Button>
-			</Card>
+			<Title>
+				{process.env.REACT_APP_NAME} ({process.env.REACT_APP_VERSION})
+			</Title>
+			<p>{t('common.title')}</p>
+
+			<Button type="primary" onClick={() => globalError()}>
+				Global error
+			</Button>
+			<br />
+			<br />
+			<Button type="primary" onClick={() => menagedError()}>
+				Menaged Error
+			</Button>
 		</section>
 	);
 };
