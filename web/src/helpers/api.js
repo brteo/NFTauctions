@@ -13,7 +13,7 @@ const errorComposer = error => () => {
 		// our custom error
 		Modal.error({
 			title: i18n.t('common.error') + ' [' + error.response.data.error + ']',
-			content: i18n.t('errors.' + error.response.data.error)
+			content: i18n.t('core:errors.' + error.response.data.error)
 		});
 	} else {
 		Modal.error({
@@ -37,7 +37,7 @@ export const login = (email, password) => connect.post(`/auth/login`, { email, p
 
 export const register = (email, password) => connect.post('/auth/register', { email, password });
 
-export const checkEmail = email => connect.get(`/users/email/${email}`);
+export const checkEmail = email => connect.get(`/auth/email/${email}`);
 
 export const authCheck = () => connect.get(`/auth/check`);
 

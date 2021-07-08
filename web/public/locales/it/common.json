@@ -1,0 +1,15 @@
+{
+	"common": {
+		"error": "Errore",
+		"title": "Titolo",
+		"back": "Indietro"
+	},
+	"login": {
+		"btn": "accedi",
+		"title": "Accedi a TradingVG",
+		"forgot password": "Hai dimenticato la password?",
+		"continue": "Continua",
+		"login": "Accedi",
+		"register": "Registrati"
+	}
+}

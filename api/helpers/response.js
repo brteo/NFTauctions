@@ -23,15 +23,13 @@ module.exports = {
 
 	ValidationError: data => Response('Validation Error', 400, data, 200),
 
-	IncorrectEmail: data => Response('Incorrect Email', 400, data, 201),
+	IncorrectEmail: data => Response('Email not valid', 400, data, 201),
 
 	EmailAlreadyExists: data => Response('The email already exists', 400, data, 202),
 
 	ValueTooShort: data => Response('Value too short', 400, data, 203),
 
 	ValueTooLong: data => Response('Value too long', 400, data, 204),
-
-	InvalidEmail: data => Response('Email not valid', 400, data, 205),
 
 	MediaTypeError: () => Response('Unsupported media type', 415, {}, 215),
 
@@ -45,17 +43,11 @@ module.exports = {
 
 	InactiveAccount: () => Response('Inactive account', 401, {}, 303),
 
-	AlreadyAuthenticated: () => Response('You are already authenticated', 400, {}, 304),
-
 	AuthReset: () => Response('Auth reset, please change password', 401, {}, 305),
 
 	MissingRefreshToken: () => Response('Refresh token does not exist', 401, {}, 306),
 
 	DeletedAccount: () => Response('Deleted account', 400, {}, 307),
-
-	MissingRequiredParameter: () => Response('Missing required parameter', 400, {}, 308),
-
-	AdditionalParameters: () => Response('Additional parameters', 400, {}, 309),
 
 	ExpiredRefreshToken: () => Response('Expired refresh token', 401, {}, 310),
 

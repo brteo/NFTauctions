@@ -9,13 +9,11 @@ import './helpers/i18n';
 import './styles/app.less';
 
 ReactDOM.render(
-	<React.StrictMode>
-		<Suspense fallback={<FullpageLoading />}>
-			<AppProvider>
-				<Routes />
-			</AppProvider>
-		</Suspense>
-	</React.StrictMode>,
+	<Suspense fallback={<FullpageLoading />}>
+		<AppProvider>
+			<Routes />
+		</AppProvider>
+	</Suspense>,
 	document.getElementById('root')
 );
 

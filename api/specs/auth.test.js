@@ -186,7 +186,7 @@ describe('GET /auth/email/:email', () => {
 	});
 
 	test.todo('Check without email should be ValidationError');
-	test.todo('Check with incorrect email should be InvalidEmail');
+	test.todo('Check with incorrect email should be IncorrectEmail');
 });
 
 describe('GET /auth/register', () => {
@@ -221,7 +221,7 @@ describe('GET /auth/register', () => {
 	});
 
 	test.todo('Register new user without email should be ValidationError');
-	test.todo('Register new user with incorrect email should be InvalidEmail');
+	test.todo('Register new user with incorrect email should be IncorrectEmail');
 	test.todo('Register new user without password should be ValidationError');
 });
 

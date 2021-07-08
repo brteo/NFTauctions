@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Layout, Button, Drawer } from 'antd';
+import { Layout, Button } from 'antd';
 
+import AppContext from '../helpers/AppContext';
 import APICheck from './extra/APICheck';
 import Login from './Login';
 
@@ -11,6 +12,7 @@ const { Header } = Layout;
 
 const HeaderComponent = props => {
 	const { t, i18n } = useTranslation();
+	const { user } = useContext(AppContext);
 	const [showLogin, setShowLogin] = useState(false);
 
 	const changeLanguage = lang => i18n.changeLanguage(lang);
@@ -35,16 +37,18 @@ const HeaderComponent = props => {
 					<img src={logo} alt="Trading Virtual Goods" id="logo" />
 				</div>
 				<div className="access-box">
-					<APICheck />
-					<Button type="primary" onClick={() => toggleLogin()}>
-						{t('login.btn')}
-					</Button>
+					{process.env.NODE_ENV === 'development' && <APICheck />}
+					{user ? (
+						user.name || user.email
+					) : (
+						<Button type="primary" onClick={() => toggleLogin()}>
+							{t('login.btn')}
+						</Button>
+					)}
 					{langButtons}
 				</div>
 			</Header>
-			<Drawer title={t('login.title')} visible={showLogin}>
-				<Login />
-			</Drawer>
+			<Login show={showLogin} handleClose={toggleLogin} />
 		</>
 	);
 };

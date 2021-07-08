@@ -1,18 +1,20 @@
 import React, { useContext, useState } from 'react';
-import { Form, Input, Button, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
+import { Form, Input, Button, Modal } from 'antd';
 
 import { login, register, checkEmail } from '../helpers/api';
 import AppContext from '../helpers/AppContext';
 
 const Login = props => {
+	const { show, handleClose } = props;
+
 	const { t } = useTranslation();
 	const { setUser } = useContext(AppContext);
 
 	const MODE = { INIT: t('login.continue'), LOGIN: t('login.login'), REGISTER: t('login.register') };
 
-	const [feedback, setFeedback] = useState(null);
 	const [loginMode, setLoginMode] = useState(MODE.INIT);
+	const [pwdError, setPwdError] = useState(false);
 	const [emailValue, setEmailValue] = useState('');
 
 	const handleReset = () => setLoginMode(MODE.INIT);
@@ -25,93 +27,93 @@ const Login = props => {
 				if (errorCode === 404) {
 					return setLoginMode(MODE.REGISTER);
 				}
-				return err.errorHandler && err.errorHandler();
+				return err.globalHandler && err.globalHandler();
 			});
 
 	const handleLogin = (email, password) =>
 		login(email, password)
 			.then(res => {
 				setUser(res.data);
-			})
-			.then(res => {
-				setUser(JSON.stringify(res.data));
+				handleClose();
 			})
 			.catch(err => {
-				const statusCode = err.response ? err.response.status : null;
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
-				if (statusCode === 401) {
-					if (errorCode === 305) {
-						return setFeedback(t('errors.305'));
-					}
-					return setFeedback(t('errors.401'));
+				if (errorCode === 302) {
+					return setPwdError(t('core:errors.' + errorCode));
 				}
-				return err.errorHandler && err.errorHandler();
+
+				return err.globalHandler && err.globalHandler();
 			});
 
 	const handleRegister = (email, password) =>
 		register(email, password)
 			.then(() => handleLogin(email, password))
-			.catch(err => err.errorHandler && err.errorHandler());
+			.catch(err => err.globalHandler && err.globalHandler());
 
 	const handleSubmit = ({ email = '', password = '' }) => {
 		if (loginMode === MODE.INIT) return handleCheckEmail(email);
 		if (loginMode === MODE.LOGIN) return handleLogin(email, password);
-		if (loginMode === MODE.REGISTER) return handleRegister(email, password);
-		return setFeedback(t('errors.1'));
+		return handleRegister(email, password);
 	};
 
+	const footerBtn = (
+		<>
+			{loginMode !== MODE.INIT ? <Button onClick={() => handleReset()}>{t('common.back')}</Button> : ''}
+			<Button form="loginForm" type="primary" htmlType="submit">
+				{loginMode}
+			</Button>
+		</>
+	);
+
 	return (
-		<Form name="basic" onFinish={handleSubmit}>
-			<Form.Item
-				label={t('fields.email')}
-				name="email"
-				rules={[
-					{
-						required: true,
-						message: t('errors.200')
-					}
-				]}
-			>
-				<Input readOnly={loginMode !== MODE.INIT} value={emailValue} onChange={value => setEmailValue(value)} />
-			</Form.Item>
-			{loginMode !== MODE.INIT && (
+		<Modal visible={show} title={t('login.title')} onCancel={() => handleClose()} footer={footerBtn}>
+			<Form id="loginForm" onFinish={handleSubmit}>
 				<Form.Item
-					label={t('fields.password')}
-					name="password"
+					name="email"
 					rules={[
 						{
 							required: true,
-							message: t('errors.200')
+							message: t('core:errors.200')
+						},
+						{
+							type: 'email',
+							message: t('core:errors.201')
 						}
 					]}
 				>
-					<Input.Password />
+					<Input
+						readOnly={loginMode !== MODE.INIT}
+						placeholder={t('core:fields.email')}
+						value={emailValue}
+						onChange={value => setEmailValue(value)}
+					/>
 				</Form.Item>
-			)}
-
-			{loginMode === MODE.LOGIN && (
-				<Space>
-					<Form.Item>
-						<p id="forgotPassword">{t('login.forgot password')}</p>
+				{loginMode !== MODE.INIT && (
+					<Form.Item
+						name="password"
+						validateStatus={pwdError ? 'error' : undefined}
+						help={pwdError || undefined}
+						onChange={() => setPwdError(false)}
+						rules={[
+							{
+								required: true,
+								message: t('core:errors.200')
+							}
+						]}
+					>
+						<Input.Password placeholder={t('core:fields.password')} />
 					</Form.Item>
-				</Space>
-			)}
+				)}
 
-			{feedback && (
-				<Form.Item>
-					<p className="loginFeedback">{feedback}</p>
-				</Form.Item>
-			)}
-
-			<Form.Item>
-				<Space>
-					{loginMode !== MODE.INIT && <Button onClick={() => handleReset()}>{t('common.back')}</Button>}
-					<Button type="primary" htmlType="submit">
-						{t(loginMode)}
-					</Button>
-				</Space>
-			</Form.Item>
-		</Form>
+				{loginMode === MODE.LOGIN && (
+					<div className="align-center">
+						<Button type="link" id="forgotPassword">
+							{t('login.forgot password')}
+						</Button>
+					</div>
+				)}
+			</Form>
+		</Modal>
 	);
 };
 

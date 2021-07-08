@@ -39,6 +39,7 @@ exports.register = async (req, res, next) => {
 		return next(ServerError());
 	}
 
+	req.body.active = true;
 	return new User(req.body).save(async (err, user) => {
 		if (err) return next(ServerError());
 
