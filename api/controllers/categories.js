@@ -2,7 +2,6 @@ const Category = require('../models/category');
 const Auction = require('../models/auction');
 
 const { ServerError, NotFound, SendData, IncorrectParameter } = require('../helpers/response');
-const auction = require('../models/auction');
 
 /* Get all categories */
 exports.get = (req, res, next) => {
@@ -63,8 +62,8 @@ exports.delete = (req, res, next) => {
 		else {
 			Auction.find({ 'category.name': category.name }, (_err, auctions) => {
 				if (auctions.length === 0) {
-					Category.findByIdAndDelete(req.params.id, (err, _category) => {
-						if (err || !_category) next(NotFound());
+					Category.findByIdAndDelete(req.params.id, (e, _category) => {
+						if (e || !_category) next(NotFound());
 						else next(SendData({ message: 'Category deleted sucessfully!' }));
 					});
 				} else {

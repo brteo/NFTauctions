@@ -4,6 +4,7 @@ const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
 const Tag = require('../models/tag');
+const Category = require('../models/category');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
@@ -15,6 +16,23 @@ const newTag = {
 
 const wrongSchemaTag = {
 	title: 'FILE'
+};
+
+const newAuction = {
+	title: 'Auction title',
+	description: 'Auction description',
+	category: {
+		name: 'category'
+	},
+	tags: [
+		{
+			name: 'tag'
+		},
+		{
+			name: 'tag2'
+		}
+	],
+	image: 'path/to/image'
 };
 
 let admin;
@@ -50,6 +68,14 @@ beforeEach(async () => {
 	tag = await new Tag({
 		name: 'tag'
 	}).save();
+
+	await new Tag({
+		name: 'tag2'
+	}).save();
+
+	await new Category({
+		name: 'category'
+	}).save();
 });
 afterAll(async () => await db.close());
 
@@ -64,7 +90,7 @@ describe('Role: admin', () => {
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body.length).toBe(1);
+					expect(res.body.length).toBe(2);
 					done();
 				});
 		});
@@ -151,6 +177,28 @@ describe('Role: admin', () => {
 				});
 		});
 
+		test('Update should be done in every auction that contains category', async () => {
+			await agent.post('/auctions').set('Cookie', `TvgAccessToken=${adminToken}`).send(newAuction).expect(201);
+
+			await agent
+				.put('/tags/' + tag.id)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ name: 'tag changed' })
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ name: 'tag changed' }));
+				});
+
+			return agent
+				.get('/auctions')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(200)
+				.then(res => {
+					const { tags } = res.body[0];
+					expect(res.body[0]).toEqual(expect.objectContaining({ tags }));
+				});
+		});
+
 		test('Update wrong tagId should be not found', done => {
 			agent
 				.put('/tags/1234')
@@ -207,6 +255,18 @@ describe('Role: admin', () => {
 				});
 		});
 
+		test('Delete should not be done if tag exist in an auction', async () => {
+			await agent.post('/auctions').set('Cookie', `TvgAccessToken=${adminToken}`).send(newAuction).expect(201);
+
+			return agent
+				.delete('/tags/' + tag.id)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 100 }));
+				});
+		});
+
 		test('Delete tag userId should be not found', done => {
 			agent
 				.delete('/tags/1234')
@@ -232,7 +292,7 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body.length).toBe(1);
+					expect(res.body.length).toBe(2);
 					done();
 				});
 		});
