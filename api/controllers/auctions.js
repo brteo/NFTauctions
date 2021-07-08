@@ -66,7 +66,7 @@ exports.update = (req, res, next) => {
 		else if (_type !== 'any' && String(auction.owner) !== String(owner)) next(Forbidden());
 		else {
 			Auction.findByIdAndUpdate(req.params.id, req.body, { new: true }, (_err, _auction) => {
-				if (err || !_auction) next(ServerError());
+				if (err) next(ServerError());
 				else next(SendData(_auction.getPublicFields()));
 			});
 		}
