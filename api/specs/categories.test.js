@@ -4,6 +4,7 @@ const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
 const Category = require('../models/category');
+const Tag = require('../models/tag');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
@@ -15,6 +16,20 @@ const newCategory = {
 
 const wrongSchemaCategory = {
 	title: 'File'
+};
+
+const newAuction = {
+	title: 'Auction title',
+	description: 'Auction description',
+	category: {
+		name: 'category'
+	},
+	tags: [
+		{
+			name: 'tag'
+		}
+	],
+	image: 'path/to/image'
 };
 
 let admin;
@@ -49,6 +64,10 @@ beforeEach(async () => {
 
 	category = await new Category({
 		name: 'category'
+	}).save();
+
+	await new Tag({
+		name: 'tag'
 	}).save();
 });
 afterAll(async () => await db.close());
@@ -139,7 +158,7 @@ describe('Role: admin', () => {
 	});
 
 	describe('PUT /categories', () => {
-		test('category data should be changed', done => {
+		test('Category data should be changed', done => {
 			agent
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -163,6 +182,27 @@ describe('Role: admin', () => {
 				});
 		});
 
+		test('Update should be done in every auction that contains category', async () => {
+			await agent.post('/auctions').set('Cookie', `TvgAccessToken=${adminToken}`).send(newAuction).expect(201);
+
+			await agent
+				.put('/categories/' + category.id)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ name: 'category changed' })
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ name: 'category changed' }));
+				});
+
+			return agent
+				.get('/auctions')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(200)
+				.then(res => {
+					expect(res.body[0]).toEqual(expect.objectContaining({ category: { name: 'category changed' } }));
+				});
+		});
+
 		test('Update with wrong data should not be done', done => {
 			agent
 				.put('/categories/' + category.id)
@@ -175,7 +215,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update deleted user should be not found', async () => {
+		test('Update deleted category should be not found', async () => {
 			await agent
 				.delete('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -196,7 +236,7 @@ describe('Role: admin', () => {
 	});
 
 	describe('DELETE /categories', () => {
-		test('category data should be deleted', async () => {
+		test('Category data should be deleted', async () => {
 			await agent
 				.delete('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -204,6 +244,30 @@ describe('Role: admin', () => {
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Category deleted sucessfully!');
+				});
+		});
+
+		test('Delete should not be done if category exist in an auction', async () => {
+			await agent.post('/auctions').set('Cookie', `TvgAccessToken=${adminToken}`).send(newAuction).expect(201);
+
+			return agent
+				.delete('/categories/' + category.id)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 100 }));
+				});
+		});
+
+		test('Category data should be changed', done => {
+			agent
+				.put('/categories/' + category.id)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ name: 'category changed' })
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ name: 'category changed' }));
+					done();
 				});
 		});
 
@@ -267,7 +331,7 @@ describe('Role: user', () => {
 	});
 
 	describe('DELETE /categories', () => {
-		test('category delete should be Forbidden', done => {
+		test('Category delete should be Forbidden', done => {
 			agent
 				.delete('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)

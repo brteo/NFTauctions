@@ -1,6 +1,8 @@
 const Category = require('../models/category');
+const Auction = require('../models/auction');
 
-const { ServerError, NotFound, SendData } = require('../helpers/response');
+const { ServerError, NotFound, SendData, IncorrectParameter } = require('../helpers/response');
+const auction = require('../models/auction');
 
 /* Get all categories */
 exports.get = (req, res, next) => {
@@ -29,16 +31,46 @@ exports.add = (req, res, next) => {
 
 /* Update category by id */
 exports.update = (req, res, next) => {
-	Category.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, category) => {
+	Category.findById(req.params.id, (err, category) => {
 		if (err || !category) next(NotFound());
-		else next(SendData(category.getPublicFields()));
+		else {
+			const originalName = category.name;
+			const newName = req.body.name;
+
+			if (originalName !== newName) {
+				Auction.find({ 'category.name': originalName }, (_err, auctions) => {
+					if (auctions.length !== 0) {
+						auctions.forEach(a => {
+							Auction.findByIdAndUpdate(a.id, { 'category.name': newName }, (e, _auction) => {});
+						});
+					}
+					Category.findByIdAndUpdate(req.params.id, req.body, { new: true }, (e, _category) => {
+						if (e || !_category) next(NotFound());
+						else next(SendData(_category.getPublicFields()));
+					});
+				});
+			} else {
+				next(IncorrectParameter());
+			}
+		}
 	});
 };
 
 /* Remove category by id */
 exports.delete = (req, res, next) => {
-	Category.findByIdAndDelete(req.params.id, (err, category) => {
+	Category.findById(req.params.id, (err, category) => {
 		if (err || !category) next(NotFound());
-		else next(SendData({ message: 'Category deleted sucessfully!' }));
+		else {
+			Auction.find({ 'category.name': category.name }, (_err, auctions) => {
+				if (auctions.length === 0) {
+					Category.findByIdAndDelete(req.params.id, (err, _category) => {
+						if (err || !_category) next(NotFound());
+						else next(SendData({ message: 'Category deleted sucessfully!' }));
+					});
+				} else {
+					next(IncorrectParameter());
+				}
+			});
+		}
 	});
 };
