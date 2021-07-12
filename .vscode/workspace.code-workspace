@@ -11,7 +11,11 @@
 	  {
 		  "name": "Web",
 		  "path": "../web"
-	 }
+	 },
+   {
+     "name": "Blockchain",
+     "path": "../blockchain"
+  }
   ],
   "settings": {
     "eslint.workingDirectories": ["./api","./web"],
@@ -22,7 +26,8 @@
     "jest.disabledWorkspaceFolders": ["Root"],
     "files.exclude": {
       "api/": true,
-      "web/": true
+      "web/": true,
+      "blockchain/": true
     }
   },
   "extensions": {

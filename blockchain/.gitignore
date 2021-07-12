@@ -1,0 +1,10 @@
+data
+keys
+logs
+lib
+
+contracts/*/build/*
+!contracts/*/build/tvg
+contracts/*/build/tvg/*
+!contracts/*/build/tvg/tvg.abi
+!contracts/*/build/tvg/tvg.wasm
