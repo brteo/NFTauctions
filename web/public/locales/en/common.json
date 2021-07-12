@@ -10,6 +10,7 @@
 		"forgot password": "Forgot your password?",
 		"continue": "Continue",
 		"login": "Sign In",
-		"register": "Sign Up"
+		"register": "Sign Up",
+		"logout": "Logout"
 	}
 }

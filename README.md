@@ -47,6 +47,12 @@ npm i --legacy-peer-deps
 docker compose up -d
 ```
 
+4. Seed Mongo DB in api folder
+
+```sh
+npm run seed
+```
+
 ## VScode
 
 Open the workspace in the folder roots

@@ -12,7 +12,7 @@ const { Header } = Layout;
 
 const HeaderComponent = props => {
 	const { t, i18n } = useTranslation();
-	const { user } = useContext(AppContext);
+	const { user, handleLogout } = useContext(AppContext);
 	const [showLogin, setShowLogin] = useState(false);
 
 	const changeLanguage = lang => i18n.changeLanguage(lang);
@@ -39,7 +39,12 @@ const HeaderComponent = props => {
 				<div className="access-box">
 					{process.env.NODE_ENV === 'development' && <APICheck />}
 					{user ? (
-						user.name || user.email
+						<>
+							{user.name || user.email}
+							<Button type="primary" onClick={() => handleLogout()}>
+								{t('login.logout')}
+							</Button>
+						</>
 					) : (
 						<Button type="primary" onClick={() => toggleLogin()}>
 							{t('login.btn')}

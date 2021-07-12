@@ -10,6 +10,7 @@
 		"forgot password": "Hai dimenticato la password?",
 		"continue": "Continua",
 		"login": "Accedi",
-		"register": "Registrati"
+		"register": "Registrati",
+		"logout": "Esci"
 	}
 }
