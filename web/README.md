@@ -35,8 +35,10 @@ DEV
 
 - [React.Memo](https://dmitripavlutin.com/use-react-memo-wisely/)
 - [useContext](https://it.reactjs.org/docs/hooks-reference.html#usecontext)
-- [React.StrictMode](https://it.reactjs.org/docs/strict-mode.html)
+- [React.StrictMode](https://it.reactjs.org/docs/strict-mode.html) (removed!)
+- [Suspence](- [React.StrictMode](https://it.reactjs.org/docs/strict-mode.html))
 - [Web Vitalis](https://create-react-app.dev/docs/measuring-performance/)
+- less, aria, ... accessibility
 
 ## References
 

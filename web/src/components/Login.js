@@ -47,7 +47,10 @@ const Login = props => {
 
 	const handleRegister = (email, password) =>
 		register(email, password)
-			.then(() => handleLogin(email, password))
+			.then(res => {
+				setUser(res.data);
+				handleClose();
+			})
 			.catch(err => err.globalHandler && err.globalHandler());
 
 	const handleSubmit = ({ email = '', password = '' }) => {
