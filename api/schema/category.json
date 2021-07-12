@@ -4,5 +4,11 @@
 		"name": { "type": "string" }
 	},
 	"required": ["name"],
-	"additionalProperties": false
+	"additionalProperties": false,
+	"errorMessage": {
+    "type": "Should be an object",
+    "required": {
+      "name": "Should have a string property 'name'"
+    }
+	}
 }

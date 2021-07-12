@@ -136,6 +136,17 @@ describe('Role: admin', () => {
 					done();
 				});
 		});
+
+		test('A empty category should not be added', done => {
+			agent
+				.post('/categories')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(406)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					done();
+				});
+		});
 	});
 
 	describe('PUT /categories', () => {
