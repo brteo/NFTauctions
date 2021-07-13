@@ -13,9 +13,9 @@
     "seed": "docker exec mongo /seed/init.sh"
   },
   "dependencies": {
-    "ajv": "^6.12.6",
+    "ajv": "^8.6.1",
+    "ajv-formats": "^2.1.0",
     "bcryptjs": "^2.4.3",
-    "better-ajv-errors": "^0.7.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",

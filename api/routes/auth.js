@@ -5,13 +5,13 @@ const { validator } = require('../middlewares/validator');
 
 const router = express.Router();
 
-router.post('/login', validator('auth'), login);
+router.post('/login', validator('loginAuth'), login);
 
 router.get('/check', isAuth, check);
 
-router.get('/email/:email', checkIfEmailExists);
+router.get('/email/:email?', validator({ params: 'emailAuth' }), checkIfEmailExists);
 
-router.post('/register', register);
+router.post('/register', validator('registerAuth'), register);
 
 router.get('/rt', isAuthRt, refreshToken);
 

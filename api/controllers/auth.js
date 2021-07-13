@@ -1,12 +1,10 @@
 const passport = require('passport');
 const User = require('../models/user');
-const { SendData, MissingCredentials, ServerError, NotFound, EmailAlreadyExists } = require('../helpers/response');
+const { SendData, ServerError, NotFound, EmailAlreadyExists } = require('../helpers/response');
 const { generateToken } = require('../helpers/auth');
 
-exports.login = (req, res, next) => {
-	if (!req.body.email || !req.body.password) return next(MissingCredentials());
-
-	return passport.authenticate('local', { session: false }, async (err, user) => {
+exports.login = (req, res, next) =>
+	passport.authenticate('local', { session: false }, async (err, user) => {
 		if (err) return next(err);
 
 		try {
@@ -17,7 +15,6 @@ exports.login = (req, res, next) => {
 			return next(ServerError(e));
 		}
 	})(req, res, next);
-};
 
 exports.check = (req, res, next) => {
 	next(SendData({ id: res.locals.user.id, message: 'Token is valid!' }));

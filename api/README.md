@@ -11,7 +11,7 @@ MongoDB at localhost:27017
 - [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html)
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
 - [mongoose](https://mongoosejs.com)
-- [ajv](https://ajv.js.org/)
+- [ajv](https://ajv.js.org/) [ajv-formats](https://github.com/ajv-validator/ajv-formats)
 - [jsonwebtoken](https://jwt.io)
 - [Passport](http://www.passportjs.org) passport-jwt passport-local
 - [uuid](https://www.npmjs.com/package/uuid)
@@ -172,6 +172,54 @@ schema.pre(['find'], function (next) {
 	if (!this.selected()) this.select(PUBLIC_FIELDS);
 	return next();
 });
+```
+
+## Schema validation
+
+The schema validation are saved like `js` in schema folder and loaded all when server startup.
+
+```js
+module.exports = {
+	auth: {
+		$id: 'auth',
+		type: 'object',
+		properties: {
+			email: { type: 'string', format: 'email' },
+			password: { type: 'string' }
+		},
+		additionalProperties: false
+	},
+	loginAuth: {
+		type: 'object',
+		allOf: [{ $ref: 'auth' }],
+		required: ['email', 'password']
+	},
+	emailAuth: {
+		type: 'object',
+		allOf: [{ $ref: 'auth' }],
+		required: ['email']
+	},
+	registerAuth: {
+		type: 'object',
+		allOf: [{ $ref: 'auth' }],
+		required: ['email', 'password']
+	}
+};
+```
+
+To valid req.body with schema name use a middleware inside routes:
+
+```js
+router.post('/login', validator('loginAuth'), login);
+```
+
+To valid req.params or more pass an object to middleware:
+
+- key = the source in express req
+- value = schema name
+
+```js
+router.get('/email/:email?', validator({ params: 'emailAuth' }), checkIfEmailExists);
 ```
 
 ## REST

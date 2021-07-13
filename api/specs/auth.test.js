@@ -37,7 +37,31 @@ describe('POST /auth/login', () => {
 			.post('/auth/login')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 300 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
+			});
+	});
+
+	test('Invalid email', async () => {
+		await seedUser();
+
+		return agent
+			.post('/auth/login')
+			.send({ email: 'wrong@email', password: 'wrongpwd' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 200, data: 'email' }));
+			});
+	});
+
+	test('Missing password', async () => {
+		await seedUser();
+
+		return agent
+			.post('/auth/login')
+			.send({ email: 'wrong@email.it' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
 			});
 	});
 
@@ -49,7 +73,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'wrong@email.it', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 301 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 300 }));
 			});
 	});
 
@@ -61,7 +85,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'test@meblabs.com', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 302 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 301 }));
 			});
 	});
 
@@ -73,7 +97,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(401)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 303 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 302 }));
 			});
 	});
 
@@ -85,7 +109,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 307 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 303 }));
 			});
 	});
 
@@ -124,7 +148,7 @@ describe('GET /auth/check', () => {
 			});
 	});
 
-	test('Check without token should be unauthorized', async () =>
+	test('Check without token should be Unauthorized', async () =>
 		agent
 			.get('/auth/check')
 			.expect(401)
@@ -132,7 +156,7 @@ describe('GET /auth/check', () => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 401 }));
 			}));
 
-	test('Check with invalid token should be unauthorized', async () => {
+	test('Check with invalid token should be Unauthorized', async () => {
 		const token = jwt.sign(
 			{
 				id: 1,
@@ -166,7 +190,7 @@ describe('GET /auth/email/:email', () => {
 			});
 	});
 
-	test('Check if email exist should be Not Found', async () =>
+	test('Check if email exist should be NotFound', async () =>
 		agent
 			.get('/auth/email/' + userInfo().email)
 			.expect(404)
@@ -174,7 +198,7 @@ describe('GET /auth/email/:email', () => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 			}));
 
-	test('Check if deleted users email exist should be Not Found', async () => {
+	test('Check if deleted users email exist should be NotFound', async () => {
 		await seedUser(true, true);
 
 		return agent
@@ -185,8 +209,21 @@ describe('GET /auth/email/:email', () => {
 			});
 	});
 
-	test.todo('Check without email should be ValidationError');
-	test.todo('Check with incorrect email should be IncorrectEmail');
+	test('Check without email should be NotFound', async () =>
+		agent
+			.get('/auth/email/')
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+			}));
+
+	test('Check with incorrect email should be ValidationError', async () =>
+		agent
+			.get('/auth/email/wrong@email')
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 200, data: 'email' }));
+			}));
 });
 
 describe('GET /auth/register', () => {
@@ -216,13 +253,35 @@ describe('GET /auth/register', () => {
 			.send({ email: 'test@meblabs.com', password: 'testtest' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 304 }));
 			});
 	});
 
-	test.todo('Register new user without email should be ValidationError');
-	test.todo('Register new user with incorrect email should be IncorrectEmail');
-	test.todo('Register new user without password should be ValidationError');
+	test('Register new user without email should be MissingRequiredParameter', async () =>
+		agent
+			.post('/auth/register')
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+			}));
+
+	test('Register new user without password should be MissingRequiredParameter', async () =>
+		agent
+			.post('/auth/register')
+			.send({ email: 'test@meblabs.com' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
+			}));
+
+	test('Register new user with incorrect email should be ValidationError', async () =>
+		agent
+			.post('/auth/register')
+			.send({ email: 'wrong@email', password: 'testtest' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 200, data: 'email' }));
+			}));
 });
 
 describe('GET /auth/rt', () => {
@@ -308,7 +367,7 @@ describe('GET /auth/rt', () => {
 			.get('/auth/rt')
 			.expect(401)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 310 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 307 }));
 			});
 	});
 
@@ -337,7 +396,7 @@ describe('GET /auth/rt', () => {
 				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
 			});
 
-		// get new auth by already userd refresh token
+		// get new auth by already used refresh token
 		const malwareAgent = supertest.agent(app);
 		await malwareAgent
 			.get('/auth/rt')
