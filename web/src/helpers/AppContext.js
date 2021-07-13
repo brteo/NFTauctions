@@ -16,7 +16,6 @@ connect.interceptors.response.use(
 			const originalRequest = error.config;
 			// if Unauthorized and route different from "auth", try to get new auth with refresh token and make again original request
 			if (!originalRequest.url.split('/').includes('auth')) {
-				console.log('Make request again: ', originalRequest);
 				return refreshToken().then(() => connect(originalRequest));
 			}
 			// if Refresh token is not valid logout and refresh page because here we can not change App Context
@@ -24,7 +23,6 @@ connect.interceptors.response.use(
 				(errorCode === 310 || errorCode === 306 || errorCode === 401) &&
 				JSON.parse(window.localStorage.getItem('user'))
 			) {
-				console.log('Refresh token not valid... logout: ');
 				window.localStorage.setItem('user', null);
 				return logout()
 					.then(window.location.replace(window.location.origin))
