@@ -171,7 +171,7 @@ describe('Role: admin', () => {
 				.send(wrongSchemaAuction)
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: 'name' }));
 					done();
 				});
 		});
@@ -227,7 +227,7 @@ describe('Role: admin', () => {
 				.send({ name: 'Auction changed' })
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: 'name' }));
 					done();
 				});
 		});

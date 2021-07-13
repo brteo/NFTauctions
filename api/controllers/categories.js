@@ -1,7 +1,7 @@
 const Category = require('../models/category');
 const Auction = require('../models/auction');
 
-const { ServerError, NotFound, SendData, IncorrectParameter } = require('../helpers/response');
+const { ServerError, NotFound, SendData, NotAcceptable } = require('../helpers/response');
 
 /* Get all categories */
 exports.get = (req, res, next) => {
@@ -49,7 +49,7 @@ exports.update = (req, res, next) => {
 					});
 				});
 			} else {
-				next(IncorrectParameter());
+				next(NotAcceptable());
 			}
 		}
 	});
@@ -67,7 +67,7 @@ exports.delete = (req, res, next) => {
 						else next(SendData({ message: 'Category deleted sucessfully!' }));
 					});
 				} else {
-					next(IncorrectParameter());
+					next(NotAcceptable());
 				}
 			});
 		}

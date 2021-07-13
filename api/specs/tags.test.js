@@ -158,7 +158,7 @@ describe('Role: admin', () => {
 				.send(wrongSchemaTag)
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'name' }));
 					done();
 				});
 		});
@@ -218,7 +218,7 @@ describe('Role: admin', () => {
 				.send({ title: 'tag changed' })
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'name' }));
 					done();
 				});
 		});
@@ -261,9 +261,9 @@ describe('Role: admin', () => {
 			return agent
 				.delete('/tags/' + tag.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(400)
+				.expect(406)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 100 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
 				});
 		});
 
