@@ -156,9 +156,9 @@ describe('Role: admin', () => {
 				.post('/tags')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(wrongSchemaTag)
-				.expect(406)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
 					done();
 				});
 		});
@@ -216,9 +216,9 @@ describe('Role: admin', () => {
 				.put('/tags/' + tag.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ title: 'tag changed' })
-				.expect(406)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
 					done();
 				});
 		});

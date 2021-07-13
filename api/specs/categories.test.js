@@ -149,9 +149,20 @@ describe('Role: admin', () => {
 				.post('/categories')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(wrongSchemaCategory)
-				.expect(406)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
+					done();
+				});
+		});
+
+		test('A empty category should not be added', done => {
+			agent
+				.post('/categories')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
 					done();
 				});
 		});
@@ -208,9 +219,9 @@ describe('Role: admin', () => {
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ title: 'category changed' })
-				.expect(406)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201 }));
 					done();
 				});
 		});

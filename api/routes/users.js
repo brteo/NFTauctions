@@ -11,14 +11,14 @@ router
 	// get
 	.get(isAuth, rbac('users', 'read:any'), controller.get)
 	// add
-	.post(isAuth, rbac('users', 'create:any'), validator('user'), controller.add);
+	.post(isAuth, rbac('users', 'create:any'), validator('addUser'), controller.add);
 
 router
 	.route('/:id')
 	// get by id
 	.get(isAuth, rbac('users', 'read'), controller.getById)
 	// put
-	.put(isAuth, rbac('users', 'update'), validator('user-update'), controller.update)
+	.put(isAuth, rbac('users', 'update'), validator('user'), controller.update)
 	// delete
 	.delete(isAuth, rbac('users', 'delete'), controller.delete);
 

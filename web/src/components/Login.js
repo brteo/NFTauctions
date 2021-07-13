@@ -38,7 +38,7 @@ const Login = props => {
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
-				if (errorCode === 302) {
+				if (errorCode === 301) {
 					return setPwdError(t('core:errors.' + errorCode));
 				}
 
