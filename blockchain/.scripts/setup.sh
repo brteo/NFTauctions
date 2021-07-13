@@ -1,5 +1,7 @@
 #!/bin/bash
-cp -R /usr/local/eosio.cdt/include/* /eosio.cdt/
+
+# cp -R /usr/local/eosio.cdt/include/* /eosio.cdt/
+cp -R /usr/opt/eosio.cdt/1.8.0/include/* /eosio.cdt/
 
 pkill nodeos
 pkill keosd
