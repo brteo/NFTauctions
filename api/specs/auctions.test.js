@@ -169,9 +169,9 @@ describe('Role: admin', () => {
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(wrongSchemaAuction)
-				.expect(406)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
 					done();
 				});
 		});
@@ -225,9 +225,9 @@ describe('Role: admin', () => {
 				.patch('/auctions/' + auction.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'Auction changed' })
-				.expect(406)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 202 }));
 					done();
 				});
 		});

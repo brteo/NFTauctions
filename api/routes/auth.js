@@ -1,16 +1,17 @@
 const express = require('express');
 const { login, check, checkIfEmailExists, register, refreshToken, logout } = require('../controllers/auth');
 const { isAuth, isAuthRt, isAuthRtlogout } = require('../middlewares/isAuth');
+const { validator } = require('../middlewares/validator');
 
 const router = express.Router();
 
-router.post('/login', login);
+router.post('/login', validator('loginAuth'), login);
 
 router.get('/check', isAuth, check);
 
-router.get('/email/:email', checkIfEmailExists);
+router.get('/email/:email?', validator({ params: 'emailAuth' }), checkIfEmailExists);
 
-router.post('/register', register);
+router.post('/register', validator('registerAuth'), register);
 
 router.get('/rt', isAuthRt, refreshToken);
 
