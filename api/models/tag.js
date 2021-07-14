@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const publicFields = require('../helpers/publicFields');
 
 const schema = new mongoose.Schema(
 	{
@@ -14,18 +15,6 @@ const schema = new mongoose.Schema(
 	}
 );
 
-const PUBLIC_FIELDS = ['_id', 'name'];
-
-schema.methods.getPublicFields = function () {
-	return PUBLIC_FIELDS.reduce((acc, item) => {
-		acc[item] = this[item];
-		return acc;
-	}, {});
-};
-
-schema.pre(['find'], function (next) {
-	if (!this.selected()) this.select(PUBLIC_FIELDS);
-	return next();
-});
+schema.plugin(publicFields, ['_id', 'name']);
 
 module.exports = mongoose.model('Tag', schema);

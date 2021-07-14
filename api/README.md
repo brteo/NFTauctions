@@ -156,21 +156,26 @@ To soft delete a resource:
 user.softdelete();
 ```
 
-## Public fields inside Model Schema
+## Public fields Schema plugin
 
 ```js
-const PUBLIC_FIELDS = ['_id', 'email', 'name', 'lastname', 'birthdate', 'role'];
+const publicFields = require('../helpers/publicFields');
+const { Schema } = mongoose;
 
-schema.methods.getPublicFields = function () {
-	return PUBLIC_FIELDS.reduce((acc, item) => {
-		acc[item] = this[item];
-		return acc;
-	}, {});
-};
+const schema = Schema({
+	// schema
+});
+schema.plugin(publicFields, ['_id', 'email', 'name', 'lastname', 'birthdate', 'role']);
+```
 
-schema.pre(['find'], function (next) {
-	if (!this.selected()) this.select(PUBLIC_FIELDS);
-	return next();
+All `find`queries without specific select automatically use publicFields.
+
+When you load all field for some reason, you can response with method `getPublicFields`:
+
+```js
+User.findById(req.params.id, (err, user) => {
+	if (err || !user) return next(NotFound());
+	return next(SendData(user.getPublicFields()));
 });
 ```
 
