@@ -1,5 +1,8 @@
 #!/bin/bash
 
+ROOT_DIR="/opt"
+CONTRACTS_DIR="$ROOT_DIR/eosio/bin/contracts"
+
 function post_preactivate {
 	curl -X POST http://127.0.0.1:8888/v1/producer/schedule_protocol_feature_activations -d '{"protocol_features_to_activate": ["0ec7e080177b2c02b278d5088611686b49d739925a92d9bfcacd7fc6b74053bd"]}'
 }
@@ -45,6 +48,7 @@ fi
 if [[ $FIRST_INSTALL == 1 ]]; then
 	cleos wallet create -f /root/eosio-wallet/password.txt
 	cleos create key -f /root/eosio-wallet/key.txt
+	cleos create key -f /root/eosio-wallet/eosio_key.txt
 fi
 
 source /root/env.sh
@@ -77,12 +81,26 @@ done
 sleep 1
 
 if [[ $FIRST_INSTALL == 1 ]]; then
-	cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3
+	cleos wallet import --private-key 5KQwrPbwdL6PhXujxW37FSSQZ1JiwsST4cqQzDeyXtP79zkvFD3 # eosio default dev key
+	cleos wallet import --private-key $EOSIO_PRIVATE_KEY
 	cleos wallet import --private-key $PRIVATE_KEY
 
+	cleos create account eosio eosio.token $EOSIO_PUBLIC_KEY >>/root/setup_error
+	cleos create account eosio eosio.msig $EOSIO_PUBLIC_KEY >>/root/setup_error
+
+	cleos set contract eosio.token /contracts/eosio.token
+	cleos set contract eosio.msig /contracts/eosio.msig
+
+	cleos push action eosio.token create '[ "eosio", "10000000000.0000 EOS" ]' -p eosio.token@active
+	cleos push action eosio.token issue '[ "eosio", "1000000000.0000 EOS", "memo" ]' -p eosio@active
+
 	cleos create account eosio $ACCOUNT $PUBLIC_KEY >>/root/setup_error
+	cleos push action eosio.token transfer '[ "eosio", "mebtradingvg", "25000.0000 EOS", "memo" ]' -p eosio@active
 
 	post_preactivate
+	sleep 1s
+
+	cleos set contract eosio /contracts/eosio.boot
 
 	sleep 1s
 	activate_feature "299dcb6af692324b899b39f16d5a530a33062804e41f09dc97e9f156b4476707"
@@ -101,7 +119,7 @@ if [[ $FIRST_INSTALL == 1 ]]; then
 	activate_feature "bf61537fd21c61a60e542a5d66c3f6a78da0589336868307f94a82bccea84e88"
 	activate_feature "5443fcf88330c586bc0e5f3dee10e7f63c76c00249c87fe4fbf7f38c082006b4"
 
-	post_preactivate
+	cleos set contract eosio /contracts/eosio.bios
 
 fi
 
