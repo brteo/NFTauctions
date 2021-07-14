@@ -1,13 +1,76 @@
-cleos set contract ACCOUNT "contract"
+# BLOCKCHAIN
 
-struct NFT {owner,url}
-TABELLA NFTs
+Version Eosio 2.1 + CDT 1.8.0
 
-cleos push action ACCOUNT crea_NFT {author,owner,url}
+Eosio API endpoint [http://localhost:8888](http://localhost:8888)
 
-cleos push action ACCOUNT transfer_NFT {owner,to_new_owner}
+## MANAGE
 
-event eosio.token ontransfer {from,ACCOUNT,qty,{astaID}}
+On container start the blockchain will be initialized and started.
+
+#### CHECK STATUS
+
+```bash
+tail -f blockchain/logs/nodeos.log
+```
+
+You should see a new produced block every 0.5 seconds like this
+
+```
+info  2021-07-14T07:51:44.901 nodeos    producer_plugin.cpp:2333      produce_block        ] Produced block 2364cbb25d04ee7e... #2514 @ 2021-07-14T07:51:45.000 signed by eosio [trxs: 0, lib: 2513, confirmed: 0]
+```
+
+#### BLOCKCHAIN DAEMON
+
+```bash
+./nodeos.sh # start / restart
+./nodeos.sh stop # stop
+./nodeos.sh replay # replay blocks to restore the state
+./nodeos.sh reset # remove all data and restart
+```
+
+To manually delete all data: stop the container and empty `data`, `keys` and `logs` folders
+
+#### CLEOS
+
+Launch cleos commands - wallet already unlocked
+
+```bash
+./cleos.sh arg1 arg2 ...
+```
+
+Check [cleos command list](https://developers.eos.io/manuals/eos/latest/cleos/command-reference/index)
+
+#### CONTAINER SHELL
+
+Log in container shell with preloaded keys as env variables and unlocked wallet
+
+```bash
+docker exec -it blockchain bash -c "source /root/env.sh;bash"
+```
+
+<br />
+
+## BUILD AND DEPLOY
+
+`CTRL` + `SHIFT` + `B` to build and deploy the **default** contract. <br/>
+Default contract and account are set in `.env` file to `tvg` and `mebtradingvg`.
+Reset the blockchain to apply changes to account or contract name.
+
+<br />
+
+## KEYS & ACCOUNTS
+
+Preconfigured accounts on first installation:
+
+- eosio
+- eosio.token
+- eosio.msig
+- mebtradingvg
+
+Check folder `keys` for `wallet password` and `public & private` keys created for mebtradingvg and eosio.\* accounts.
+
+<br />
 
 # TODO
 
