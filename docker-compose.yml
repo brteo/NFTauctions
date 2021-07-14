@@ -38,3 +38,18 @@ services:
     working_dir: /data
     command: npm start
     stdin_open: true
+
+  blockchain:
+    # image: meboo/eosio-dev:2.1.0-CDT-1.8.0
+    build: ./blockchain
+    container_name: blockchain
+    env_file: ./blockchain/.env
+    ports:
+      - "8888:8888"
+
+    volumes:
+      - ./blockchain/logs:/data
+      - ./blockchain/data:/root/.local/share/eosio/nodeos/data
+      - ./blockchain/keys:/root/eosio-wallet
+      - ./blockchain/contracts:/contracts
+      - ./blockchain/lib:/eosio.cdt
