@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import React, { useState, useEffect } from 'react';
 import { Card, Col, Row } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -8,42 +9,43 @@ const { Meta } = Card;
 const Auction = props => {
 	const { t } = useTranslation();
 
-	const [rows, setRows] = useState();
+	const [rows, setRows] = useState([]);
+
+	const r = [];
+
+	const getNft = (nftId, auction, k) => {
+		getNftById(nftId)
+			.then(response => {
+				const nft = response.data;
+
+				const elem = (
+					<Col span={6} key={k}>
+						<Card title={nft.title} hoverable cover={<img alt="alt" src={nft.url} />}>
+							<Meta title={nft.title} description={auction.description} />
+						</Card>
+					</Col>
+				);
+
+				setRows(oldRows => [...oldRows, elem]);
+			})
+			.catch(err => {
+				console.log(err);
+			});
+	};
 
 	const getAuctions = () => {
 		listAuctions()
-			.then(res => {
+			.then(async res => {
 				const auctions = res.data;
+				let i = 0;
 
-				const r = [];
+				auctions.forEach(async auction => {
+					console.log(auction);
 
-				for (let i = 0; i < auctions.length; i += 1) {
-					const auction = auctions[i];
+					getNft(auction.nft, auction, i);
 
-					const getNft = nftId => {
-						getNftById(nftId)
-							.then(response => {
-								console.log(response.data);
-							})
-							.catch(err => {
-								console.log(err);
-							});
-					};
-
-					getNft(auction.nft);
-
-					r.push(
-						<Col span={6} key={i}>
-							<Card
-								hoverable
-								cover={<img alt="alt" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-							>
-								<Meta title={auction.description} description="www.instagram.com" />
-							</Card>
-						</Col>
-					);
-				}
-				setRows(r);
+					i += 1;
+				});
 			})
 			.catch(err => {
 				const errorCode = err;
