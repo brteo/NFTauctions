@@ -17,6 +17,12 @@
 		"update:any": ["*"],
 		"delete:any": ["*"]
 	},
+	"nfts": {
+		"create:any": ["*"],
+		"read:any": ["*"],
+		"update:any": ["*"],
+		"delete:any": ["*"]
+	},
 	"auctions": {
 		"create:any": ["*"],
 		"read:any": ["*"],
