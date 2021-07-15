@@ -1,5 +1,5 @@
 const Tag = require('../models/tag');
-const Auction = require('../models/auction');
+const Nft = require('../models/nft');
 
 const { ServerError, NotFound, SendData, NotAcceptable } = require('../helpers/response');
 
@@ -37,14 +37,10 @@ exports.update = (req, res, next) => {
 			const newName = req.body.name;
 
 			if (originalName !== newName) {
-				Auction.find({ 'tags.name': originalName }, (_err, auctions) => {
-					if (auctions.length !== 0) {
-						auctions.forEach(a => {
-							Auction.updateOne(
-								{ 'tags.name': originalName },
-								{ $set: { 'tags.$.name': newName } },
-								(e, _auction) => {}
-							);
+				Nft.find({ 'tags.name': originalName }, (_err, nfts) => {
+					if (nfts.length !== 0) {
+						nfts.forEach(a => {
+							Nft.updateOne({ 'tags.name': originalName }, { $set: { 'tags.$.name': newName } }, (e, _nft) => {});
 						});
 					}
 					Tag.findByIdAndUpdate(req.params.id, req.body, { new: true }, (e, _tag) => {
@@ -69,8 +65,8 @@ exports.delete = (req, res, next) => {
 	Tag.findById(req.params.id, (err, tag) => {
 		if (err || !tag) next(NotFound());
 		else {
-			Auction.find({ 'tags.name': tag.name }, (_err, auctions) => {
-				if (auctions.length === 0) {
+			Nft.find({ 'tags.name': tag.name }, (_err, nfts) => {
+				if (nfts.length === 0) {
 					Tag.findByIdAndDelete(req.params.id, (e, _tag) => {
 						if (err || !_tag) next(NotFound());
 						else next(SendData({ message: 'Tag deleted sucessfully!' }));

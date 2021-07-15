@@ -12,17 +12,8 @@ const { genereteAuthToken } = require('../helpers/auth');
 const agent = supertest.agent(app);
 
 const newAuction = {
-	title: 'Auction title',
-	description: 'Auction description',
-	category: {
-		name: 'newCategory'
-	},
-	tags: [
-		{
-			name: 'newTag'
-		}
-	],
-	image: 'path/to/image'
+	basePrice: 100,
+	deadlineTimestamp: 1815585148
 };
 
 const wrongSchemaAuction = {
@@ -34,6 +25,7 @@ let adminToken;
 let user;
 let userToken;
 let auction;
+let nft;
 
 beforeAll(async () => await db.connect());
 beforeEach(async () => {
@@ -100,7 +92,6 @@ describe('Role: admin', () => {
 		test('Get all and should contains an auction', done => {
 			agent
 				.get('/auctions')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(1);
@@ -111,7 +102,6 @@ describe('Role: admin', () => {
 		test('Get any specific auctionId', done => {
 			agent
 				.get('/auctions/' + auction.id)
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ title: 'Auction title' }));
@@ -122,7 +112,6 @@ describe('Role: admin', () => {
 		test('Get wrong auctionId should be not found', done => {
 			agent
 				.get('/auctions/1234')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -141,7 +130,6 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/auctions/' + auction.id)
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -286,7 +274,6 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/auctions/' + auction.id)
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -304,7 +291,6 @@ describe('Role: admin', () => {
 
 			return agent
 				.get('/auctions')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(0);
@@ -322,7 +308,6 @@ describe('Role: user', () => {
 		test('Get all auctions should be Permitted', done => {
 			agent
 				.get('/auctions')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(1);
@@ -333,7 +318,6 @@ describe('Role: user', () => {
 		test('Get a auctionId should be done', done => {
 			agent
 				.get('/auctions/' + auction.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ title: 'Auction title' }));

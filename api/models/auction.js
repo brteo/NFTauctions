@@ -6,40 +6,17 @@ const { Schema } = mongoose;
 
 const schema = Schema(
 	{
-		title: {
-			type: String,
-			index: true,
-			maxlength: 128,
+		basePrice: {
+			type: Number,
 			required: true
 		},
-		description: {
-			type: String,
-			maxlength: 128,
+		deadlineTimestamp: {
+			type: Date,
 			required: true
 		},
-		category: {
-			name: {
-				type: String,
-				maxlength: 128,
-				required: true
-			}
-		},
-		tags: [
-			{
-				name: {
-					type: String,
-					maxlength: 128,
-					required: true
-				}
-			}
-		],
-		image: {
-			type: String,
-			required: true
-		},
-		owner: {
+		nft: {
 			type: mongoose.Schema.Types.ObjectId,
-			ref: 'User',
+			ref: 'Nft',
 			required: true
 		},
 		active: {
@@ -52,6 +29,6 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(publicFields, ['_id', 'title', 'description', 'category', 'tags', 'image', 'owner']);
+schema.plugin(publicFields, ['_id', 'basePrice', 'deadlineTimestamp', 'nft']);
 
 module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);

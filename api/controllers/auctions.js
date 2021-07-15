@@ -1,6 +1,5 @@
 const Auction = require('../models/auction');
-const Category = require('../models/category');
-const Tag = require('../models/tag');
+const Nft = require('../models/nft');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
 
@@ -25,22 +24,11 @@ exports.add = (req, res, next) => {
 	const auction = new Auction(req.body);
 	auction.owner = res.locals.user.id;
 
-	Category.find({ name: auction.category.name }, (err, categories) => {
-		if (err || !categories || categories.length === 0) {
-			next(CustomError('Category not found', 404, {}, 404));
+	Nft.find({ name: auction.nft }, (err, nfts) => {
+		if (err || !nfts || nfts.length === 0) {
+			next(CustomError('Nft not found', 404, {}, 404));
 		}
 	});
-
-	const tagNames = auction.tags.map(e => e.name);
-
-	Tag.find()
-		.where('name')
-		.in(tagNames)
-		.exec((err, tags) => {
-			if (err || !tags || tags.length === 0) {
-				next(CustomError('Tag not found', 404, {}, 404));
-			}
-		});
 
 	auction.save((err, doc) => {
 		if (err) next(err);

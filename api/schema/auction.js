@@ -3,20 +3,15 @@ module.exports = {
 		$id: 'auction',
 		type: 'object',
 		properties: {
-			title: { type: 'string' },
-			description: { type: 'string' },
-			category: { $ref: 'category' },
-			tags: {
-				type: 'array',
-				items: { $ref: 'tag' }
-			},
-			image: { type: 'string' }
+			basePrice: { type: 'float64', minimum: 1.0 },
+			deadlineTimestamp: { type: 'timestamp' },
+			nft: { type: 'string' }
 		},
 		additionalProperties: false
 	},
 	addAuction: {
 		type: 'object',
 		allOf: [{ $ref: 'auction' }],
-		required: ['title', 'description', 'category', 'tags', 'image']
+		required: ['basePrice', 'deadlineTimestamp', 'nft']
 	}
 };

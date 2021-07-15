@@ -18,9 +18,9 @@ const wrongSchemaCategory = {
 	title: 'File'
 };
 
-const newAuction = {
-	title: 'Auction title',
-	description: 'Auction description',
+const newNft = {
+	title: 'Nft title',
+	description: 'Nft description',
 	category: {
 		name: 'category'
 	},
@@ -29,7 +29,7 @@ const newAuction = {
 			name: 'tag'
 		}
 	],
-	image: 'path/to/image'
+	url: 'path/to/image'
 };
 
 let admin;
@@ -193,8 +193,8 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update should be done in every auction that contains category', async () => {
-			await agent.post('/auctions').set('Cookie', `TvgAccessToken=${adminToken}`).send(newAuction).expect(201);
+		test('Update should be done in every nft that contains category', async () => {
+			await agent.post('/nfts').set('Cookie', `TvgAccessToken=${adminToken}`).send(newNft).expect(201);
 
 			await agent
 				.put('/categories/' + category.id)
@@ -206,7 +206,7 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.get('/auctions')
+				.get('/nfts')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
@@ -258,8 +258,8 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Delete should not be done if category exist in an auction', async () => {
-			await agent.post('/auctions').set('Cookie', `TvgAccessToken=${adminToken}`).send(newAuction).expect(201);
+		test('Delete should not be done if category exist in a nft', async () => {
+			await agent.post('/nfts').set('Cookie', `TvgAccessToken=${adminToken}`).send(newNft).expect(201);
 
 			return agent
 				.delete('/categories/' + category.id)
