@@ -7,8 +7,9 @@ const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../
 /* Get all nfts */
 exports.get = (req, res, next) => {
 	Nft.find({}, (err, nfts) => {
-		if (err) next(ServerError());
-		else next(SendData(nfts));
+		if (err) return next(ServerError());
+
+		return next(SendData(nfts));
 	});
 };
 
