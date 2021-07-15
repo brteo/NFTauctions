@@ -34,6 +34,7 @@ let adminToken;
 let user;
 let userToken;
 let nft;
+let soldNft;
 
 beforeAll(async () => await db.connect());
 beforeEach(async () => {
@@ -90,6 +91,22 @@ beforeEach(async () => {
 		author: admin.id,
 		owner: admin.id
 	}).save();
+
+	soldNft = await new Nft({
+		title: 'Nft 2 title',
+		description: 'Nft 2 description',
+		category: {
+			name: 'category'
+		},
+		tags: [
+			{
+				name: 'tag'
+			}
+		],
+		url: 'path/to/image',
+		author: admin.id,
+		owner: user.id
+	}).save();
 });
 afterAll(async () => await db.close());
 
@@ -98,18 +115,18 @@ afterAll(async () => await db.close());
  */
 describe('Role: admin', () => {
 	describe('GET /nfts', () => {
-		test('Get all and should contains an nft', done => {
+		test('Get all', done => {
 			agent
 				.get('/nfts')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body.length).toBe(1);
+					expect(res.body.length).toBe(2);
 					done();
 				});
 		});
 
-		test('Get any specific nftId', done => {
+		test('Get Nft by Id', done => {
 			agent
 				.get('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -120,7 +137,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong nftId should be not found', done => {
+		test('Get wrong NftId should not be found', done => {
 			agent
 				.get('/nfts/123456789000')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -131,7 +148,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get deleted nft should be not found', async () => {
+		test('Get deleted nft should not be found', async () => {
 			await agent
 				.delete('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -233,7 +250,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong nftId should be not found', done => {
+		test('Update wrong NftId should be not found', done => {
 			agent
 				.patch('/nfts/123456789000')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -266,17 +283,7 @@ describe('Role: admin', () => {
 	});
 
 	describe('DELETE /nfts', () => {
-		test('Nft data should be deleted', async () => {
-			await agent
-				.delete('/nfts/' + nft.id)
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(200)
-				.then(res => {
-					expect(res.body.message).toBe('Nft deleted sucessfully!');
-				});
-		});
-
-		test('Any nfts should be deleted', async () => {
+		test('Nft unsold should be deleted', async () => {
 			await agent
 				.delete('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -285,22 +292,12 @@ describe('Role: admin', () => {
 					expect(res.body.message).toBe('Nft deleted sucessfully!');
 				});
 
-			return agent
+			await agent
 				.get('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
-				});
-		});
-
-		test('Soft deleted: after delete nft with GET does not return', async () => {
-			await agent
-				.delete('/nfts/' + nft.id)
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(200)
-				.then(res => {
-					expect(res.body.message).toBe('Nft deleted sucessfully!');
 				});
 
 			return agent
@@ -308,7 +305,18 @@ describe('Role: admin', () => {
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body.length).toBe(0);
+					expect(res.body.length).toBe(1);
+				});
+		});
+
+		test('Delete sold nfts should be Forbidden', done => {
+			agent
+				.delete('/nfts/' + soldNft.id)
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(403)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
+					done();
 				});
 		});
 	});
@@ -326,7 +334,7 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body.length).toBe(1);
+					expect(res.body.length).toBe(2);
 					done();
 				});
 		});
