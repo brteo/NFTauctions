@@ -72,6 +72,13 @@ Check folder `keys` for `wallet password` and `public & private` keys created fo
 
 <br />
 
+## LINKS
+
+- https://github.com/EOSIO/eosio.cdt - cdt api & examples
+- https://developers.eos.io/welcome/latest/tutorials/bios-boot-sequence - general blockchain setup
+- https://github.com/EOSIO/return-values-example-app - action return value
+- https://github.com/EOSIO/eos/issues/4407 - multi signature
+
 # TODO
 
 - Integrazione wallet per fare login oppure login e poi collegamento al wallet
