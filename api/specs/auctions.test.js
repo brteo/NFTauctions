@@ -6,14 +6,16 @@ const User = require('../models/user');
 const Auction = require('../models/auction');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
+const Nft = require('../models/nft');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
 const agent = supertest.agent(app);
 
 const newAuction = {
+	description: 'newDescription',
 	basePrice: 100,
-	deadlineTimestamp: 1815585148
+	deadlineTimestamp: '2029-07-02 00:00:00'
 };
 
 const wrongSchemaAuction = {
@@ -67,9 +69,9 @@ beforeEach(async () => {
 		name: 'newTag'
 	}).save();
 
-	auction = await new Auction({
-		title: 'Auction title',
-		description: 'Auction description',
+	nft = await new Nft({
+		title: 'Nft title',
+		description: 'Nft description',
 		category: {
 			name: 'category'
 		},
@@ -78,8 +80,16 @@ beforeEach(async () => {
 				name: 'tag'
 			}
 		],
-		image: 'path/to/image',
+		url: 'path/to/url',
+		author: admin.id,
 		owner: admin.id
+	}).save();
+
+	auction = await new Auction({
+		description: 'Description',
+		basePrice: 100,
+		deadlineTimestamp: '2029-07-02 00:00:00',
+		nft: nft.id
 	}).save();
 });
 afterAll(async () => await db.close());
@@ -104,12 +114,12 @@ describe('Role: admin', () => {
 				.get('/auctions/' + auction.id)
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ title: 'Auction title' }));
+					expect(res.body).toEqual(expect.objectContaining({ basePrice: 100 }));
 					done();
 				});
 		});
 
-		test('Get wrong auctionId should be not found', done => {
+		test('Get wrong auctionId should not be found', done => {
 			agent
 				.get('/auctions/1234')
 				.expect(404)
@@ -119,7 +129,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get deleted auction should be not found', async () => {
+		test('Get deleted auction should not be found', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -139,17 +149,18 @@ describe('Role: admin', () => {
 
 	describe('POST /auctions', () => {
 		test('A new auction should be added', done => {
+			newAuction.nft = String(nft.id);
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { category, tags } = res.body;
-					const { title, description, image } = newAuction;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, image }));
+					const { basePrice, description, deadlineTimestamp } = res.body;
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
 					done();
 				});
+			delete newAuction.nft;
 		});
 
 		test('A wrong auction should not be added', done => {
@@ -164,8 +175,8 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('An auction with inexistent category should not be added', done => {
-			newAuction.category.name = 'category inexistent';
+		test('An auction with inexistent nft should not be added', done => {
+			newAuction.nft = '60f104d76ebf6b19c8ac38b3';
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -173,25 +184,10 @@ describe('Role: admin', () => {
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
-					expect(res.body.message).toBe('Category not found');
+					expect(res.body.message).toBe('Nft not found');
 					done();
 				});
-			newAuction.category.name = 'newCategory';
-		});
-
-		test('An auction with inexistent tag should not be added', done => {
-			newAuction.tags[0].name = 'tag inexistent';
-			agent
-				.post('/auctions')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send(newAuction)
-				.expect(404)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
-					expect(res.body.message).toBe('Tag not found');
-					done();
-				});
-			newAuction.tags[0].name = 'newTag';
+			delete newAuction.nft;
 		});
 	});
 
@@ -200,10 +196,10 @@ describe('Role: admin', () => {
 			agent
 				.patch('/auctions/' + auction.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ title: 'Title changed' })
+				.send({ description: 'Description changed' })
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ title: 'Title changed' }));
+					expect(res.body).toEqual(expect.objectContaining({ description: 'Description changed' }));
 					done();
 				});
 		});
@@ -220,11 +216,11 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong auctionId should be not found', done => {
+		test('Update wrong auctionId should not be found', done => {
 			agent
 				.patch('/auctions/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ title: 'Title changed' })
+				.send({ description: 'Description changed' })
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -232,7 +228,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update deleted auction should be not found', async () => {
+		test('Update deleted auction should not be found', async () => {
 			await agent
 				.delete('/auctions/' + auction.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -320,7 +316,7 @@ describe('Role: user', () => {
 				.get('/auctions/' + auction.id)
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ title: 'Auction title' }));
+					expect(res.body).toEqual(expect.objectContaining({ description: 'Description' }));
 					done();
 				});
 		});
@@ -328,42 +324,59 @@ describe('Role: user', () => {
 
 	describe('POST /auctions', () => {
 		test('Add new auction should be Permitted', done => {
+			newAuction.nft = String(nft.id);
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { category, tags } = res.body;
-					const { title, description, image } = newAuction;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, image }));
+					const { basePrice, description, deadlineTimestamp } = res.body;
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
 					done();
 				});
+			delete newAuction.nft;
 		});
 	});
 
 	describe('PATCH /auctions', () => {
 		test('Update your own should be Permitted', async () => {
+			const newNft = await new Nft({
+				title: 'Nft title',
+				description: 'Nft description',
+				category: {
+					name: 'category'
+				},
+				tags: [
+					{
+						name: 'tag'
+					}
+				],
+				url: 'path/to/url',
+				author: user.id,
+				owner: user.id
+			}).save();
+
 			let id;
+			newAuction.nft = newNft.id;
 			await agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { _id, category, tags } = res.body;
+					const { _id, basePrice, description, deadlineTimestamp } = res.body;
 					id = _id;
-					const { title, description, image } = newAuction;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, image }));
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
 				});
 
 			return agent
 				.patch('/auctions/' + id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ title: 'Title changed' })
+				.send({ description: 'Description changed' })
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ title: 'Title changed' }));
+					expect(res.body).toEqual(expect.objectContaining({ description: 'Description changed' }));
 				});
 		});
 
@@ -371,7 +384,7 @@ describe('Role: user', () => {
 			agent
 				.patch('/auctions/' + auction.id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ title: 'Title changed' })
+				.send({ description: 'Description changed' })
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
@@ -382,17 +395,33 @@ describe('Role: user', () => {
 
 	describe('DELETE /auctions', () => {
 		test('Delete your own should be Permitted', async () => {
+			const newNft = await new Nft({
+				title: 'Nft title',
+				description: 'Nft description',
+				category: {
+					name: 'category'
+				},
+				tags: [
+					{
+						name: 'tag'
+					}
+				],
+				url: 'path/to/url',
+				author: user.id,
+				owner: user.id
+			}).save();
+
 			let id;
+			newAuction.nft = newNft.id;
 			await agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { _id, category, tags } = res.body;
+					const { _id, basePrice, description, deadlineTimestamp } = res.body;
 					id = _id;
-					const { title, description, image } = newAuction;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, image }));
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
 				});
 
 			return agent

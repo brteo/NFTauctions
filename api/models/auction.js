@@ -6,6 +6,10 @@ const { Schema } = mongoose;
 
 const schema = Schema(
 	{
+		description: {
+			type: String,
+			require: true
+		},
 		basePrice: {
 			type: Number,
 			required: true
@@ -29,6 +33,6 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(publicFields, ['_id', 'basePrice', 'deadlineTimestamp', 'nft']);
+schema.plugin(publicFields, ['_id', 'description', 'basePrice', 'deadlineTimestamp', 'nft']);
 
 module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);

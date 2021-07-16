@@ -11,7 +11,7 @@ router
 	// get all auctions
 	.get(controller.get)
 	// add new auction
-	.post(isAuth, rbac('auctions', 'create:any'), validator('addAuction'), controller.add);
+	.post(isAuth, rbac('auctions', 'create'), validator('addAuction'), controller.add);
 
 router
 	.route('/:id')

@@ -1,15 +1,8 @@
 [
 	{
-		"title": "Auction title",
 		"description": "Auction description",
-		"category": {
-			"name": "File"
-		},
-		"tags": [{
-			"name": "FILE"
-		}],
-		"image": "path/to/image",
-		"owner": "60e5ade3ae70fe0fcacadde7",
-		"active": true
+		"basePrice": 100,
+		"deadlineTimestamp": "2029-07-02 00:00:00",
+		"nft": ""
 	}
 ]
