@@ -8,7 +8,7 @@ module.exports = {
 			category: { $ref: 'category' },
 			tags: {
 				type: 'array',
-				items: { $ref: 'tag' }
+				items: { type: 'string' }
 			},
 			url: { type: 'string' }
 		},

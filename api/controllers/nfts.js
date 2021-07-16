@@ -3,6 +3,7 @@ const Category = require('../models/category');
 const Tag = require('../models/tag');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
+const eos = require('../helpers/eosjs');
 
 /* Get all nfts */
 exports.get = (req, res, next) => {
@@ -24,30 +25,69 @@ exports.getById = (req, res, next) => {
 };
 
 /* Add new nft */
-exports.add = (req, res, next) => {
+exports.create = async (req, res, next) => {
 	const nft = new Nft(req.body);
-	nft.author = res.locals.user.id;
-	nft.owner = res.locals.user.id;
+	const { account, id } = res.locals.user;
+	nft.author = id;
+	nft.owner = id;
 
-	Category.find({ name: nft.category.name }, (err, categories) => {
-		if (err || !categories || categories.length === 0) {
-			next(CustomError('Category not found', 404, {}, 404));
-		}
-	});
+	try {
+		const categories = await Category.find({ name: nft.category.name }).exec();
+		if (categories.length === 0) return next(CustomError('Category not found', 404, {}, 404));
+	} catch (err) {
+		return next(ServerError(err));
+	}
 
-	const tagNames = nft.tags.map(e => e.name);
-
-	Tag.find()
-		.where('name')
-		.in(tagNames)
-		.exec((err, tags) => {
-			if (err || !tags || tags.length === 0) {
-				next(CustomError('Tag not found', 404, {}, 404));
+	try {
+		const transactionResult = await eos.transact(
+			{
+				actions: [
+					{
+						account: 'mebtradingvg',
+						name: 'create',
+						authorization: [
+							{
+								actor: 'returnvalue',
+								permission: 'active'
+							}
+						],
+						data: {
+							data: {},
+							author: account,
+							owner: account
+						}
+					}
+				]
+			},
+			{
+				blocksBehind: 3,
+				expireSeconds: 30
 			}
-		});
+		);
+		nft.id = transactionResult.processed.action_traces[0].return_value_data;
+	} catch (e) {
+		if (e.json) {
+			console.log(e.json);
+		} else {
+			console.log(e + '');
+		}
 
-	nft.save((err, doc) => {
+		return next(ServerError());
+	}
+
+	return nft.save((err, doc) => {
 		if (err) return next(err);
+
+		/*
+		// AGGIUNGERE I TAG SUL DB
+		const tagNames = nft.tags; // .map(e => e.name);
+		try {
+			const tags = await Tag.find().where('name').in(tagNames).exec();
+			if (tags.length === 0) return next(CustomError('Tag not found', 404, {}, 404));
+		} catch (err) {
+			return next(ServerError(err));
+		}
+		*/
 
 		return next(SendData(nft.getPublicFields(), 201));
 	});

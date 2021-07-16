@@ -20,6 +20,13 @@ const schema = Schema(
 			type: String,
 			required: true
 		},
+		account: {
+			type: String,
+			maxlength: 12,
+			required: true,
+			lowercase: true,
+			trim: true
+		},
 		name: {
 			type: String,
 			maxlength: 128,

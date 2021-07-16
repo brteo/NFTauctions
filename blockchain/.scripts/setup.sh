@@ -46,9 +46,11 @@ else
 fi
 
 if [[ $FIRST_INSTALL == 1 ]]; then
-	cleos wallet create -f /root/eosio-wallet/password.txt
-	cleos create key -f /root/eosio-wallet/key.txt
-	cleos create key -f /root/eosio-wallet/eosio_key.txt
+	cleos wallet create -f /root/eosio-wallet/password.
+	if [ ! -f /keys/key.txt ]; then
+		cleos create key -f /keys/key.txt
+		cleos create key -f /keys/eosio_key.txt
+	fi
 fi
 
 source /root/env.sh

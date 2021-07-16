@@ -26,11 +26,9 @@ const schema = Schema(
 		},
 		tags: [
 			{
-				name: {
-					type: String,
-					maxlength: 128,
-					required: true
-				}
+				type: String,
+				maxlength: 30,
+				required: true
 			}
 		],
 		url: {
