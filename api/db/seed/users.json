@@ -1,7 +1,9 @@
 [
 	{
+		"id":"60f1a2e408c1b430d95aa632",
 		"email": "admin@meblabs.com",
 		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
+		"account": "mebadmin01",
 		"name": "Super",
 		"lastname": "Admin",
 		"role": "admin",
@@ -9,10 +11,23 @@
 		"active": true
 	},
 	{
-		"email": "user@meblabs.com",
+		"id":"60f1a2fcd13e099cbdf18853",
+		"email": "user1@meblabs.com",
 		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
+		"account": "mebuser01",
 		"name": "John",
 		"lastname": "Doe",
+		"role": "user",
+		"deleted": false,
+		"active": true
+	},
+	{
+		"id":"60f1a420eeca2d72beccd1a5",
+		"email": "user2@meblabs.com",
+		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
+		"account": "mebuser02",
+		"name": "Pinco",
+		"lastname": "Pallino",
 		"role": "user",
 		"deleted": false,
 		"active": true

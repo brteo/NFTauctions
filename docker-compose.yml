@@ -50,6 +50,7 @@ services:
     volumes:
       - ./blockchain/logs:/data
       - ./blockchain/data:/root/.local/share/eosio/nodeos/data
-      - ./blockchain/keys:/root/eosio-wallet
+      - ./blockchain/wallet:/root/eosio-wallet
+      - ./blockchain/keys:/keys
       - ./blockchain/contracts:/contracts
       - ./blockchain/lib:/eosio.cdt

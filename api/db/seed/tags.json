@@ -1,11 +1,14 @@
 [
 	{ 
-		"name" : "IMAGE"
+		"id" :"60f1a4006f959226fecb9ecb",
+		"name" : "dormita"
 	},
 	{ 
-		"name" : "FILE"
+		"id" :"60f1a406ae5c72a37ea564ad",
+		"name" : "paglia"
 	},
 	{ 
-		"name" : "DOCUMENT"
+		"id" :"60f1a40a93509d55a4daa1b4",
+		"name" : "figo"
 	}
 ]

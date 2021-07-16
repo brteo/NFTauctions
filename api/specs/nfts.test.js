@@ -6,6 +6,9 @@ const User = require('../models/user');
 const Nft = require('../models/nft');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
+const eos = require('../helpers/eosjs');
+
+jest.mock('../helpers/eosjs');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
@@ -17,11 +20,7 @@ const newNft = {
 	category: {
 		name: 'newCategory'
 	},
-	tags: [
-		{
-			name: 'newTag'
-		}
-	],
+	tags: ['newTag'],
 	url: 'path/to/image'
 };
 
@@ -43,6 +42,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
+		account: 'mebadmin01',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -53,6 +53,7 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
+		account: 'mebuser01',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -77,36 +78,33 @@ beforeEach(async () => {
 	}).save();
 
 	nft = await new Nft({
-		title: 'Nft title',
-		description: 'Nft description',
+		id: 1000005,
+		title: 'Nft 5 title',
+		description: 'Nft 5 description',
 		category: {
 			name: 'category'
 		},
-		tags: [
-			{
-				name: 'tag'
-			}
-		],
+		tags: ['tag'],
 		url: 'path/to/image',
 		author: admin.id,
 		owner: admin.id
 	}).save();
 
 	soldNft = await new Nft({
-		title: 'Nft 2 title',
-		description: 'Nft 2 description',
+		id: 1000006,
+		title: 'Nft 6 title',
+		description: 'Nft 6 description',
 		category: {
 			name: 'category'
 		},
-		tags: [
-			{
-				name: 'tag'
-			}
-		],
+		tags: ['tag'],
 		url: 'path/to/image',
 		author: admin.id,
 		owner: user.id
 	}).save();
+});
+afterEach(() => {
+	jest.clearAllMocks();
 });
 afterAll(async () => await db.close());
 
@@ -132,7 +130,7 @@ describe('Role: admin', () => {
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ title: 'Nft title' }));
+					expect(res.body).toEqual(expect.objectContaining({ title: 'Nft 5 title' }));
 					done();
 				});
 		});
@@ -168,6 +166,12 @@ describe('Role: admin', () => {
 	});
 
 	describe('POST /nfts', () => {
+		eos.transact.mockResolvedValue({
+			processed: {
+				action_traces: [{ return_value_data: 1000006 }]
+			}
+		});
+
 		test('A new nft should be added', done => {
 			agent
 				.post('/nfts')
@@ -178,6 +182,7 @@ describe('Role: admin', () => {
 					const { category, tags } = res.body;
 					const { title, description, url } = newNft;
 					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
+					expect(eos.transact.mock.calls.length).toBe(1);
 					done();
 				});
 		});
@@ -190,6 +195,7 @@ describe('Role: admin', () => {
 				.expect(400)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: 'name' }));
+					expect(eos.transact.mock.calls.length).toBe(0);
 					done();
 				});
 		});
@@ -204,24 +210,10 @@ describe('Role: admin', () => {
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
 					expect(res.body.message).toBe('Category not found');
+					expect(eos.transact.mock.calls.length).toBe(0);
 					done();
 				});
 			newNft.category.name = 'newCategory';
-		});
-
-		test('An nft with inexistent tag should not be added', done => {
-			newNft.tags[0].name = 'tag inexistent';
-			agent
-				.post('/nfts')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send(newNft)
-				.expect(404)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
-					expect(res.body.message).toBe('Tag not found');
-					done();
-				});
-			newNft.tags[0].name = 'newTag';
 		});
 	});
 
@@ -345,13 +337,18 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ title: 'Nft title' }));
+					expect(res.body).toEqual(expect.objectContaining({ title: 'Nft 5 title' }));
 					done();
 				});
 		});
 	});
 
 	describe('POST /nfts', () => {
+		eos.transact.mockResolvedValue({
+			processed: {
+				action_traces: [{ return_value_data: 1000006 }]
+			}
+		});
 		test('Add new nft should be Permitted', done => {
 			agent
 				.post('/nfts')
@@ -362,6 +359,7 @@ describe('Role: user', () => {
 					const { category, tags } = res.body;
 					const { title, description, url } = newNft;
 					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
+					expect(eos.transact.mock.calls.length).toBe(1);
 					done();
 				});
 		});
