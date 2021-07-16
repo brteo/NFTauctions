@@ -44,3 +44,5 @@ export const authCheck = () => connect.get(`/auth/check`);
 export const refreshToken = () => connect.get('/auth/rt');
 
 export const logout = () => connect.get('/auth/logout');
+
+export const listAuctions = () => connect.get('/auctions');
