@@ -1,8 +1,8 @@
 const express = require('express');
 const controller = require('../controllers/auctions');
-const { validator } = require('../middlewares/validator');
-const rbac = require('../middlewares/rbac');
 const { isAuth } = require('../middlewares/isAuth');
+const rbac = require('../middlewares/rbac');
+const { validator } = require('../middlewares/validator');
 
 const router = express.Router();
 
