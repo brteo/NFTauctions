@@ -8,6 +8,8 @@ exports.get = (req, res, next) => {
 	Auction.find({}, (err, auctions) => {
 		if (err) return next(ServerError());
 
+		console.log(auctions);
+
 		return next(SendData(auctions));
 	});
 };
