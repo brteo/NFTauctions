@@ -83,6 +83,20 @@ Check folder `wallet` for `wallet password` and check folder `keys` for `public 
 
 Do **NOT** change or remove `key.txt`: this key is also set as `EOS_KEY` var in `api/.env` file.
 
+_NOTE_<br />
+A blockchain reset will **_preserve_** all key files
+
+<br />
+
+## SEED UPDATE
+
+To add seed data edit `.scripts/seed.sh` then:
+
+```bash
+docker compose up -d --build
+./nodeos.sh reset
+```
+
 <br />
 
 ## LINKS
@@ -91,6 +105,8 @@ Do **NOT** change or remove `key.txt`: this key is also set as `EOS_KEY` var in 
 - https://developers.eos.io/welcome/latest/tutorials/bios-boot-sequence - general blockchain setup
 - https://github.com/EOSIO/return-values-example-app - action return value
 - https://github.com/EOSIO/eos/issues/4407 - multi signature
+
+<br >
 
 # TODO
 
