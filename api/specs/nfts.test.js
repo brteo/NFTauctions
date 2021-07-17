@@ -15,8 +15,8 @@ const { genereteAuthToken } = require('../helpers/auth');
 const agent = supertest.agent(app);
 
 const newNft = {
-	title: 'Nft title',
-	description: 'Nft description',
+	title: 'New nft title',
+	description: 'New nft description',
 	category: {
 		name: 'newCategory'
 	},
@@ -30,7 +30,8 @@ const wrongSchemaNft = {
 
 let admin;
 let adminToken;
-let user;
+let user1;
+let user2;
 let userToken;
 let nft;
 let soldNft;
@@ -50,8 +51,8 @@ beforeEach(async () => {
 	}).save();
 	adminToken = genereteAuthToken(admin).token;
 
-	user = await new User({
-		email: 'user@meblabs.com',
+	user1 = await new User({
+		email: 'user1@meblabs.com',
 		password: 'testtest',
 		account: 'mebuser01',
 		name: 'John',
@@ -59,7 +60,18 @@ beforeEach(async () => {
 		role: 'user',
 		active: 1
 	}).save();
-	userToken = genereteAuthToken(user).token;
+	userToken = genereteAuthToken(user1).token;
+
+	user2 = await new User({
+		email: 'user2@meblabs.com',
+		password: 'testtest',
+		account: 'mebuser02',
+		name: 'Pinco',
+		lastname: 'Pallino',
+		role: 'user',
+		active: 1
+	}).save();
+	userToken = genereteAuthToken(user2).token;
 
 	await new Category({
 		name: 'category'
@@ -86,8 +98,8 @@ beforeEach(async () => {
 		},
 		tags: ['tag'],
 		url: 'path/to/image',
-		author: admin.id,
-		owner: admin.id
+		author: user1.id,
+		owner: user1.id
 	}).save();
 
 	soldNft = await new Nft({
@@ -99,8 +111,8 @@ beforeEach(async () => {
 		},
 		tags: ['tag'],
 		url: 'path/to/image',
-		author: admin.id,
-		owner: user.id
+		author: user1.id,
+		owner: user2.id
 	}).save();
 });
 afterEach(() => {
@@ -135,7 +147,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong NftId should not be found', done => {
+		test('Get wrong NftId should be NotFound', done => {
 			agent
 				.get('/nfts/123456789000')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -146,7 +158,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get deleted nft should not be found', async () => {
+		test('Get deleted nft should be NotFound', async () => {
 			await agent
 				.delete('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -242,7 +254,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong NftId should be not found', done => {
+		test('Update wrong NftId should be NotFound', done => {
 			agent
 				.patch('/nfts/123456789000')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -254,7 +266,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update deleted nft should be not found', async () => {
+		test('Update deleted nft should be NotFound', async () => {
 			await agent
 				.delete('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
