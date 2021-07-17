@@ -37,6 +37,11 @@ Launch cleos commands - wallet already unlocked
 
 ```bash
 ./cleos.sh arg1 arg2 ...
+
+./cleos.sh get account tvgadmin # get account info
+./cleos.sh get table mebtradingvg mebtradingvg nfts # get nfts table data
+./cleos.sh push action eosio.token transfer '[ "eosio", "tvguser1", "1000.0000 EOS", "deposit" ]' -p eosio@active # transfer 1000 EOS to tvguser1
+./cleos.sh push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"-\",\"url\":\"-\"}"]' -p tvguser1@active -p mebtradingvg@active # create NFT
 ```
 
 Check [cleos command list](https://developers.eos.io/manuals/eos/latest/cleos/command-reference/index)
@@ -61,14 +66,21 @@ Reset the blockchain to apply changes to account or contract name.
 
 ## KEYS & ACCOUNTS
 
-Preconfigured accounts on first installation:
+Preconfigured system accounts on first installation:
 
 - eosio
 - eosio.token
 - eosio.msig
 - mebtradingvg
 
-Check folder `wallet` for `wallet password` and check folder `keys` for `public & private` keys to use with mebtradingvg and eosio.\* accounts.<br />
+Seed accounts
+
+- tvgadmin
+- tvguser1
+- tvguser2
+
+Check folder `wallet` for `wallet password` and check folder `keys` for `public & private` keys to use with eosio.\*, mebtradingvg and seed accounts.
+
 Do **NOT** change or remove `key.txt`: this key is also set as `EOS_KEY` var in `api/.env` file.
 
 <br />
