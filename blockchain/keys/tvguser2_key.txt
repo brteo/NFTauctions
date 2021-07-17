@@ -1,0 +1,2 @@
+Private key: 5Kb2vvXCdQrL99UYGwCfYCSkgUJqgGwzERFhaUL5yMDNpuoRPxw
+Public key: EOS8A2tG6qVHo8W6CyeGv2LWbsvGXeKspaN4Jv4pKda4pYmyhGyau

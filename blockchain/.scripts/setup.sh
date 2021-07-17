@@ -46,7 +46,7 @@ else
 fi
 
 if [[ $FIRST_INSTALL == 1 ]]; then
-	cleos wallet create -f /root/eosio-wallet/password.
+	cleos wallet create -f /root/eosio-wallet/password.txt
 	if [ ! -f /keys/key.txt ]; then
 		cleos create key -f /keys/key.txt
 		cleos create key -f /keys/eosio_key.txt
@@ -94,10 +94,10 @@ if [[ $FIRST_INSTALL == 1 ]]; then
 	cleos set contract eosio.msig /contracts/eosio.msig
 
 	cleos push action eosio.token create '[ "eosio", "10000000000.0000 EOS" ]' -p eosio.token@active
-	cleos push action eosio.token issue '[ "eosio", "1000000000.0000 EOS", "memo" ]' -p eosio@active
+	cleos push action eosio.token issue '[ "eosio", "1000000000.0000 EOS", "issue" ]' -p eosio@active
 
 	cleos create account eosio $ACCOUNT $PUBLIC_KEY >>/root/setup_error
-	cleos push action eosio.token transfer '[ "eosio", "mebtradingvg", "25000.0000 EOS", "memo" ]' -p eosio@active
+	cleos push action eosio.token transfer '[ "eosio", "mebtradingvg", "25000.0000 EOS", "deposit" ]' -p eosio@active
 
 	post_preactivate
 	sleep 1s
@@ -128,4 +128,8 @@ fi
 sleep 1
 if [[ -f /contracts/$CONTRACT/build/$CONTRACT/$CONTRACT.wasm ]]; then
 	cleos set contract $ACCOUNT /contracts/$CONTRACT/build/$CONTRACT
+fi
+
+if [[ $FIRST_INSTALL == 1 ]]; then
+	source /root/seed.sh
 fi
