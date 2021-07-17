@@ -68,7 +68,8 @@ Preconfigured accounts on first installation:
 - eosio.msig
 - mebtradingvg
 
-Check folder `keys` for `wallet password` and `public & private` keys created for mebtradingvg and eosio.\* accounts.
+Check folder `wallet` for `wallet password` and check folder `keys` for `public & private` keys to use with mebtradingvg and eosio.\* accounts.<br />
+Do **NOT** change or remove `key.txt`: this key is also set as `EOS_KEY` var in `api/.env` file.
 
 <br />
 
