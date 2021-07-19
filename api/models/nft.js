@@ -18,10 +18,10 @@ const schema = Schema(
 			required: true
 		},
 		category: {
+			id: mongoose.Schema.Types.ObjectId,
 			name: {
-				type: String,
-				maxlength: 128,
-				required: true
+				type: Map,
+				of: String
 			}
 		},
 		tags: [

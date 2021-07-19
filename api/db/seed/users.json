@@ -1,6 +1,6 @@
 [
 	{
-		"id":"60f1a2e408c1b430d95aa632",
+		"_id": {"$oid":"60f1a2e408c1b430d95aa632"},
 		"email": "admin@meblabs.com",
 		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
 		"account": "tvgadmin",
@@ -12,7 +12,7 @@
 		"active": true
 	},
 	{
-		"id":"60f1a2fcd13e099cbdf18853",
+		"_id": {"$oid":"60f1a2fcd13e099cbdf18853"},
 		"email": "user1@meblabs.com",
 		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
 		"account": "tvguser1",
@@ -24,7 +24,7 @@
 		"active": true
 	},
 	{
-		"id":"60f1a420eeca2d72beccd1a5",
+		"_id": {"$oid":"60f1a420eeca2d72beccd1a5"},
 		"email": "user2@meblabs.com",
 		"password": "$2a$10$G6JwgkMhRA9R7KkeLQP7ruEAWSKE7DMPEdnOhnD8598rWdcZZW7hW",
 		"account": "tvguser2",

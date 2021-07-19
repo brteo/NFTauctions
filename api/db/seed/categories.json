@@ -1,14 +1,14 @@
 [
 	{ 
-		"id" :"60f1a329e7c5446dfdccd8fd",
-		"name" : "Image"
+		"_id": {"$oid":"60f1a329e7c5446dfdccd8fd"},
+		"name": {"it":"Immagini", "en":"Images"}
 	},
 	{ 
-		"id" :"60f1a3544906aed6b68f7f1c",
-		"name" : "File"
+		"_id": {"$oid":"60f1a3544906aed6b68f7f1c"},
+		"name": {"it":"Files", "en":"Files"}
 	},
 	{ 
-		"id" :"60f1a3591a83fb8f8b1778cc",
-		"name" : "Document"
+		"_id": {"$oid":"60f1a3591a83fb8f8b1778cc"},
+		"name":{"it":"Documenti", "en":"Documents"}
 	}
 ]
