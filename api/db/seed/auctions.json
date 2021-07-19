@@ -4,6 +4,7 @@
 		"basePrice": 100,
 		"deadlineTimestamp": "2029-07-02 00:00:00",
 		"nft": 1000001,
+		"active": true,
 		"deleted": false
 	}
 ]

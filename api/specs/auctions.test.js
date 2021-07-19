@@ -89,7 +89,8 @@ beforeEach(async () => {
 		description: 'Description',
 		basePrice: 100,
 		deadlineTimestamp: '2029-07-02 00:00:00',
-		nft: nft.id
+		nft: nft.id,
+		active: 1
 	}).save();
 });
 afterAll(async () => await db.close());
