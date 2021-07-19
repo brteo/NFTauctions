@@ -3,6 +3,7 @@
 		"description": "Auction description",
 		"basePrice": 100,
 		"deadlineTimestamp": "2029-07-02 00:00:00",
-		"nft": ""
+		"nft": "",
+		"deleted": false
 	}
 ]
