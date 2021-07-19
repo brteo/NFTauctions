@@ -1,39 +1,63 @@
-import React from 'react';
-import { Typography, Card, Col, Row } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Col, Row } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { listAuctions } from '../helpers/api';
+import { listAuctions, getNftById } from '../helpers/api';
 
 const { Meta } = Card;
 
 const Auction = props => {
 	const { t } = useTranslation();
 
-	const handleAuctions = () => {
+	const [rows, setRows] = useState();
+
+	const getAuctions = () => {
 		listAuctions()
 			.then(res => {
-				console.log(res);
-				return res;
+				const auctions = res.data;
+
+				const r = [];
+
+				for (let i = 0; i < auctions.length; i += 1) {
+					const auction = auctions[i];
+
+					const getNft = nftId => {
+						getNftById(nftId)
+							.then(response => {
+								console.log(response.data);
+							})
+							.catch(err => {
+								console.log(err);
+							});
+					};
+
+					getNft(auction.nft);
+
+					r.push(
+						<Col span={6} key={i}>
+							<Card
+								hoverable
+								cover={<img alt="alt" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
+							>
+								<Meta title={auction.description} description="www.instagram.com" />
+							</Card>
+						</Col>
+					);
+				}
+				setRows(r);
 			})
 			.catch(err => {
-				const errorCode = err.response;
+				const errorCode = err;
 				console.log(errorCode);
 			});
 	};
 
-	const auctions = handleAuctions();
+	useEffect(() => {
+		getAuctions();
+	}, []);
 
 	return (
 		<div className="site-card-wrapper">
-			<Row gutter={16}>
-				<Col span={6}>
-					<Card
-						hoverable
-						cover={<img alt="example" src="https://os.alipayobjects.com/rmsportal/QBnOOoLaAfKPirc.png" />}
-					>
-						<Meta title="Europe Street beat" description="www.instagram.com" />
-					</Card>
-				</Col>
-			</Row>
+			<Row gutter={16}>{rows}</Row>
 		</div>
 	);
 };
