@@ -5,6 +5,7 @@ module.exports = {
 		properties: {
 			email: { type: 'string', format: 'email' },
 			password: { type: 'string' },
+			account: { type: 'string' },
 			name: { type: 'string' },
 			lastname: { type: 'string' },
 			birthdate: { type: 'string', format: 'date' }

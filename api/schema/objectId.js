@@ -1,6 +1,8 @@
 module.exports = {
 	objectId: {
 		type: 'object',
-		id: { type: 'string', pattern: '^[a-f\\d]{24}$' }
+		properties: {
+			id: { type: 'string', pattern: '^[a-f\\d]{24}$' }
+		}
 	}
 };

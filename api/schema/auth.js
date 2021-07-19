@@ -4,7 +4,8 @@ module.exports = {
 		type: 'object',
 		properties: {
 			email: { type: 'string', format: 'email' },
-			password: { type: 'string' }
+			password: { type: 'string' },
+			account: { type: 'string' }
 		},
 		additionalProperties: false
 	},

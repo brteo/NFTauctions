@@ -11,7 +11,8 @@ const newUser = {
 	email: 'matteo@meblabs.com',
 	password: 'testtest',
 	name: 'Matteo',
-	lastname: 'Brocca'
+	lastname: 'Brocca',
+	account: '1111'
 };
 
 let admin;
@@ -26,6 +27,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
+		account: '1234',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -36,6 +38,7 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
+		account: '4321',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -74,9 +77,20 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong userId should be not found', done => {
+		test('Get wrong userId should be Validation Error', done => {
 			agent
 				.get('/users/1234')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+					done();
+				});
+		});
+
+		test('Get inexistent userId should be not found', done => {
+			agent
+				.get('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(404)
 				.then(res => {
@@ -147,9 +161,21 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong userId should be not found', done => {
+		test('Update wrong userId should be Validation Error', done => {
 			agent
 				.put('/users/1234')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ name: 'edit' })
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+					done();
+				});
+		});
+
+		test('Update inexistent userId should be not found', done => {
+			agent
+				.put('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)
@@ -211,9 +237,21 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Delete wrong userId should be not found', done => {
+		test('Delete wrong userId should be Validation Error', done => {
 			agent
 				.delete('/users/1234')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ name: 'edit' })
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+					done();
+				});
+		});
+
+		test('Delete inexistent userId should be not found', done => {
+			agent
+				.delete('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)

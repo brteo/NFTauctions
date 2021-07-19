@@ -28,8 +28,9 @@ const errorParser = data => {
 			return MissingRequiredParameter(params.missingProperty);
 		case 'additionalProperties':
 			return AdditionalParameters(params.additionalProperty);
-		default:
-			return ValidationError(params.format || params);
+		default: {
+			return ValidationError(error);
+		}
 	}
 };
 

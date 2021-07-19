@@ -4,6 +4,7 @@
 		"200": "Please complete this field",
 		"201": "Missing required parameters",
 		"202": "Additional parameters are not permitted",
+		"210": "Invalid email",
 		"300": "Wrong email",
 		"301": "Wrong password",
 		"302": "Inactive account",

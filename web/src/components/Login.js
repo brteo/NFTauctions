@@ -80,7 +80,7 @@ const Login = props => {
 						},
 						{
 							type: 'email',
-							message: t('core:errors.201')
+							message: t('core:errors.210')
 						}
 					]}
 				>

@@ -14,6 +14,7 @@ const userInfo = (active = 1, deleted = 0) => {
 		password: 'testtest',
 		name: 'John',
 		lastname: 'Doe',
+		account: '1234',
 		active,
 		deleted
 	};
@@ -49,7 +50,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'wrong@email', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 			});
 	});
 
@@ -222,7 +223,7 @@ describe('GET /auth/email/:email', () => {
 			.get('/auth/email/wrong@email')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 			}));
 });
 
@@ -230,7 +231,7 @@ describe('GET /auth/register', () => {
 	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
 		await agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.send({ email: 'test@meblabs.com', password: 'testtest', account: '1234' })
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
@@ -280,7 +281,7 @@ describe('GET /auth/register', () => {
 			.send({ email: 'wrong@email', password: 'testtest' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 			}));
 });
 
