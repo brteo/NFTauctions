@@ -27,7 +27,7 @@ DEV
 
 ## Utilities
 
-- Client MongoDB: [Robo3T](https://robomongo.org)
+- Client MongoDB: [Compass](https://www.mongodb.com/try/download/compass) - [Robo3T](https://robomongo.org)
 - Client RESTApi: [Postman](https://www.postman.com)
 
 ## Test with MongoDB
@@ -36,9 +36,18 @@ DEV
 
 ## MongoDB
 
-- [populate](https://mongoosejs.com/docs/populate.html)
+6 Rules of Thumb for MongoDB Schema Design
+
+- [part1](https://www.mongodb.com/blog/post/6-rules-of-thumb-for-mongodb-schema-design-part-1)
+- [part2](https://www.mongodb.com/blog/post/6-rules-of-thumb-for-mongodb-schema-design-part-2)
+- [part3](https://www.mongodb.com/blog/post/6-rules-of-thumb-for-mongodb-schema-design-part-3)
+
+Other resources
+
 - [data-modeling-introduction/](https://docs.mongodb.com/manual/core/data-modeling-introduction/)
-- [mongodb-relationships-embed-or-reference](https://stackoverflow.com/questions/5373198/mongodb-relationships-embed-or-reference)
+- [Data Model Examples and Patterns](https://docs.mongodb.com/manual/applications/data-models/)
+- [Operational Factors and Data Models](https://docs.mongodb.com/manual/core/data-model-operations/)
+- [populate](https://mongoosejs.com/docs/populate.html)
 
 ## AUTH
 
@@ -125,7 +134,7 @@ exports.getById = (req, res, next) => {
 
 ## Soft Delete Schema Plugin
 
-If you need soft delate on model
+If you need soft deleted on model
 
 ```js
 const softDelete = require('../helpers/softDelete');

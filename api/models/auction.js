@@ -19,7 +19,7 @@ const schema = Schema(
 			required: true
 		},
 		nft: {
-			type: mongoose.Schema.Types.ObjectId,
+			type: Number,
 			ref: 'Nft',
 			required: true
 		},
