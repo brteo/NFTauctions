@@ -16,15 +16,15 @@ router
 router
 	.route('/:id')
 	// get auction by id
-	.get(controller.getById)
+	.get(validator({ params: 'objectId' }), controller.getById)
 	// update auction by id
-	.patch(isAuth, rbac('auctions', 'update'), validator('auction'), controller.update)
+	.patch(isAuth, rbac('auctions', 'update'), validator({ body: 'auction', params: 'objectId' }), controller.update)
 	// remove auction by id
-	.delete(isAuth, rbac('auctions', 'delete'), controller.delete);
+	.delete(isAuth, rbac('auctions', 'delete'), validator({ params: 'objectId' }), controller.delete);
 
 router
 	.route('/:title')
 	// get auction by title
-	.get(isAuth, rbac('auctions', 'read:any'), controller.getByTitle);
+	.get(controller.getByTitle);
 
 module.exports = router;
