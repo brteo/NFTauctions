@@ -12,7 +12,7 @@ const newUser = {
 	password: 'testtest',
 	name: 'Matteo',
 	lastname: 'Brocca',
-	account: '1111'
+	account: 'matteo1111'
 };
 
 let admin;
@@ -27,7 +27,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
-		account: '1234',
+		account: 'admin1234',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -38,7 +38,7 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
-		account: '4321',
+		account: 'user4321',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',

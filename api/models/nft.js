@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 
 const schema = Schema(
 	{
+		_id: Number,
 		title: {
 			type: String,
 			index: true,
@@ -18,7 +19,10 @@ const schema = Schema(
 			required: true
 		},
 		category: {
-			id: mongoose.Schema.Types.ObjectId,
+			id: {
+				type: mongoose.Schema.Types.ObjectId,
+				required: true
+			},
 			name: {
 				type: Map,
 				of: String

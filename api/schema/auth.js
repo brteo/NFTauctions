@@ -5,7 +5,7 @@ module.exports = {
 		properties: {
 			email: { type: 'string', format: 'email' },
 			password: { type: 'string' },
-			account: { type: 'string' }
+			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' }
 		},
 		additionalProperties: false
 	},

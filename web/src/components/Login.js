@@ -15,6 +15,7 @@ const Login = props => {
 
 	const [loginMode, setLoginMode] = useState(MODE.INIT);
 	const [pwdError, setPwdError] = useState(false);
+	const [accountError, setAccountError] = useState(false);
 	const [emailValue, setEmailValue] = useState('');
 
 	const handleReset = () => setLoginMode(MODE.INIT);
@@ -45,18 +46,25 @@ const Login = props => {
 				return err.globalHandler && err.globalHandler();
 			});
 
-	const handleRegister = (email, password) =>
-		register(email, password)
+	const handleRegister = (email, password, account) =>
+		register(email, password, account)
 			.then(res => {
 				setUser(res.data);
 				handleClose();
 			})
-			.catch(err => err.globalHandler && err.globalHandler());
+			.catch(err => {
+				const errorCode = err.response && err.response.data ? err.response.data.error : null;
+				if (errorCode === 350) {
+					return setAccountError(t('core:errors.' + errorCode));
+				}
 
-	const handleSubmit = ({ email = '', password = '' }) => {
+				return err.globalHandler && err.globalHandler();
+			});
+
+	const handleSubmit = ({ email = '', password = '', account = '' }) => {
 		if (loginMode === MODE.INIT) return handleCheckEmail(email);
 		if (loginMode === MODE.LOGIN) return handleLogin(email, password);
-		return handleRegister(email, password);
+		return handleRegister(email, password, account);
 	};
 
 	const footerBtn = (
@@ -105,6 +113,17 @@ const Login = props => {
 						]}
 					>
 						<Input.Password placeholder={t('core:fields.password')} />
+					</Form.Item>
+				)}
+
+				{loginMode === MODE.REGISTER && (
+					<Form.Item
+						name="account"
+						validateStatus={accountError ? 'error' : undefined}
+						help={accountError || undefined}
+						onChange={() => setAccountError(false)}
+					>
+						<Input placeholder={t('login.account')} />
 					</Form.Item>
 				)}
 

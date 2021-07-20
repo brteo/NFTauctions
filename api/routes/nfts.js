@@ -10,9 +10,9 @@ router.route('/').get(controller.get).post(isAuth, rbac('nfts', 'create'), valid
 
 router
 	.route('/:id')
-	.get(controller.getById)
-	.patch(isAuth, rbac('nfts', 'update'), validator('nft'), controller.update)
-	.delete(isAuth, rbac('nfts', 'delete'), controller.delete);
+	.get(validator({ params: 'nftId' }), controller.getById)
+	.patch(validator({ params: 'nftId', body: 'nft' }), isAuth, rbac('nfts', 'update'), controller.update)
+	.delete(validator({ params: 'nftId' }), isAuth, rbac('nfts', 'delete'), controller.delete);
 
 router.route('/:title').get(controller.getByTitle);
 

@@ -19,7 +19,7 @@ const APICheck = props => {
 				console.error(err);
 				setCheck(-1);
 			});
-	});
+	}, []);
 
 	const icon = check === 1 ? <CheckCircleOutlined /> : check === 0 ? <SyncOutlined /> : <ExclamationCircleOutlined />;
 	const color = check === 1 ? 'success' : check === 0 ? 'processing' : 'error';

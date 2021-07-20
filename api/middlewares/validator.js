@@ -7,7 +7,7 @@ const addFormats = require('ajv-formats');
 
 const { ServerError, ValidationError, MissingRequiredParameter, AdditionalParameters } = require('../helpers/response');
 
-const ajv = new Ajv();
+const ajv = new Ajv(); // { coerceTypes: true }
 addFormats(ajv);
 
 const validatorPath = `${__dirname}/../schema/`;

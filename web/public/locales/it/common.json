@@ -11,6 +11,7 @@
 		"continue": "Continua",
 		"login": "Accedi",
 		"register": "Registrati",
-		"logout": "Esci"
+		"logout": "Esci",
+		"account": "account"
 	}
 }

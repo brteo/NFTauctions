@@ -6,25 +6,14 @@ const { isAuth } = require('../middlewares/isAuth');
 
 const router = express.Router();
 
-router
-	.route('/')
-	// get all auctions
-	.get(controller.get)
-	// add new auction
-	.post(isAuth, rbac('auctions', 'create'), validator('addAuction'), controller.add);
+router.route('/').get(controller.get).post(validator('addAuction'), isAuth, rbac('auctions', 'create'), controller.add);
 
 router
 	.route('/:id')
-	// get auction by id
 	.get(validator({ params: 'objectId' }), controller.getById)
-	// update auction by id
-	.patch(isAuth, rbac('auctions', 'update'), validator({ body: 'auction', params: 'objectId' }), controller.update)
-	// remove auction by id
-	.delete(isAuth, rbac('auctions', 'delete'), validator({ params: 'objectId' }), controller.delete);
+	.patch(validator({ body: 'auction', params: 'objectId' }), isAuth, rbac('auctions', 'update'), controller.update)
+	.delete(validator({ params: 'objectId' }), isAuth, rbac('auctions', 'delete'), controller.delete);
 
-router
-	.route('/:title')
-	// get auction by title
-	.get(controller.getByTitle);
+router.route('/:title').get(controller.getByTitle);
 
 module.exports = router;

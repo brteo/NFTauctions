@@ -1,9 +1,10 @@
 const Nft = require('../models/nft');
 const Category = require('../models/category');
+const User = require('../models/user');
 const Tag = require('../models/tag');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
-const eos = require('../helpers/eosjs');
+const { eos, addKey } = require('../helpers/eosjs');
 
 /* Get all nfts */
 exports.get = (req, res, next) => {
@@ -32,13 +33,15 @@ exports.create = async (req, res, next) => {
 	nft.owner = id;
 
 	try {
-		const categories = await Category.find({ name: nft.category.name }).exec();
-		if (categories.length === 0) return next(CustomError('Category not found', 404, {}, 404));
+		const category = await Category.findById(nft.category.id).exec();
+		if (!category) return next(CustomError('Category not found', 404, {}, 404));
+
+		nft.category.name = category.name;
 	} catch (err) {
 		return next(ServerError(err));
 	}
-
 	try {
+		addKey(res.locals.user.getPrivateKey());
 		const transactionResult = await eos.transact(
 			{
 				actions: [
@@ -47,12 +50,16 @@ exports.create = async (req, res, next) => {
 						name: 'create',
 						authorization: [
 							{
-								actor: 'returnvalue',
+								actor: 'mebtradingvg',
+								permission: 'active'
+							},
+							{
+								actor: account,
 								permission: 'active'
 							}
 						],
 						data: {
-							data: {},
+							data: { title: nft.title, url: nft.url },
 							author: account,
 							owner: account
 						}
@@ -64,7 +71,7 @@ exports.create = async (req, res, next) => {
 				expireSeconds: 30
 			}
 		);
-		nft.id = transactionResult.processed.action_traces[0].return_value_data;
+		nft._id = transactionResult.processed.action_traces[0].return_value_data;
 	} catch (e) {
 		if (e.json) {
 			console.log(e.json);

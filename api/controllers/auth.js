@@ -1,6 +1,6 @@
 const passport = require('passport');
 const User = require('../models/user');
-const { SendData, ServerError, NotFound, EmailAlreadyExists } = require('../helpers/response');
+const { SendData, ServerError, NotFound, EmailAlreadyExists, AccountAlreadyExists } = require('../helpers/response');
 const { generateToken } = require('../helpers/auth');
 
 exports.login = (req, res, next) =>
@@ -34,6 +34,18 @@ exports.register = async (req, res, next) => {
 		if (check) return next(EmailAlreadyExists());
 	} catch (e) {
 		return next(ServerError());
+	}
+
+	if (req.body.account) {
+		try {
+			const check = await User.findOne({ account: req.body.account }).exec();
+			if (check) return next(AccountAlreadyExists());
+		} catch (e) {
+			return next(ServerError());
+		}
+	} else {
+		// creare account su blockchain
+		// req.body.account = nuovo nome
 	}
 
 	req.body.active = true;

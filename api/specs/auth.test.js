@@ -14,7 +14,7 @@ const userInfo = (active = 1, deleted = 0) => {
 		password: 'testtest',
 		name: 'John',
 		lastname: 'Doe',
-		account: '1234',
+		account: 'john1234',
 		active,
 		deleted
 	};
@@ -231,7 +231,7 @@ describe('GET /auth/register', () => {
 	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
 		await agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest', account: '1234' })
+			.send({ email: 'test@meblabs.com', password: 'testtest', account: 'john1234' })
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
@@ -257,6 +257,27 @@ describe('GET /auth/register', () => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 304 }));
 			});
 	});
+
+	test('Register new user with account that already exist in TVG should be AccountAlreadyExists', async () => {
+		await seedUser();
+
+		return agent
+			.post('/auth/register')
+			.send({ email: 'test2@meblabs.com', password: 'testtest', account: 'john1234' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 350 }));
+			});
+	});
+
+	test('Register new user with invalid account should be ValidationError', async () =>
+		agent
+			.post('/auth/register')
+			.send({ email: 'test2@meblabs.com', password: 'testtest', account: 'john01234' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+			}));
 
 	test('Register new user without email should be MissingRequiredParameter', async () =>
 		agent

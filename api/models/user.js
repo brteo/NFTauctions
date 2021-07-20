@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const cryptoJS = require('crypto-js');
 const softDelete = require('../helpers/softDelete');
 const publicFields = require('../helpers/publicFields');
 
@@ -22,10 +23,14 @@ const schema = Schema(
 		},
 		account: {
 			type: String,
+			match: /^[a-z1-5.]{1,12}$/,
 			maxlength: 12,
 			required: true,
 			lowercase: true,
 			trim: true
+		},
+		private_key: {
+			type: String
 		},
 		name: {
 			type: String,
@@ -63,6 +68,10 @@ schema.pre('save', async function (next) {
 			this.password = await bcrypt.hash(this.password, 10);
 		}
 
+		if (this.isModified('private_key')) {
+			this.private_key = cryptoJS.AES.encrypt(this.private_key, process.env.EOS_SECRET).toString();
+		}
+
 		return next();
 	} catch (error) {
 		return next(error);
@@ -79,6 +88,22 @@ schema.methods.comparePassword = function (pwd, callback) {
 		return callback(null, isMatch);
 	});
 };
+
+schema.methods.getPrivateKey = function () {
+	if (!this.private_key) return null;
+	return cryptoJS.AES.decrypt(this.private_key, process.env.EOS_SECRET).toString(cryptoJS.enc.Utf8);
+};
+
+// cifratura chiave privata di un SEED
+/*
+const ekey = cryptoJS.AES.encrypt(
+	'CHIAVE',
+	process.env.EOS_SECRET
+).toString();
+const dkey = cryptoJS.AES.decrypt(ekey, process.env.EOS_SECRET).toString(cryptoJS.enc.Utf8);
+console.log(ekey);
+console.log(dkey);
+*/
 
 /* How to Fix Mongoose Cannot Overwrite Model Once Compiled Error */
 module.exports = mongoose.models.User || mongoose.model('User', schema);

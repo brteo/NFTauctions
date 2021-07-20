@@ -8,18 +8,13 @@ const router = express.Router();
 
 router
 	.route('/')
-	// get all categories
 	.get(isAuth, rbac('categories', 'read:any'), controller.get)
-	// add new category
-	.post(isAuth, rbac('categories', 'create:any'), validator('category'), controller.add);
+	.post(validator('category'), isAuth, rbac('categories', 'create:any'), controller.add);
 
 router
 	.route('/:id')
-	// get category by id
-	.get(isAuth, rbac('categories', 'read'), controller.getById)
-	// update category by id
-	.put(isAuth, rbac('categories', 'update'), validator('category'), controller.update)
-	// remove category by id
-	.delete(isAuth, rbac('categories', 'delete'), controller.delete);
+	.get(validator({ params: 'objectId' }), isAuth, rbac('categories', 'read'), controller.getById)
+	.put(validator({ params: 'objectId', body: 'category' }), isAuth, rbac('categories', 'update'), controller.update)
+	.delete(validator({ params: 'objectId' }), isAuth, rbac('categories', 'delete'), controller.delete);
 
 module.exports = router;

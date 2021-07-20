@@ -5,7 +5,9 @@ module.exports = {
 		properties: {
 			title: { type: 'string' },
 			description: { type: 'string' },
-			category: { $ref: 'category' },
+			category: {
+				$ref: 'objectId'
+			},
 			tags: {
 				type: 'array',
 				items: { type: 'string' }
@@ -17,6 +19,12 @@ module.exports = {
 	createNft: {
 		type: 'object',
 		allOf: [{ $ref: 'nft' }],
-		required: ['title', 'description', 'category', 'tags', 'url']
+		required: ['title', 'description', 'tags', 'url']
+	},
+	nftId: {
+		type: 'object',
+		properties: {
+			id: { type: 'string' } //  format: 'int32'
+		}
 	}
 };

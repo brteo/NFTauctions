@@ -13,6 +13,7 @@
 		"305": "Auth reset, please change password",
 		"306": "Refresh token does not exist",
 		"307": "Expired refresh token",
+		"350": "Account already exists in TradingVG",
 		"400":"Bad request",
 		"401":"Unauthorized",
 		"402":"Not allowed by CORS",

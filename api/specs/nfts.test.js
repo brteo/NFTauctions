@@ -1,4 +1,5 @@
 const supertest = require('supertest');
+const mongoose = require('mongoose');
 
 const app = require('../app');
 const db = require('../db/connect-test');
@@ -6,19 +7,20 @@ const User = require('../models/user');
 const Nft = require('../models/nft');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
-const eos = require('../helpers/eosjs');
+const { eos, addKey } = require('../helpers/eosjs');
 
 jest.mock('../helpers/eosjs');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
+const { ObjectId } = mongoose.Types;
 const agent = supertest.agent(app);
 
 const newNft = {
 	title: 'New nft title',
 	description: 'New nft description',
 	category: {
-		name: 'newCategory'
+		id: '60f6c6ab59fc210d3ba2c165'
 	},
 	tags: ['newTag'],
 	url: 'path/to/image'
@@ -43,7 +45,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
-		account: 'mebadmin01',
+		account: 'tvgadmin1',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -54,7 +56,7 @@ beforeEach(async () => {
 	user1 = await new User({
 		email: 'user1@meblabs.com',
 		password: 'testtest',
-		account: 'mebuser01',
+		account: 'tvguser1',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -65,7 +67,7 @@ beforeEach(async () => {
 	user2 = await new User({
 		email: 'user2@meblabs.com',
 		password: 'testtest',
-		account: 'mebuser02',
+		account: 'tvguser2',
 		name: 'Pinco',
 		lastname: 'Pallino',
 		role: 'user',
@@ -73,16 +75,18 @@ beforeEach(async () => {
 	}).save();
 	userToken = genereteAuthToken(user2).token;
 
-	await new Category({
-		name: 'category'
+	const cat1 = await new Category({
+		_id: ObjectId('60f6c5c1897dd8f84a08c36a'),
+		name: { it: 'categoria', en: 'category' }
 	}).save();
 
 	await new Tag({
 		name: 'tag'
 	}).save();
 
-	await Category({
-		name: 'newCategory'
+	const cat2 = await Category({
+		_id: ObjectId('60f6c6ab59fc210d3ba2c165'),
+		name: { it: 'new category', en: 'new category' }
 	}).save();
 
 	await Tag({
@@ -94,7 +98,8 @@ beforeEach(async () => {
 		title: 'Nft 5 title',
 		description: 'Nft 5 description',
 		category: {
-			name: 'category'
+			id: cat1.id,
+			name: cat1.name
 		},
 		tags: ['tag'],
 		url: 'path/to/image',
@@ -107,7 +112,8 @@ beforeEach(async () => {
 		title: 'Nft 6 title',
 		description: 'Nft 6 description',
 		category: {
-			name: 'category'
+			id: cat1.id,
+			name: cat1.name
 		},
 		tags: ['tag'],
 		url: 'path/to/image',
@@ -184,7 +190,7 @@ describe('Role: admin', () => {
 			}
 		});
 
-		test('A new nft should be added', done => {
+		test('A new nft should be added', async () =>
 			agent
 				.post('/nfts')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -195,9 +201,7 @@ describe('Role: admin', () => {
 					const { title, description, url } = newNft;
 					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
 					expect(eos.transact.mock.calls.length).toBe(1);
-					done();
-				});
-		});
+				}));
 
 		test('A wrong nft should not be added', done => {
 			agent
@@ -213,7 +217,7 @@ describe('Role: admin', () => {
 		});
 
 		test('An nft with inexistent category should not be added', done => {
-			newNft.category.name = 'category inexistent';
+			newNft.category.id = '60f6cefe1f8fd638bd2a6f10';
 			agent
 				.post('/nfts')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -225,7 +229,7 @@ describe('Role: admin', () => {
 					expect(eos.transact.mock.calls.length).toBe(0);
 					done();
 				});
-			newNft.category.name = 'newCategory';
+			newNft.category.id = '60f6c6ab59fc210d3ba2c165';
 		});
 	});
 

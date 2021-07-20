@@ -41,6 +41,8 @@ module.exports = {
 
 	ExpiredRefreshToken: () => Response('Expired refresh token', 401, {}, 307),
 
+	AccountAlreadyExists: () => Response('The account already exists', 400, {}, 350),
+
 	/* 400 - generic client error */
 
 	BadRequest: () => Response('Bad request', 400, {}, 400),
