@@ -28,6 +28,7 @@ let user;
 let userToken;
 let auction;
 let nft;
+let categoryInNft;
 
 beforeAll(async () => await db.connect());
 beforeEach(async () => {
@@ -36,6 +37,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
+		account: 'user1234',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -46,6 +48,7 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
+		account: 'user4321',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -53,8 +56,11 @@ beforeEach(async () => {
 	}).save();
 	userToken = genereteAuthToken(user).token;
 
-	await new Category({
-		name: 'category'
+	categoryInNft = await new Category({
+		name: {
+			it: 'Immagini',
+			en: 'Images'
+		}
 	}).save();
 
 	await new Tag({
@@ -62,7 +68,10 @@ beforeEach(async () => {
 	}).save();
 
 	await Category({
-		name: 'newCategory'
+		name: {
+			it: 'File',
+			en: 'File'
+		}
 	}).save();
 
 	await Tag({
@@ -70,16 +79,17 @@ beforeEach(async () => {
 	}).save();
 
 	nft = await new Nft({
+		_id: 2000001,
 		title: 'Nft title',
 		description: 'Nft description',
 		category: {
-			name: 'category'
-		},
-		tags: [
-			{
-				name: 'tag'
+			id: categoryInNft.id,
+			name: {
+				it: 'Immagini',
+				en: 'Images'
 			}
-		],
+		},
+		tags: ['tag'],
 		url: 'path/to/url',
 		author: admin.id,
 		owner: admin.id
@@ -120,12 +130,12 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong auctionId should not be found', done => {
+		test('Get with wrong auctionId should not be done', done => {
 			agent
 				.get('/auctions/1234')
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -150,7 +160,7 @@ describe('Role: admin', () => {
 
 	describe('POST /auctions', () => {
 		test('A new auction should be added', done => {
-			newAuction.nft = String(nft.id);
+			newAuction.nft = Number(nft.id);
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -177,7 +187,7 @@ describe('Role: admin', () => {
 		});
 
 		test('An auction with inexistent nft should not be added', done => {
-			newAuction.nft = '60f104d76ebf6b19c8ac38b3';
+			newAuction.nft = 123456789;
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -217,14 +227,14 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong auctionId should not be found', done => {
+		test('Update with wrong auctionId should not be done', done => {
 			agent
 				.patch('/auctions/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ description: 'Description changed' })
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -325,7 +335,7 @@ describe('Role: user', () => {
 
 	describe('POST /auctions', () => {
 		test('Add new auction should be Permitted', done => {
-			newAuction.nft = String(nft.id);
+			newAuction.nft = Number(nft.id);
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
@@ -343,23 +353,24 @@ describe('Role: user', () => {
 	describe('PATCH /auctions', () => {
 		test('Update your own should be Permitted', async () => {
 			const newNft = await new Nft({
+				_id: 3000001,
 				title: 'Nft title',
 				description: 'Nft description',
 				category: {
-					name: 'category'
-				},
-				tags: [
-					{
-						name: 'tag'
+					id: categoryInNft.id,
+					name: {
+						it: 'categoria',
+						en: 'category'
 					}
-				],
+				},
+				tags: ['tag'],
 				url: 'path/to/url',
 				author: user.id,
 				owner: user.id
 			}).save();
 
 			let id;
-			newAuction.nft = newNft.id;
+			newAuction.nft = Number(newNft.id);
 			await agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
@@ -397,23 +408,24 @@ describe('Role: user', () => {
 	describe('DELETE /auctions', () => {
 		test('Delete your own should be Permitted', async () => {
 			const newNft = await new Nft({
+				_id: 3000001,
 				title: 'Nft title',
 				description: 'Nft description',
 				category: {
-					name: 'category'
-				},
-				tags: [
-					{
-						name: 'tag'
+					id: categoryInNft.id,
+					name: {
+						it: 'categoria',
+						en: 'category'
 					}
-				],
+				},
+				tags: ['tag'],
 				url: 'path/to/url',
 				author: user.id,
 				owner: user.id
 			}).save();
 
 			let id;
-			newAuction.nft = newNft.id;
+			newAuction.nft = Number(newNft.id);
 			await agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)

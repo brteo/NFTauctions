@@ -9,7 +9,7 @@ module.exports = {
 				type: 'string',
 				format: 'date-time'
 			},
-			nft: { type: 'string' }
+			nft: { type: 'integer' }
 		},
 		additionalProperties: false
 	},
