@@ -40,6 +40,7 @@ exports.create = async (req, res, next) => {
 	} catch (err) {
 		return next(ServerError(err));
 	}
+
 	try {
 		addKey(res.locals.user.getPrivateKey());
 		const transactionResult = await eos.transact(
@@ -78,13 +79,14 @@ exports.create = async (req, res, next) => {
 		} else {
 			console.log(e + '');
 		}
-
 		return next(ServerError());
 	}
 
 	return nft.save((err, doc) => {
-		if (err) return next(err);
-
+		if (err) {
+			console.log('ADDED ERROR 2 ' + err);
+			return next(err);
+		}
 		/*
 		// AGGIUNGERE I TAG SUL DB
 		const tagNames = nft.tags; // .map(e => e.name);

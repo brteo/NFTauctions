@@ -94,7 +94,7 @@ beforeEach(async () => {
 	}).save();
 
 	nft = await new Nft({
-		id: 1000005,
+		_id: 1000005,
 		title: 'Nft 5 title',
 		description: 'Nft 5 description',
 		category: {
@@ -108,7 +108,7 @@ beforeEach(async () => {
 	}).save();
 
 	soldNft = await new Nft({
-		id: 1000006,
+		_id: 1000006,
 		title: 'Nft 6 title',
 		description: 'Nft 6 description',
 		category: {
@@ -186,7 +186,7 @@ describe('Role: admin', () => {
 	describe('POST /nfts', () => {
 		eos.transact.mockResolvedValue({
 			processed: {
-				action_traces: [{ return_value_data: 1000006 }]
+				action_traces: [{ return_value_data: 1000007 }]
 			}
 		});
 
@@ -362,7 +362,7 @@ describe('Role: user', () => {
 	describe('POST /nfts', () => {
 		eos.transact.mockResolvedValue({
 			processed: {
-				action_traces: [{ return_value_data: 1000006 }]
+				action_traces: [{ return_value_data: 1000007 }]
 			}
 		});
 		test('Add new nft should be Permitted', done => {
