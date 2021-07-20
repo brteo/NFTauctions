@@ -2,7 +2,7 @@
 	{
 		"description": "Auction description",
 		"basePrice": 100,
-		"deadlineTimestamp": "2029-07-02 00:00:00",
+		"deadlineTimestamp": {"$date":"2021-08-31T21:00:00Z"},
 		"nft": 1000001,
 		"active": true,
 		"deleted": false
