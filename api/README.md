@@ -15,6 +15,10 @@ MongoDB at localhost:27017
 - [jsonwebtoken](https://jwt.io)
 - [Passport](http://www.passportjs.org) passport-jwt passport-local
 - [uuid](https://www.npmjs.com/package/uuid)
+- [nodemailer](https://nodemailer.com/about/)
+- [ejs](https://ejs.co/)
+- [email-templates](https://www.npmjs.com/package/email-templates)
+- [sprintf-js](https://www.npmjs.com/package/sprintf-js)
 
 DEV
 
@@ -199,9 +203,17 @@ module.exports = {
 		type: 'object',
 		properties: {
 			email: { type: 'string', format: 'email' },
-			password: { type: 'string' }
+			password: { type: 'string' },
+			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' }
 		},
-		additionalProperties: false
+		additionalProperties: false,
+		errorMessage: {
+			//optional response error message for each properties
+			properties: {
+				email: '210',
+				account: '211'
+			}
+		}
 	},
 	loginAuth: {
 		type: 'object',

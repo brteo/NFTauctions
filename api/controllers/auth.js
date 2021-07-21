@@ -1,8 +1,12 @@
 const passport = require('passport');
+const { sprintf } = require('sprintf-js');
+
 const User = require('../models/user');
 const { SendData, ServerError, NotFound, EmailAlreadyExists, AccountAlreadyExists } = require('../helpers/response');
 const { generateToken } = require('../helpers/auth');
-const { eos, addKey, generateKeys } = require('../helpers/eosjs');
+const { eos, generateKeys } = require('../helpers/eosjs');
+
+const { sendMail, getEmailText } = require('../emails');
 
 exports.login = (req, res, next) =>
 	passport.authenticate('local', { session: false }, async (err, user) => {
@@ -107,6 +111,15 @@ exports.register = async (req, res, next) => {
 
 		try {
 			await generateToken(res, user);
+
+			const lang = getEmailText('en', 'register');
+			sendMail(
+				{ to: user.email },
+				{
+					subject: lang.subject,
+					text: sprintf(lang.html, user.email)
+				}
+			).catch(erremail => console.log('[EMAIL ERROR]', erremail));
 
 			return next(SendData(user.getPublicFields()));
 		} catch (e) {
