@@ -4,7 +4,7 @@ import { Layout } from 'antd';
 
 import ErrorPage from '../components/extra/ErrorPage';
 import Header from '../components/Header';
-import Auction from '../components/Auction';
+import Auction from './Auction';
 import Home from './Home';
 
 const { Content, Footer } = Layout;

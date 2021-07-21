@@ -22,5 +22,15 @@
 	"cookie": {
 		"title": "Cookies blocked", 
 		"message": "Enable cookies to login"
+	},
+	"auction": {
+		"basePrice": "Base price",
+		"nftTitle": "Title of nft",
+		"nftDescription": "Description of nft",
+		"auctionDescription": "Description of auction",
+		"category": "Category",
+		"tags": "Tags",
+		"deadline": "Deadline of auction",
+		"bet": "Bet"
 	}
 }
