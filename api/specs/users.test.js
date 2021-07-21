@@ -4,19 +4,8 @@ const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
 const { genereteAuthToken } = require('../helpers/auth');
-// const { eos, generateKeys } = require('../helpers/eosjs');
-
-// jest.mock('../helpers/eosjs');
 
 const agent = supertest.agent(app);
-
-const newUser = {
-	email: 'matteo@meblabs.com',
-	password: 'testtest',
-	name: 'Matteo',
-	lastname: 'Brocca',
-	account: 'matteo1111'
-};
 
 let admin;
 let adminToken;
@@ -122,29 +111,6 @@ describe('Role: admin', () => {
 				});
 		});
 	});
-
-	/*
-	describe('POST /users', () => {
-		eos.transact.mockResolvedValue({});
-		generateKeys.mockResolvedValue({
-			private: '5KfGty4hvfJajbZsCzZXc3W7ghjATtahzqspGgq2CecwUFkeK1b',
-			public: 'EOS6XNVcM2JrdwkLcirymaGFUNRqcCHoTtyq79wqYqsiLMUmzjuLx'
-		});
-		test('A new user should be added', done => {
-			agent
-				.post('/users')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send(newUser)
-				.expect(201)
-				.then(res => {
-					const { email, name, lastname } = newUser;
-					expect(res.body).toEqual(expect.objectContaining({ email, name, lastname }));
-					expect(eos.transact.mock.calls.length).toBe(1);
-					done();
-				});
-		});
-	});
-	*/
 
 	describe('PUT /users', () => {
 		test('His data should be changed', done => {
@@ -329,22 +295,6 @@ describe('Role: user', () => {
 				});
 		});
 	});
-
-	/*
-	describe('POST /users', () => {
-		test('Add new should be Forbidden', done => {
-			agent
-				.post('/users')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send(newUser)
-				.expect(403)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
-					done();
-				});
-		});
-	});
-	*/
 
 	describe('PUT /users', () => {
 		test('His own user should be changed', done => {

@@ -17,15 +17,6 @@ exports.getById = (req, res, next) => {
 	});
 };
 
-/*
-exports.add = (req, res, next) => {
-	new User(req.body).save((err, user) => {
-		if (err) next(ServerError());
-		else next(SendData(user.getPublicFields(), 201));
-	});
-};
-*/
-
 exports.update = (req, res, next) => {
 	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) return next(Forbidden());
 

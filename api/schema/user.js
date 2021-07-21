@@ -11,10 +11,5 @@ module.exports = {
 			birthdate: { type: 'string', format: 'date' }
 		},
 		additionalProperties: false
-	},
-	addUser: {
-		type: 'object',
-		allOf: [{ $ref: 'user' }],
-		required: ['email', 'password']
 	}
 };
