@@ -6,8 +6,7 @@ module.exports = {
 			name: {
 				type: 'object',
 				properties: {
-					it: { type: 'string' },
-					en: { type: 'string' }
+					'^[a-z]{2}$': { type: 'string' }
 				}
 			}
 		},

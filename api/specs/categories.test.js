@@ -22,6 +22,7 @@ const wrongSchemaCategory = {
 };
 
 const newNft = {
+	_id: 1000005,
 	title: 'Nft title',
 	description: 'Nft description',
 	category: {
@@ -202,6 +203,8 @@ describe('Role: admin', () => {
 
 		test('Update should be done in every nft that contains category', async () => {
 			newNft.category.id = category.id;
+			newNft.owner = admin.id;
+			newNft.author = admin.id;
 
 			await agent.post('/nfts').set('Cookie', `TvgAccessToken=${adminToken}`).send(newNft).expect(201);
 
