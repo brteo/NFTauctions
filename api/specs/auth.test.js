@@ -5,6 +5,9 @@ const moment = require('moment');
 const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
+const { eos, generateKeys } = require('../helpers/eosjs');
+
+jest.mock('../helpers/eosjs');
 
 let agent;
 
@@ -28,6 +31,7 @@ beforeEach(async () => {
 	await db.clear();
 	agent = supertest.agent(app);
 });
+afterEach(() => jest.clearAllMocks());
 afterAll(async () => await db.close());
 
 describe('POST /auth/login', () => {
@@ -228,14 +232,20 @@ describe('GET /auth/email/:email', () => {
 });
 
 describe('GET /auth/register', () => {
+	eos.transact.mockResolvedValue({});
+	generateKeys.mockResolvedValue({
+		private: '5KfGty4hvfJajbZsCzZXc3W7ghjATtahzqspGgq2CecwUFkeK1b',
+		public: 'EOS6XNVcM2JrdwkLcirymaGFUNRqcCHoTtyq79wqYqsiLMUmzjuLx'
+	});
 	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
 		await agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest', account: 'john1234' })
+			.send({ email: 'test@meblabs.com', password: 'testtest', account: 'newjohn12' })
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
 				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(eos.transact.mock.calls.length).toBe(1);
 			});
 
 		return agent
@@ -251,14 +261,15 @@ describe('GET /auth/register', () => {
 
 		return agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest' })
+			.send({ email: 'test@meblabs.com', password: 'testtest', account: 'john1234' })
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 304 }));
+				expect(eos.transact.mock.calls.length).toBe(0);
 			});
 	});
 
-	test('Register new user with account that already exist in TVG should be AccountAlreadyExists', async () => {
+	test('Register new user with account that already exist should be AccountAlreadyExists', async () => {
 		await seedUser();
 
 		return agent
@@ -277,6 +288,7 @@ describe('GET /auth/register', () => {
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
 	test('Register new user without email should be MissingRequiredParameter', async () =>
@@ -285,6 +297,7 @@ describe('GET /auth/register', () => {
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
 	test('Register new user without password should be MissingRequiredParameter', async () =>
@@ -294,6 +307,7 @@ describe('GET /auth/register', () => {
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
+				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
 	test('Register new user with incorrect email should be ValidationError', async () =>
@@ -303,6 +317,7 @@ describe('GET /auth/register', () => {
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 });
 

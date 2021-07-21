@@ -1,8 +1,8 @@
 {
 	"errors": {
 		"1": "Errore di sistema: operazione non completata, aggiornare la pagina o provare in seguito",
-		"200": "Completa questo campo",
-		"201": "Parametri necessari mancanti",
+		"200": "Campo non valido",
+		"201": "Completa questo campo",
 		"202": "Parametri addizionali non permessi",
 		"210": "Email non valida",
 		"300": "Email non corretta",
@@ -13,7 +13,7 @@
 		"305": "Auth reset, aggiornare la password",
 		"306": "Il refresh token non esiste",
 		"307": "Refresh token scaduto",
-		"350": "Account già presente in TradingVG",
+		"350": "Account già presente",
 		"400": "Richiesta sbagliata",
 		"401": "Non autorizzato",
 		"402": "Non permesso (CORS policy)",

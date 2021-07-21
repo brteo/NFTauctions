@@ -17,7 +17,7 @@ module.exports = {
 
 	/* 200 - validation errors */
 
-	ValidationError: data => Response('Validation Error', 400, data, 200),
+	ValidationError: (data, error = 200) => Response('Validation Error', 400, data, error),
 
 	MissingRequiredParameter: data => Response('Missing required parameters', 400, data, 201),
 

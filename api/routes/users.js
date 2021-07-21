@@ -6,10 +6,8 @@ const { validator } = require('../middlewares/validator');
 
 const router = express.Router();
 
-router
-	.route('/')
-	.get(isAuth, rbac('users', 'read:any'), controller.get)
-	.post(validator('addUser'), isAuth, rbac('users', 'create:any'), controller.add);
+router.route('/').get(isAuth, rbac('users', 'read:any'), controller.get);
+// .post(validator('addUser'), isAuth, rbac('users', 'create:any'), controller.add);
 
 router
 	.route('/:id')

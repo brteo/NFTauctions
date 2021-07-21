@@ -22,6 +22,6 @@ module.exports = {
 	registerAuth: {
 		type: 'object',
 		allOf: [{ $ref: 'auth' }],
-		required: ['email', 'password']
+		required: ['email', 'password', 'account']
 	}
 };

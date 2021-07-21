@@ -7,7 +7,7 @@ const User = require('../models/user');
 const Nft = require('../models/nft');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
-const { eos, addKey } = require('../helpers/eosjs');
+const { eos } = require('../helpers/eosjs');
 
 jest.mock('../helpers/eosjs');
 
@@ -121,9 +121,7 @@ beforeEach(async () => {
 		owner: user2.id
 	}).save();
 });
-afterEach(() => {
-	jest.clearAllMocks();
-});
+afterEach(() => jest.clearAllMocks());
 afterAll(async () => await db.close());
 
 /*

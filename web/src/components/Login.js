@@ -18,7 +18,13 @@ const Login = props => {
 	const [accountError, setAccountError] = useState(false);
 	const [emailValue, setEmailValue] = useState('');
 
-	const handleReset = () => setLoginMode(MODE.INIT);
+	const [form] = Form.useForm();
+
+	const handleBack = () => setLoginMode(MODE.INIT);
+	const handleReset = () => {
+		setLoginMode(MODE.INIT);
+		form.resetFields();
+	};
 
 	const handleCheckEmail = email =>
 		checkEmail(email)
@@ -36,6 +42,7 @@ const Login = props => {
 			.then(res => {
 				setUser(res.data);
 				handleClose();
+				handleReset();
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -51,6 +58,7 @@ const Login = props => {
 			.then(res => {
 				setUser(res.data);
 				handleClose();
+				handleReset();
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -69,7 +77,7 @@ const Login = props => {
 
 	const footerBtn = (
 		<>
-			{loginMode !== MODE.INIT ? <Button onClick={() => handleReset()}>{t('common.back')}</Button> : ''}
+			{loginMode !== MODE.INIT ? <Button onClick={() => handleBack()}>{t('common.back')}</Button> : ''}
 			<Button form="loginForm" type="primary" htmlType="submit">
 				{loginMode}
 			</Button>
@@ -78,13 +86,13 @@ const Login = props => {
 
 	return (
 		<Modal visible={show} title={t('login.title')} onCancel={() => handleClose()} footer={footerBtn}>
-			<Form id="loginForm" onFinish={handleSubmit}>
+			<Form id="loginForm" form={form} onFinish={handleSubmit}>
 				<Form.Item
 					name="email"
 					rules={[
 						{
 							required: true,
-							message: t('core:errors.200')
+							message: t('core:errors.201')
 						},
 						{
 							type: 'email',
@@ -108,7 +116,7 @@ const Login = props => {
 						rules={[
 							{
 								required: true,
-								message: t('core:errors.200')
+								message: t('core:errors.201')
 							}
 						]}
 					>
@@ -122,6 +130,12 @@ const Login = props => {
 						validateStatus={accountError ? 'error' : undefined}
 						help={accountError || undefined}
 						onChange={() => setAccountError(false)}
+						rules={[
+							{
+								required: true,
+								message: t('core:errors.201')
+							}
+						]}
 					>
 						<Input placeholder={t('login.account')} />
 					</Form.Item>

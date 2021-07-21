@@ -2,6 +2,7 @@ const passport = require('passport');
 const User = require('../models/user');
 const { SendData, ServerError, NotFound, EmailAlreadyExists, AccountAlreadyExists } = require('../helpers/response');
 const { generateToken } = require('../helpers/auth');
+const { eos, addKey, generateKeys } = require('../helpers/eosjs');
 
 exports.login = (req, res, next) =>
 	passport.authenticate('local', { session: false }, async (err, user) => {
@@ -33,7 +34,7 @@ exports.register = async (req, res, next) => {
 		const check = await User.findOne({ email: req.body.email }).exec();
 		if (check) return next(EmailAlreadyExists());
 	} catch (e) {
-		return next(ServerError());
+		return next(ServerError(e));
 	}
 
 	if (req.body.account) {
@@ -41,11 +42,63 @@ exports.register = async (req, res, next) => {
 			const check = await User.findOne({ account: req.body.account }).exec();
 			if (check) return next(AccountAlreadyExists());
 		} catch (e) {
-			return next(ServerError());
+			return next(ServerError(e));
 		}
-	} else {
-		// creare account su blockchain
-		// req.body.account = nuovo nome
+	}
+
+	try {
+		const keys = generateKeys();
+		req.body.private_key = keys.private;
+
+		await eos.transact(
+			{
+				actions: [
+					{
+						account: 'eosio',
+						name: 'newaccount',
+						authorization: [
+							{
+								actor: 'mebtradingvg',
+								permission: 'active'
+							}
+						],
+						data: {
+							creator: 'mebtradingvg',
+							name: req.body.account,
+							owner: {
+								threshold: 1,
+								keys: [
+									{
+										key: keys.public,
+										weight: 1
+									}
+								],
+								accounts: [],
+								waits: []
+							},
+							active: {
+								threshold: 1,
+								keys: [
+									{
+										key: keys.public,
+										weight: 1
+									}
+								],
+								accounts: [],
+								waits: []
+							}
+						}
+					}
+				]
+			},
+			{
+				blocksBehind: 3,
+				expireSeconds: 30
+			}
+		);
+	} catch (e) {
+		if (e.json && e.json.error.code === 3050001) return next(AccountAlreadyExists());
+		return next(ServerError(e));
 	}
 
 	req.body.active = true;

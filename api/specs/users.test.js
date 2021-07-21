@@ -4,6 +4,9 @@ const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
 const { genereteAuthToken } = require('../helpers/auth');
+// const { eos, generateKeys } = require('../helpers/eosjs');
+
+// jest.mock('../helpers/eosjs');
 
 const agent = supertest.agent(app);
 
@@ -46,6 +49,7 @@ beforeEach(async () => {
 	}).save();
 	userToken = genereteAuthToken(user).token;
 });
+afterEach(() => jest.clearAllMocks());
 afterAll(async () => await db.close());
 
 /*
@@ -119,7 +123,13 @@ describe('Role: admin', () => {
 		});
 	});
 
+	/*
 	describe('POST /users', () => {
+		eos.transact.mockResolvedValue({});
+		generateKeys.mockResolvedValue({
+			private: '5KfGty4hvfJajbZsCzZXc3W7ghjATtahzqspGgq2CecwUFkeK1b',
+			public: 'EOS6XNVcM2JrdwkLcirymaGFUNRqcCHoTtyq79wqYqsiLMUmzjuLx'
+		});
 		test('A new user should be added', done => {
 			agent
 				.post('/users')
@@ -129,10 +139,12 @@ describe('Role: admin', () => {
 				.then(res => {
 					const { email, name, lastname } = newUser;
 					expect(res.body).toEqual(expect.objectContaining({ email, name, lastname }));
+					expect(eos.transact.mock.calls.length).toBe(1);
 					done();
 				});
 		});
 	});
+	*/
 
 	describe('PUT /users', () => {
 		test('His data should be changed', done => {
@@ -318,6 +330,7 @@ describe('Role: user', () => {
 		});
 	});
 
+	/*
 	describe('POST /users', () => {
 		test('Add new should be Forbidden', done => {
 			agent
@@ -331,6 +344,7 @@ describe('Role: user', () => {
 				});
 		});
 	});
+	*/
 
 	describe('PUT /users', () => {
 		test('His own user should be changed', done => {

@@ -1,8 +1,8 @@
 {
 	"errors": {
 		"1": "System error: operation not completed, please refresh the page or try again later",
-		"200": "Please complete this field",
-		"201": "Missing required parameters",
+		"200": "Field value invalid",
+		"201": "Please complete this field",
 		"202": "Additional parameters are not permitted",
 		"210": "Invalid email",
 		"300": "Wrong email",
@@ -13,7 +13,7 @@
 		"305": "Auth reset, please change password",
 		"306": "Refresh token does not exist",
 		"307": "Expired refresh token",
-		"350": "Account already exists in TradingVG",
+		"350": "Account already exists",
 		"400":"Bad request",
 		"401":"Unauthorized",
 		"402":"Not allowed by CORS",
