@@ -18,6 +18,7 @@ const userInfo = (active = 1, deleted = 0) => {
 		name: 'John',
 		lastname: 'Doe',
 		account: 'john1234',
+		nickname: 'DormiPaglia',
 		active,
 		deleted
 	};
@@ -240,7 +241,7 @@ describe('GET /auth/register', () => {
 	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
 		await agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest', account: 'newjohn12' })
+			.send({ email: 'test@meblabs.com', password: 'testtest', nickname: 'Paglia2000', account: 'newjohn12' })
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
@@ -261,7 +262,7 @@ describe('GET /auth/register', () => {
 
 		return agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest', account: 'john1234' })
+			.send({ email: 'test@meblabs.com', password: 'testtest', nickname: 'DormiPaglia', account: 'john1234' })
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 304 }));
@@ -269,12 +270,23 @@ describe('GET /auth/register', () => {
 			});
 	});
 
+	test('Register new user with nickname that already exist should be NicknameAlreadyExists', async () => {
+		await seedUser();
+
+		return agent
+			.post('/auth/register')
+			.send({ email: 'test2@meblabs.com', password: 'testtest', nickname: 'DormiPaglia', account: 'john1234' })
+			.expect(400)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 351 }));
+			});
+	});
 	test('Register new user with account that already exist should be AccountAlreadyExists', async () => {
 		await seedUser();
 
 		return agent
 			.post('/auth/register')
-			.send({ email: 'test2@meblabs.com', password: 'testtest', account: 'john1234' })
+			.send({ email: 'test2@meblabs.com', password: 'testtest', nickname: 'NewDormiPaglia', account: 'john1234' })
 			.expect(400)
 			.then(res => {
 				expect(res.body).toEqual(expect.objectContaining({ error: 350 }));

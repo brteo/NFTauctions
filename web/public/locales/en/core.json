@@ -14,6 +14,7 @@
 		"306": "Refresh token does not exist",
 		"307": "Expired refresh token",
 		"350": "Account already exists",
+		"351": "Nickname already exists",
 		"400":"Bad request",
 		"401":"Unauthorized",
 		"402":"Not allowed by CORS",

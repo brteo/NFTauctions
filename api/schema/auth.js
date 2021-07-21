@@ -5,7 +5,8 @@ module.exports = {
 		properties: {
 			email: { type: 'string', format: 'email' },
 			password: { type: 'string' },
-			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' }
+			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' },
+			nickname: { type: 'string' }
 		},
 		additionalProperties: false
 	},
@@ -22,6 +23,6 @@ module.exports = {
 	registerAuth: {
 		type: 'object',
 		allOf: [{ $ref: 'auth' }],
-		required: ['email', 'password', 'account']
+		required: ['email', 'password', 'nickname', 'account']
 	}
 };

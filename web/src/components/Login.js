@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Form, Input, Button, Modal } from 'antd';
+import { Form, Input, Button, Modal, Divider } from 'antd';
+import { UserOutlined, LockOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 import { login, register, checkEmail } from '../helpers/api';
 import AppContext from '../helpers/AppContext';
@@ -16,6 +17,7 @@ const Login = props => {
 	const [loginMode, setLoginMode] = useState(MODE.INIT);
 	const [pwdError, setPwdError] = useState(false);
 	const [accountError, setAccountError] = useState(false);
+	const [nicknameError, setNicknameError] = useState(false);
 	const [emailValue, setEmailValue] = useState('');
 
 	const [form] = Form.useForm();
@@ -46,15 +48,13 @@ const Login = props => {
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
-				if (errorCode === 301) {
-					return setPwdError(t('core:errors.' + errorCode));
-				}
+				if (errorCode === 301) return setPwdError(t('core:errors.' + errorCode));
 
 				return err.globalHandler && err.globalHandler();
 			});
 
-	const handleRegister = (email, password, account) =>
-		register(email, password, account)
+	const handleRegister = (email, password, nickname, account) =>
+		register(email, password, nickname, account)
 			.then(res => {
 				setUser(res.data);
 				handleClose();
@@ -62,17 +62,17 @@ const Login = props => {
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
-				if (errorCode === 350) {
-					return setAccountError(t('core:errors.' + errorCode));
-				}
+				if (errorCode === 350) return setAccountError(t('core:errors.' + errorCode));
+
+				if (errorCode === 351) return setNicknameError(t('core:errors.' + errorCode));
 
 				return err.globalHandler && err.globalHandler();
 			});
 
-	const handleSubmit = ({ email = '', password = '', account = '' }) => {
+	const handleSubmit = ({ email = '', password = '', nickname = '', account = '' }) => {
 		if (loginMode === MODE.INIT) return handleCheckEmail(email);
 		if (loginMode === MODE.LOGIN) return handleLogin(email, password);
-		return handleRegister(email, password, account);
+		return handleRegister(email, password, nickname, account);
 	};
 
 	const footerBtn = (
@@ -84,15 +84,23 @@ const Login = props => {
 		</>
 	);
 
+	const validateMessages = { required: t('core:errors.201') };
+
 	return (
 		<Modal visible={show} title={t('login.title')} onCancel={() => handleClose()} footer={footerBtn}>
-			<Form id="loginForm" form={form} onFinish={handleSubmit}>
+			<Form
+				id="loginForm"
+				form={form}
+				layout="vertical"
+				requiredMark={false}
+				validateMessages={validateMessages}
+				onFinish={handleSubmit}
+			>
 				<Form.Item
 					name="email"
 					rules={[
 						{
-							required: true,
-							message: t('core:errors.201')
+							required: true
 						},
 						{
 							type: 'email',
@@ -101,6 +109,7 @@ const Login = props => {
 					]}
 				>
 					<Input
+						prefix={<UserOutlined />}
 						readOnly={loginMode !== MODE.INIT}
 						placeholder={t('core:fields.email')}
 						value={emailValue}
@@ -115,30 +124,49 @@ const Login = props => {
 						onChange={() => setPwdError(false)}
 						rules={[
 							{
-								required: true,
-								message: t('core:errors.201')
+								required: true
 							}
 						]}
 					>
-						<Input.Password placeholder={t('core:fields.password')} />
+						<Input.Password prefix={<LockOutlined />} placeholder={t('core:fields.password')} />
 					</Form.Item>
 				)}
 
 				{loginMode === MODE.REGISTER && (
-					<Form.Item
-						name="account"
-						validateStatus={accountError ? 'error' : undefined}
-						help={accountError || undefined}
-						onChange={() => setAccountError(false)}
-						rules={[
-							{
-								required: true,
-								message: t('core:errors.201')
-							}
-						]}
-					>
-						<Input placeholder={t('login.account')} />
-					</Form.Item>
+					<>
+						<Divider />
+						<Form.Item
+							name="nickname"
+							label={t('login.nickname')}
+							tooltip={{ title: t('login.nickname_tip'), icon: <InfoCircleOutlined /> }}
+							validateStatus={nicknameError ? 'error' : undefined}
+							help={nicknameError || undefined}
+							onChange={() => setNicknameError(false)}
+							rules={[
+								{
+									required: true
+								}
+							]}
+						>
+							<Input placeholder={t('login.nickname_placeholder')} />
+						</Form.Item>
+
+						<Form.Item
+							name="account"
+							label={t('login.account')}
+							tooltip={{ title: t('login.account_tip'), icon: <InfoCircleOutlined /> }}
+							validateStatus={accountError ? 'error' : undefined}
+							help={accountError || undefined}
+							onChange={() => setAccountError(false)}
+							rules={[
+								{
+									required: true
+								}
+							]}
+						>
+							<Input placeholder={t('login.account_placeholder')} maxLength="12" />
+						</Form.Item>
+					</>
 				)}
 
 				{loginMode === MODE.LOGIN && (

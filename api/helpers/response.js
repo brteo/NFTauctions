@@ -43,6 +43,8 @@ module.exports = {
 
 	AccountAlreadyExists: () => Response('The account already exists', 400, {}, 350),
 
+	NicknameAlreadyExists: () => Response('The nickname already exists', 400, {}, 351),
+
 	/* 400 - generic client error */
 
 	BadRequest: () => Response('Bad request', 400, {}, 400),

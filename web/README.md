@@ -43,6 +43,7 @@ DEV
 ## References
 
 - [awesome react components](https://github.com/brillout/awesome-react-components)
+- [antd less variables](https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less)
 
 ## REACT PERFORMACE
 

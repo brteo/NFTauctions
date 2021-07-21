@@ -1,6 +1,13 @@
 const passport = require('passport');
 const User = require('../models/user');
-const { SendData, ServerError, NotFound, EmailAlreadyExists, AccountAlreadyExists } = require('../helpers/response');
+const {
+	SendData,
+	ServerError,
+	NotFound,
+	EmailAlreadyExists,
+	AccountAlreadyExists,
+	NicknameAlreadyExists
+} = require('../helpers/response');
 const { generateToken } = require('../helpers/auth');
 const { eos, addKey, generateKeys } = require('../helpers/eosjs');
 
@@ -37,13 +44,18 @@ exports.register = async (req, res, next) => {
 		return next(ServerError(e));
 	}
 
-	if (req.body.account) {
-		try {
-			const check = await User.findOne({ account: req.body.account }).exec();
-			if (check) return next(AccountAlreadyExists());
-		} catch (e) {
-			return next(ServerError(e));
-		}
+	try {
+		const check = await User.findOne({ nickname: req.body.nickname }).exec();
+		if (check) return next(NicknameAlreadyExists());
+	} catch (e) {
+		return next(ServerError(e));
+	}
+
+	try {
+		const check = await User.findOne({ account: req.body.account }).exec();
+		if (check) return next(AccountAlreadyExists());
+	} catch (e) {
+		return next(ServerError(e));
 	}
 
 	try {

@@ -32,6 +32,11 @@ const schema = Schema(
 		private_key: {
 			type: String
 		},
+		nickname: {
+			type: String,
+			required: true,
+			trim: true
+		},
 		name: {
 			type: String,
 			maxlength: 128,
