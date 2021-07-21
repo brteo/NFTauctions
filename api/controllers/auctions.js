@@ -1,12 +1,25 @@
 const Auction = require('../models/auction');
 const Nft = require('../models/nft');
+const User = require('../models/user');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
 
 /* Get all auctions */
 exports.get = (req, res, next) => {
 	Auction.find()
-		.populate('nft')
+		.populate({
+			path: 'nft',
+			populate: [
+				{
+					path: 'owner',
+					model: 'User'
+				},
+				{
+					path: 'author',
+					model: 'User'
+				}
+			]
+		})
 		.exec((_err, auctions) => {
 			if (_err) return next(ServerError());
 			return next(SendData(auctions));
@@ -15,14 +28,25 @@ exports.get = (req, res, next) => {
 
 /* Get auction by id */
 exports.getById = (req, res, next) => {
-	Auction.findById(req.params.id, (err, auction) => {
-		if (!auction) return next(NotFound());
-		if (err) return next(ServerError());
-
-		return Auction.findOne({ _id: auction.id })
-			.populate('nft')
-			.exec((_err, nft) => next(SendData(nft.getPublicFields())));
-	});
+	Auction.findOne({ _id: req.params.id })
+		.populate({
+			path: 'nft',
+			populate: [
+				{
+					path: 'owner',
+					model: 'User'
+				},
+				{
+					path: 'author',
+					model: 'User'
+				}
+			]
+		})
+		.exec((_err, auction) => {
+			if (!auction) return next(NotFound());
+			if (_err) return next(ServerError());
+			return next(SendData(auction.getPublicFields()));
+		});
 };
 
 /* Add new auction */
