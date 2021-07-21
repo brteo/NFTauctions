@@ -5,11 +5,12 @@ const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../
 
 /* Get all auctions */
 exports.get = (req, res, next) => {
-	Auction.find({}, (err, auctions) => {
-		if (err) return next(ServerError());
-
-		return next(SendData(auctions));
-	});
+	Auction.find()
+		.populate('nft')
+		.exec((_err, auctions) => {
+			if (_err) return next(ServerError());
+			return next(SendData(auctions));
+		});
 };
 
 /* Get auction by id */
@@ -18,7 +19,9 @@ exports.getById = (req, res, next) => {
 		if (!auction) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return next(SendData(auction.getPublicFields()));
+		return Auction.findOne({ _id: auction.id })
+			.populate('nft')
+			.exec((_err, nft) => next(SendData(nft.getPublicFields())));
 	});
 };
 
