@@ -10,6 +10,11 @@ module.exports = {
 			lastname: { type: 'string' },
 			birthdate: { type: 'string', format: 'date' }
 		},
-		additionalProperties: false
+		additionalProperties: false,
+		errorMessage: {
+			properties: {
+				email: '210'
+			}
+		}
 	}
 };

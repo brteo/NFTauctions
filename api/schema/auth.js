@@ -7,7 +7,13 @@ module.exports = {
 			password: { type: 'string' },
 			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' }
 		},
-		additionalProperties: false
+		additionalProperties: false,
+		errorMessage: {
+			properties: {
+				email: '210',
+				account: '211'
+			}
+		}
 	},
 	loginAuth: {
 		type: 'object',

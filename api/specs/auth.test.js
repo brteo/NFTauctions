@@ -54,7 +54,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'wrong@email', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
 			});
 	});
 
@@ -66,7 +66,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'wrong@email.it' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/password' }));
 			});
 	});
 
@@ -219,7 +219,7 @@ describe('GET /auth/email/:email', () => {
 			.get('/auth/email/')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/email' }));
 			}));
 
 	test('Check with incorrect email should be ValidationError', async () =>
@@ -227,7 +227,7 @@ describe('GET /auth/email/:email', () => {
 			.get('/auth/email/wrong@email')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
 			}));
 });
 
@@ -287,7 +287,7 @@ describe('GET /auth/register', () => {
 			.send({ email: 'test2@meblabs.com', password: 'testtest', account: 'john01234' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 211, data: '/account' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
@@ -296,7 +296,7 @@ describe('GET /auth/register', () => {
 			.post('/auth/register')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/email' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
@@ -306,7 +306,7 @@ describe('GET /auth/register', () => {
 			.send({ email: 'test@meblabs.com' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/password' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
@@ -316,7 +316,7 @@ describe('GET /auth/register', () => {
 			.send({ email: 'wrong@email', password: 'testtest' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 });

@@ -11,7 +11,7 @@ MongoDB at localhost:27017
 - [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html)
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
 - [mongoose](https://mongoosejs.com)
-- [ajv](https://ajv.js.org/) [ajv-formats](https://github.com/ajv-validator/ajv-formats)
+- [ajv](https://ajv.js.org/) [ajv-formats](https://github.com/ajv-validator/ajv-formats) [ajv-errors](https://github.com/ajv-validator/ajv-errors)
 - [jsonwebtoken](https://jwt.io)
 - [Passport](http://www.passportjs.org) passport-jwt passport-local
 - [uuid](https://www.npmjs.com/package/uuid)

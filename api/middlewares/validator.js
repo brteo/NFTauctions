@@ -7,8 +7,9 @@ const addFormats = require('ajv-formats');
 
 const { ServerError, ValidationError, MissingRequiredParameter, AdditionalParameters } = require('../helpers/response');
 
-const ajv = new Ajv(); // { coerceTypes: true }
+const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
+require('ajv-errors')(ajv);
 
 const validatorPath = `${__dirname}/../schema/`;
 fs.readdirSync(validatorPath)
@@ -21,15 +22,17 @@ fs.readdirSync(validatorPath)
 
 const errorParser = data => {
 	const [error] = data;
-	const { keyword, params } = error;
+	const { keyword, instancePath, message, params } = error;
 
 	switch (keyword) {
 		case 'required':
-			return MissingRequiredParameter(params.missingProperty);
+			return MissingRequiredParameter('/' + params.missingProperty);
 		case 'additionalProperties':
-			return AdditionalParameters(params.additionalProperty);
+			return AdditionalParameters('/' + params.additionalProperty);
+		case 'errorMessage':
+			return ValidationError(instancePath, Number(message));
 		default: {
-			return ValidationError(error);
+			return ValidationError(instancePath);
 		}
 	}
 };
@@ -39,6 +42,7 @@ exports.validator = schemas => (req, res, next) => {
 
 	Object.keys(schemasObj).forEach(key => {
 		const validate = ajv.getSchema(schemasObj[key]);
+
 		if (!validate) return next(ServerError('Missing validator schema'));
 
 		const valid = validate(req[key]);

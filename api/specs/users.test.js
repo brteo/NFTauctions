@@ -70,7 +70,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong userId should be Validation Error', done => {
+		test('Get wrong userId should be ValidationError', done => {
 			agent
 				.get('/users/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -81,7 +81,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get inexistent userId should be not found', done => {
+		test('Get inexistent userId should be NotFound', done => {
 			agent
 				.get('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -92,7 +92,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get deleted user should be not found', async () => {
+		test('Get deleted user should be NotFound', async () => {
 			await agent
 				.delete('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -139,7 +139,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong userId should be Validation Error', done => {
+		test('Update wrong userId should be ValidationError', done => {
 			agent
 				.put('/users/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -151,7 +151,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update inexistent userId should be not found', done => {
+		test('Update inexistent userId should be NotFound', done => {
 			agent
 				.put('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -163,7 +163,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update deleted user should be not found', async () => {
+		test('Update deleted user should be NotFound', async () => {
 			await agent
 				.delete('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -180,6 +180,18 @@ describe('Role: admin', () => {
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+				});
+		});
+
+		test('Update with invalid email should be ValidationError', done => {
+			agent
+				.put('/users/1234')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ email: 'wrong' })
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
+					done();
 				});
 		});
 	});
@@ -215,7 +227,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Delete wrong userId should be Validation Error', done => {
+		test('Delete wrong userId should be ValidationError', done => {
 			agent
 				.delete('/users/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -227,7 +239,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Delete inexistent userId should be not found', done => {
+		test('Delete inexistent userId should be NotFound', done => {
 			agent
 				.delete('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
