@@ -18,5 +18,9 @@
 		"nickname": "Nickname or artname",
 		"nickname_placeholder": "my nick",
 		"nickname_tip": "Are you an artist? type your artname, otherwise choose a nickname which will be showed on your profile"
+	},
+	"cookie": {
+		"title": "Cookies blocked", 
+		"message": "Enable cookies to login"
 	}
 }
