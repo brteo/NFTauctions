@@ -11,13 +11,23 @@ const AuctionCard = props => {
 
 	const { auction } = props;
 
+	console.log(auction);
+
 	return (
 		<Col span={6} key={props.k}>
-			<Card title={<Title level={4}>{t('auction.nftTitle') + ': ' + auction.title}</Title>} hoverable>
+			<Card
+				title={<Title level={4}>{t('auction.nftTitle') + ': ' + auction.nft.title}</Title>}
+				hoverable
+				cover={<img alt="alt" src={auction.nft.url} />}
+			>
 				<Title level={5}>
-					{t('auction.nftDescription')}: {auction.description}
+					{t('auction.nftDescription')}: {auction.nft.description}
 				</Title>
 				<Meta title={t('auction.auctionDescription') + ': ' + auction.description} />
+				<br />
+				{t('auction.category')}: {i18n.language === 'it' ? auction.nft.category.name.it : auction.nft.category.name.en}
+				<br />
+				{t('auction.tags')}: {auction.nft.tags.join(', ')}
 				<br />
 				<br />
 				{t('auction.basePrice')}: {auction.basePrice}€

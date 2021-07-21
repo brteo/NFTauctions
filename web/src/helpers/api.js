@@ -47,5 +47,3 @@ export const refreshToken = () => connect.get('/auth/rt');
 export const logout = () => connect.get('/auth/logout');
 
 export const listAuctions = () => connect.get('/auctions');
-
-export const getNftById = nftId => connect.get(`/nfts/${nftId}`);
