@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Card, Col, Typography, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 

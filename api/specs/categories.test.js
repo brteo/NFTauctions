@@ -11,7 +11,10 @@ const { genereteAuthToken } = require('../helpers/auth');
 const agent = supertest.agent(app);
 
 const newCategory = {
-	name: 'Image'
+	name: {
+		it: 'File',
+		en: 'File'
+	}
 };
 
 const wrongSchemaCategory = {
@@ -22,13 +25,12 @@ const newNft = {
 	title: 'Nft title',
 	description: 'Nft description',
 	category: {
-		name: 'category'
-	},
-	tags: [
-		{
-			name: 'tag'
+		name: {
+			it: 'Immagini',
+			en: 'Images'
 		}
-	],
+	},
+	tags: ['tag'],
 	url: 'path/to/image'
 };
 
@@ -45,6 +47,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
+		account: 'user1234',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -55,6 +58,7 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
+		account: 'user4321',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -63,7 +67,10 @@ beforeEach(async () => {
 	userToken = genereteAuthToken(user).token;
 
 	category = await new Category({
-		name: 'category'
+		name: {
+			it: 'Immagini',
+			en: 'Images'
+		}
 	}).save();
 
 	await new Tag({
@@ -88,25 +95,25 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get any specific categoryId should be done with correct public fields', done => {
+		test('Get any specific categoryId should be done with public fields', done => {
 			agent
 				.get('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					const { name } = category;
-					expect(res.body).toMatchObject({ name });
+					const { _id } = res.body;
+					expect(res.body).toEqual(expect.objectContaining({ _id }));
 					done();
 				});
 		});
 
-		test('Get wrong categoryId should be not found', done => {
+		test('Get wrong categoryId should be accepted', done => {
 			agent
 				.get('/categories/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -173,36 +180,38 @@ describe('Role: admin', () => {
 			agent
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'category changed' })
+				.send({ name: { it: 'Categoria aggiornata' } })
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ name: 'category changed' }));
+					expect(res.body).toEqual(expect.objectContaining({ name: { it: 'Categoria aggiornata' } }));
 					done();
 				});
 		});
 
-		test('Update wrong categoryId should be not found', done => {
+		test('Update wrong categoryId should be not updated', done => {
 			agent
 				.put('/categories/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'category changed' })
-				.expect(404)
+				.send({ name: { it: 'Categoria aggiornata' } })
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
 
 		test('Update should be done in every nft that contains category', async () => {
+			newNft.category.id = category.id;
+
 			await agent.post('/nfts').set('Cookie', `TvgAccessToken=${adminToken}`).send(newNft).expect(201);
 
 			await agent
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'category changed' })
+				.send({ name: { it: 'Categoria aggiornata' } })
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ name: 'category changed' }));
+					expect(res.body).toEqual(expect.objectContaining({ name: { it: 'Categoria aggiornata' } }));
 				});
 
 			return agent
@@ -210,7 +219,8 @@ describe('Role: admin', () => {
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body[0]).toEqual(expect.objectContaining({ category: { name: 'category changed' } }));
+					expect(res.body[0]).toEqual(expect.objectContaining({ name: { it: 'Categoria aggiornata' } }));
+					delete newNft.category.id;
 				});
 		});
 
@@ -218,7 +228,7 @@ describe('Role: admin', () => {
 			agent
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ title: 'category changed' })
+				.send({ title: 'Categoria aggiornata' })
 				.expect(400)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'name' }));
@@ -238,7 +248,7 @@ describe('Role: admin', () => {
 			return agent
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'category changed' })
+				.send({ name: { it: 'Categoria aggiornata' } })
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
@@ -251,7 +261,6 @@ describe('Role: admin', () => {
 			await agent
 				.delete('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'category changed' })
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Category deleted sucessfully!');
@@ -270,25 +279,13 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Category data should be changed', done => {
-			agent
-				.put('/categories/' + category.id)
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'category changed' })
-				.expect(200)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ name: 'category changed' }));
-					done();
-				});
-		});
-
-		test('Delete category userId should be not found', done => {
+		test('Delete category with wrong should be not done', done => {
 			agent
 				.delete('/categories/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -332,7 +329,7 @@ describe('Role: user', () => {
 			agent
 				.put('/categories/' + category.id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ name: 'category changed' })
+				.send({ name: { it: 'category changed' } })
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));

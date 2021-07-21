@@ -22,7 +22,10 @@ const newNft = {
 	title: 'Nft title',
 	description: 'Nft description',
 	category: {
-		name: 'category'
+		name: {
+			it: 'Immagini',
+			en: 'Images'
+		}
 	},
 	tags: [
 		{
@@ -48,6 +51,7 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
+		account: 'user1234',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -58,6 +62,7 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
+		account: 'user4321',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -74,7 +79,10 @@ beforeEach(async () => {
 	}).save();
 
 	await new Category({
-		name: 'category'
+		name: {
+			it: 'Immagini',
+			en: 'Images'
+		}
 	}).save();
 });
 afterAll(async () => await db.close());
@@ -107,13 +115,13 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong tagId should be not found', done => {
+		test('Get wrong tagId should be not done', done => {
 			agent
 				.get('/tags/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -199,14 +207,14 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong tagId should be not found', done => {
+		test('Update with wrong tagId should be not done', done => {
 			agent
 				.put('/tags/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'tag changed' })
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -223,7 +231,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update deleted user should be not found', async () => {
+		test('Update deleted tag should be not found', async () => {
 			await agent
 				.delete('/tags/' + tag.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -267,13 +275,13 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Delete tag userId should be not found', done => {
+		test('Delete tag with wrong tagId should be not done', done => {
 			agent
 				.delete('/tags/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
