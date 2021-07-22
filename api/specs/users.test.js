@@ -65,9 +65,9 @@ describe('Role: admin', () => {
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					const { email, name, lastname } = user;
+					const { nickname } = user;
 					const { _id, role } = res.body;
-					expect(res.body).toMatchObject({ _id, email, name, lastname, role });
+					expect(res.body).toMatchObject({ _id, nickname, role });
 					done();
 				});
 		});
@@ -119,11 +119,10 @@ describe('Role: admin', () => {
 			agent
 				.put('/users/' + admin.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'edit' })
+				.send({ nickname: 'edit' })
 				.expect(200)
 				.then(res => {
-					const { email, lastname } = admin;
-					expect(res.body).toEqual(expect.objectContaining({ email, name: 'edit', lastname }));
+					expect(res.body).toEqual(expect.objectContaining({ nickname: 'edit' }));
 					done();
 				});
 		});
@@ -132,11 +131,10 @@ describe('Role: admin', () => {
 			agent
 				.put('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'edit' })
+				.send({ nickname: 'edit' })
 				.expect(200)
 				.then(res => {
-					const { email, lastname } = user;
-					expect(res.body).toEqual(expect.objectContaining({ email, name: 'edit', lastname }));
+					expect(res.body).toEqual(expect.objectContaining({ nickname: 'edit' }));
 					done();
 				});
 		});
@@ -284,8 +282,8 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					const { email, name, lastname } = user;
-					expect(res.body).toEqual(expect.objectContaining({ email, name, lastname }));
+					const { nickname } = user;
+					expect(res.body).toEqual(expect.objectContaining({ nickname }));
 				});
 
 			return agent
@@ -303,11 +301,10 @@ describe('Role: user', () => {
 			agent
 				.put('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ name: 'edit' })
+				.send({ nickname: 'edit' })
 				.expect(200)
 				.then(res => {
-					const { email, lastname } = user;
-					expect(res.body).toEqual(expect.objectContaining({ email, name: 'edit', lastname }));
+					expect(res.body).toEqual(expect.objectContaining({ nickname: 'edit' }));
 					done();
 				});
 		});

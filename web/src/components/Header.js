@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout, Button } from 'antd';
 
@@ -40,7 +41,7 @@ const HeaderComponent = props => {
 					{process.env.NODE_ENV === 'development' && <APICheck />}
 					{user ? (
 						<>
-							{user.name || user.email}
+							<Link to={'/profile/' + user.id}>{user.nickname}</Link>
 							<Button type="primary" onClick={() => handleLogout()}>
 								{t('login.logout')}
 							</Button>

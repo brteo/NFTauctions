@@ -128,7 +128,7 @@ describe('POST /auth/login', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 	});
 });
@@ -143,7 +143,7 @@ describe('GET /auth/check', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		return agent
@@ -232,7 +232,7 @@ describe('GET /auth/email/:email', () => {
 			}));
 });
 
-describe('GET /auth/register', () => {
+describe('POST /auth/register', () => {
 	eos.transact.mockResolvedValue({});
 	generateKeys.mockResolvedValue({
 		private: '5KfGty4hvfJajbZsCzZXc3W7ghjATtahzqspGgq2CecwUFkeK1b',
@@ -245,7 +245,7 @@ describe('GET /auth/register', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: 'Paglia2000' }));
 				expect(eos.transact.mock.calls.length).toBe(1);
 			});
 
@@ -343,7 +343,7 @@ describe('GET /auth/rt', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		await agent
@@ -351,7 +351,7 @@ describe('GET /auth/rt', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		await agent
@@ -401,7 +401,7 @@ describe('GET /auth/rt', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		try {
@@ -433,7 +433,7 @@ describe('GET /auth/rt', () => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
 				// eslint-disable-next-line prefer-destructuring
 				rt = res.headers['set-cookie'][1].split(';')[0].split('=')[1];
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		// get new auth by refresh token
@@ -442,7 +442,7 @@ describe('GET /auth/rt', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		// get new auth by already used refresh token
@@ -493,7 +493,7 @@ describe('GET /auth/logout', () => {
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
-				expect(res.body).toEqual(expect.objectContaining({ email: userInfo().email }));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: userInfo().nickname }));
 			});
 
 		await agent
