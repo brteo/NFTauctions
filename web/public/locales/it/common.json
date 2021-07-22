@@ -31,6 +31,8 @@
 		"category": "Categoria",
 		"tags": "Tags",
 		"deadline": "Scadenza dell'asta",
+		"author": "Autore",
+		"owner": "Proprietario",
 		"bet": "Punta"
 	}
 }

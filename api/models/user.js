@@ -65,7 +65,7 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(publicFields, ['_id', 'email', 'name', 'lastname', 'birthdate', 'role']);
+schema.plugin(publicFields, ['_id', 'email', 'name', 'nickname', 'lastname', 'birthdate', 'role']);
 
 schema.pre('save', async function (next) {
 	try {

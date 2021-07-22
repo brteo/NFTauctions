@@ -25,6 +25,11 @@ const AuctionCard = props => {
 				</Title>
 				<Meta title={t('auction.auctionDescription') + ': ' + auction.description} />
 				<br />
+				<br />
+				{t('auction.author')}: {auction.nft.author.nickname}
+				<br />
+				{t('auction.owner')}: {auction.nft.owner.nickname}
+				<br />
 				{t('auction.category')}: {i18n.language === 'it' ? auction.nft.category.name.it : auction.nft.category.name.en}
 				<br />
 				{t('auction.tags')}: {auction.nft.tags.join(', ')}

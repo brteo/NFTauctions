@@ -31,6 +31,8 @@
 		"category": "Category",
 		"tags": "Tags",
 		"deadline": "Deadline of auction",
+		"author": "Author",
+		"owner": "Owner",
 		"bet": "Bet"
 	}
 }
