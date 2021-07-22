@@ -2,10 +2,11 @@
 /* eslint-disable import/no-dynamic-require */
 const fs = require('fs');
 const path = require('path');
+const { sprintf } = require('sprintf-js');
 const nodemailer = require('nodemailer');
 const Email = require('email-templates');
 
-const { ENV, MAILTRAP_USER, MAILTRAP_PASSWORD, SEND_EMAIL } = process.env;
+const { ENV, WEBSITE_URL, MAILTRAP_USER, MAILTRAP_PASSWORD, SEND_EMAIL } = process.env;
 
 const COMMON_EMAIL = 'noreply@tradingvg.com';
 const COMMON_EMAIL_NAME = 'TradingVG';
@@ -49,7 +50,7 @@ const emailLangs = fs
 		return langs;
 	}, {});
 
-module.exports.getEmailText = (lang, email) => emailLangs[lang][email];
+const getEmailText = (lang, email) => emailLangs[lang][email];
 
 const emailTemplate = new Email({
 	views: {
@@ -61,9 +62,9 @@ const emailTemplate = new Email({
 	message: {
 		attachments: [
 			{
-				filename: 'meblabs.png',
+				filename: 'tradingvg.png',
 				path: path.resolve(__dirname, './img/logo.png'),
-				cid: 'logo@meblabs.com'
+				cid: 'logo@tradingvg'
 			}
 		]
 	},
@@ -71,10 +72,9 @@ const emailTemplate = new Email({
 	transport: transporter
 });
 
-module.exports.sendMail = (msg, locals, template = 'common') => {
+const sendMail = (msg, locals, template = 'common') => {
 	const message = { ...msg };
-
-	msg.subject = locals.subject;
+	message.subject = locals.subject;
 
 	if (msg.from === undefined) {
 		message.from = `"${COMMON_EMAIL_NAME}" <${COMMON_EMAIL}>`;
@@ -96,6 +96,7 @@ module.exports.sendMail = (msg, locals, template = 'common') => {
 	}
 	return Promise.resolve();
 };
+module.exports.sendMail = sendMail;
 
 module.exports.checkEmail = () => {
 	if (SEND_EMAIL === '1')
@@ -106,4 +107,32 @@ module.exports.checkEmail = () => {
 				console.log('[NODEMAILER] Server is ready to take our messages!');
 			}
 		});
+};
+
+/* EMAILS */
+module.exports.registerEmail = (to, lang, name) => {
+	const locale = getEmailText(lang, 'register');
+
+	return sendMail(
+		{
+			to,
+			attachments: [
+				{
+					filename: 'header.jpg',
+					path: path.resolve(__dirname, './img/register.jpg'),
+					cid: 'header@tradingvg'
+				}
+			]
+		},
+		{
+			subject: locale.subject,
+			title: locale.subject,
+			text: sprintf(locale.text, name),
+			btn: {
+				link: WEBSITE_URL + 'create',
+				text: locale.btn
+			},
+			image: 'cid:header@tradingvg'
+		}
+	);
 };

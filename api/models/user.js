@@ -43,6 +43,13 @@ const schema = Schema(
 			trim: true
 		},
 		birthdate: Date,
+		lang: {
+			type: String,
+			maxlength: 2,
+			minlength: 2,
+			default: 'en',
+			required: true
+		},
 		role: {
 			type: String,
 			enum: ['user', 'admin'],
