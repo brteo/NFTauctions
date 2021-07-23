@@ -6,6 +6,8 @@
 		"202": "Parametri addizionali non permessi",
 		"210": "Email non valida",
 		"211": "Account non valido",
+		"212": "Impossibile carica il file",
+		"213": "La grandezza del file deve minore di %s MB!",
 		"300": "Email non corretta",
 		"301": "Password non corretta",
 		"302": "Account non attivo",

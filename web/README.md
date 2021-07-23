@@ -21,10 +21,13 @@ npm init react-app . --legacy-peer-deps # create CRA
 - [moment](https://momentjs.com) [react-moment](https://www.npmjs.com/package/react-moment)
 - [antd](https://ant.design/docs/react/introduce)
 - [@ant-design/icons](https://ant.design/components/icon/)
+- [antd-img-crop](https://github.com/nanxiaobei/antd-img-crop)
 - [react-router-dom](https://reactrouter.com/web/guides/quick-start)
 - [axios](https://www.npmjs.com/package/axios)
 - @craco/craco craco-less ([Less ant customization](https://ant.design/docs/react/use-with-create-react-app))
 - i18next react-i18next i18next-browser-languagedetector i18next-http-backend ([Langs](https://react.i18next.com/latest/using-with-hooks))
+- [aws-sdk](https://www.npmjs.com/package/aws-sdk)
+- [uuid](https://www.npmjs.com/package/uuid)
 
 DEV
 

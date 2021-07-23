@@ -105,7 +105,3 @@ Starting with releases after v0.11.5, all services are now exposed via the edge 
 
 - WEB UI DEPRECATED -> PORT_WEB_UI: Port for the Web user interface / dashboard (default: 8080 mapped on 8055 on docker).
   Note that the Web UI is now deprecated (needs to be activated with START_WEB=1), and requires to use the localstack/localstack-full Docker image.
-
-### S3
-
-When upload file on s3 the response location need to be changed: http://localSTACK:4566/dev-s3/... -> http://localHOST:4566/dev-s3/...

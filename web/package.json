@@ -12,6 +12,8 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "antd": "^4.16.3",
+    "antd-img-crop": "^3.14.3",
+    "aws-sdk": "^2.951.0",
     "axios": "^0.21.1",
     "craco-less": "^1.17.1",
     "i18next": "^20.3.2",
@@ -24,6 +26,8 @@
     "react-moment": "^1.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "sprintf-js": "^1.0.3",
+    "uuid": "^8.3.2",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
