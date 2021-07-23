@@ -48,6 +48,15 @@ const schema = Schema(
 			trim: true
 		},
 		birthdate: Date,
+		bio: {
+			type: String
+		},
+		pic: {
+			type: String
+		},
+		header: {
+			type: String
+		},
 		role: {
 			type: String,
 			enum: ['user', 'admin'],

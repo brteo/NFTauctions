@@ -10,7 +10,7 @@ const Login = props => {
 	const { show, handleClose } = props;
 
 	const { t } = useTranslation();
-	const { setUser } = useContext(AppContext);
+	const { setLogged } = useContext(AppContext);
 
 	const MODE = { INIT: t('login.continue'), LOGIN: t('login.login'), REGISTER: t('login.register') };
 
@@ -42,7 +42,7 @@ const Login = props => {
 	const handleLogin = (email, password) =>
 		login(email, password)
 			.then(res => {
-				setUser(res.data);
+				setLogged(res.data);
 				handleClose();
 				handleReset();
 			})
@@ -56,7 +56,7 @@ const Login = props => {
 	const handleRegister = (email, password, nickname, account) =>
 		register(email, password, nickname, account)
 			.then(res => {
-				setUser(res.data);
+				setLogged(res.data);
 				handleClose();
 				handleReset();
 			})

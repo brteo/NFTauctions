@@ -22,7 +22,7 @@ exports.update = (req, res, next) => {
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user.getPublicFields()));
+		return next(SendData(user.getFields(Object.keys(req.body))));
 	});
 };
 

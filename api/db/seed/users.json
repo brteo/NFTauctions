@@ -21,6 +21,7 @@
 		"nickname":"Dormi Paglia",
 		"name": "John",
 		"lastname": "Doe",
+		"bio":"Mi piace dormire nella paglia",
 		"role": "user",
 		"deleted": false,
 		"active": true

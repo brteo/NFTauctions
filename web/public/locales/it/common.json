@@ -2,7 +2,8 @@
 	"common": {
 		"error": "Errore",
 		"title": "Titolo",
-		"back": "Indietro"
+		"back": "Indietro",
+		"save": "salva"
 	},
 	"login": {
 		"btn": "accedi",
@@ -18,5 +19,9 @@
 		"nickname": "Nickname o nome d'arte",
 		"nickname_placeholder": "mio soprannome",
 		"nickname_tip": "Sei un artista? Digita il tuo nome d'arte, altrimenti indica un soprannome che verrà mostrato nel tuo profilo"
+	},
+	"profile": {
+		"bio_placeholder":"la tua biografia",
+		"bio_tip":"modifica bio"
 	}
 }

@@ -26,10 +26,14 @@
 
 /*LAYOUT*/
 .topbar{
-	background:@body-background;
+	background:fade(@body-background,60%);
 	box-shadow: @box-shadow-base;
+	backdrop-filter: blur(20px);
 	padding-left:20px;
 	padding-right:20px;
+	position:fixed;
+	width:100%;
+	z-index: 2;
 
 	.logo-box{float:left;}
 	.access-box{float:right;}
@@ -47,14 +51,14 @@
 }
 
 .main-content{
-	padding:20px;
+	padding:64px 20px;
 	min-height: calc(100vh ~"-" 114px);
 	
 	@media screen and (min-width: 996px) {
-		padding:20px 40px;
+		padding:64px 40px;
 	}
 	@media screen and (min-width: 1200px) {
-		padding:30px 60px;
+		padding:64px 60px;
 	}
 }
 
@@ -66,7 +70,7 @@
 }
 
 /*FORM*/
-.ant-form{
+#loginForm.ant-form{
 	padding-top: @form-item-margin-bottom;
 }
 .ant-input-prefix{
@@ -79,4 +83,56 @@ input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
     -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
     -webkit-transition-delay: 9999s;
+}
+
+/*COMPONENTS*/
+
+.userHeader {
+	height:250px;
+	background-color:shade(@skeleton-color,30%);
+	border-bottom-left-radius: 40px;
+	border-bottom-right-radius: 40px;
+}
+.ant-avatar {
+	background:@skeleton-color;
+}
+
+/*USER PROFILE PAGE*/
+.userProfilePage {
+	text-align:center;
+
+	> .userPic {
+		display:block;
+		margin-top:-75px;
+		.ant-avatar, .ant-skeleton-avatar {
+		box-shadow: 0 0 15px #000;
+		}
+	}
+	.profileSkeleton {
+		width:300px;
+		margin:12px auto;
+		.ant-skeleton.ant-skeleton-active .ant-skeleton-content .ant-skeleton-title{ margin: 0 auto; height:1.22em; }
+		.ant-skeleton-content .ant-skeleton-paragraph{margin-top:32px;} 
+		.ant-skeleton-content .ant-skeleton-paragraph li{height:10px;}
+		.ant-skeleton-content .ant-skeleton-paragraph li + li{margin-top:10px;}
+		.ant-skeleton-content .ant-skeleton-paragraph > li:last-child { display:none; }
+	}
+	.userProfileBio {
+		white-space: pre-line;
+		.anticon-edit{margin-right:-1.5em;margin-left:0.5em;}
+
+	}
+	
+	#bioForm .ant-form-item {
+    margin-bottom: 10px;
+
+		textarea.ant-input { 
+			text-align: center;
+			padding-top:0;
+			@media screen and (min-width: 996px) {
+				max-width: 500px;
+			}
+		}
+  }
+	
 }

@@ -2,7 +2,8 @@
 	"common": {
 		"error": "Error",
 		"title": "Title",
-		"back": "Back"
+		"back": "Back",
+		"save": "save"
 	},	
 	"login": {
 		"btn": "Sign In",
@@ -18,5 +19,9 @@
 		"nickname": "Nickname or artname",
 		"nickname_placeholder": "my nick",
 		"nickname_tip": "Are you an artist? type your artname, otherwise choose a nickname which will be showed on your profile"
+	},
+	"profile": {
+		"bio_placeholder":"your bio",
+		"bio_tip":"edit bio"
 	}
 }

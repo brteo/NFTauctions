@@ -35,14 +35,14 @@ connect.interceptors.response.use(
 
 /* PROVIDER */
 export const AppProvider = props => {
-	const [user, setUser] = useLocalStorage('user', null);
+	const [logged, setLogged] = useLocalStorage('user', null);
 
-	const handleLogout = () => logout().then(setUser(null));
+	const handleLogout = () => logout().then(setLogged(null));
 
 	useEffect(() => {
-		if (!user) return;
+		if (!logged) return;
 		refreshToken() // if user in local storage get new auth by refrsh token
-			.then(res => setUser(res.data))
+			.then(res => setLogged(res.data))
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
 				if (errorCode === 310 || errorCode === 306 || errorCode === 401) return handleLogout(); // refresh token expired
@@ -51,5 +51,5 @@ export const AppProvider = props => {
 			});
 	}, []);
 
-	return <AppContext.Provider value={{ user, setUser, handleLogout }}>{props.children}</AppContext.Provider>;
+	return <AppContext.Provider value={{ logged, setLogged, handleLogout }}>{props.children}</AppContext.Provider>;
 };

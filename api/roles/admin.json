@@ -5,6 +5,10 @@
 		"update:any": ["*"],
 		"delete:any": ["*"]
 	},
+	"profile": {
+		"read:any": ["*"],
+		"update:own": ["*"]
+	},
 	"tags": {
 		"create:any": ["*"],
 		"read:any": ["*"],

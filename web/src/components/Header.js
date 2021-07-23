@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +14,7 @@ const { Header } = Layout;
 
 const HeaderComponent = props => {
 	const { t, i18n } = useTranslation();
-	const { user, handleLogout } = useContext(AppContext);
+	const { logged, handleLogout } = useContext(AppContext);
 	const [showLogin, setShowLogin] = useState(false);
 
 	const changeLanguage = lang => i18n.changeLanguage(lang);
@@ -35,13 +36,15 @@ const HeaderComponent = props => {
 		<>
 			<Header className="topbar">
 				<div className="logo-box">
-					<img src={logo} alt="Trading Virtual Goods" id="logo" />
+					<Link to="/">
+						<img src={logo} alt="Trading Virtual Goods" id="logo" />
+					</Link>
 				</div>
 				<div className="access-box">
 					{process.env.NODE_ENV === 'development' && <APICheck />}
-					{user ? (
+					{logged ? (
 						<>
-							<Link to={'/profile/' + user.id}>{user.nickname}</Link>
+							<Link to={'/profile/' + logged._id}>{logged.nickname}</Link>
 							<Button type="primary" onClick={() => handleLogout()}>
 								{t('login.logout')}
 							</Button>
