@@ -3,6 +3,7 @@ import { Row } from 'antd';
 import { listAuctions } from '../helpers/api';
 
 import AuctionCard from '../components/AuctionCard';
+import SearchBar from '../components/SearchBar';
 
 const Auction = props => {
 	const [auctions, setAuctions] = useState([]);
@@ -34,9 +35,14 @@ const Auction = props => {
 	}, []);
 
 	return (
-		<div className="site-card-wrapper">
-			<Row gutter={16}>{auctions}</Row>
-		</div>
+		<>
+			<SearchBar />
+			<br />
+			<br />
+			<div className="site-card-wrapper">
+				<Row gutter={16}>{auctions}</Row>
+			</div>
+		</>
 	);
 };
 

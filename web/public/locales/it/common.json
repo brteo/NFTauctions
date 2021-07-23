@@ -30,9 +30,14 @@
 		"auctionDescription": "Descrizione dell'asta",
 		"category": "Categoria",
 		"tags": "Tags",
-		"deadline": "Scadenza dell'asta",
+		"deadline": "L'asta scade tra",
 		"author": "Autore",
 		"owner": "Proprietario",
-		"bet": "Punta"
+		"bet": "Punta",
+		"months": "Mesi",
+		"days": "Giorni",
+		"hours": "Ore",
+		"minutes": "Minuti",
+		"seconds": "Secondi"
 	}
 }

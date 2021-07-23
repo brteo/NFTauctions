@@ -67,12 +67,11 @@ exports.add = async (req, res, next) => {
 };
 
 /* Get auction by title */
-exports.getByTitle = (req, res, next) => {
-	Auction.findByTitle(req.params.title, (err, auction) => {
+exports.getByBasePrice = (req, res, next) => {
+	Auction.find({ basePrice: req.params.basePrice }, (err, auctions) => {
 		if (err) return next(ServerError());
-		if (!auction) return next(NotFound());
 
-		return next(SendData(auction.getPublicFields()));
+		return next(SendData(auctions));
 	});
 };
 

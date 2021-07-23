@@ -30,9 +30,14 @@
 		"auctionDescription": "Description of auction",
 		"category": "Category",
 		"tags": "Tags",
-		"deadline": "Deadline of auction",
+		"deadline": "The auction expires in",
 		"author": "Author",
 		"owner": "Owner",
-		"bet": "Bet"
+		"bet": "Bet",
+		"months": "Months",
+		"days": "Days",
+		"hours": "Hours",
+		"minutes": "Minutes",
+		"seconds": "Seconds"
 	}
 }

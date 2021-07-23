@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Col, Typography, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
+import Countdown from './CountdownTimer';
 
 const { Title } = Typography;
 
@@ -36,6 +37,11 @@ const AuctionCard = props => {
 				<br />
 				<br />
 				{t('auction.basePrice')}: {auction.basePrice}€
+				<br />
+				<br />
+				<Title level={4}>
+					{t('auction.deadline')}: <Countdown eventTime={auction.deadlineTimestamp} />
+				</Title>
 				<br />
 				<br />
 				<Button type="primary" style={{ float: 'right' }}>
