@@ -39,28 +39,24 @@ exports.update = (req, res, next) => {
 		if (!category) return next(NotFound());
 		if (err) return next(ServerError());
 
-		const originalName = category.name;
-		const newName = req.body.name;
+		return Nft.find({ 'category.id': req.params.id }, (_err, nfts) => {
+			if (_err) return next(ServerError());
 
-		if (originalName !== newName) {
-			return Nft.find({ 'category.name': originalName }, (_err, nfts) => {
-				if (nfts.length !== 0) {
-					nfts.forEach(a => {
-						Nft.findByIdAndUpdate(a.id, { 'category.name': newName }, (e, _nft) => {
-							if (e) return next(ServerError());
-						});
+			if (nfts.length !== 0) {
+				nfts.forEach(nft => {
+					Nft.findByIdAndUpdate(nft.id, { 'category.name': req.body.name }, (e, _nft) => {
+						if (e) return next(ServerError());
 					});
-				}
-
-				Category.findByIdAndUpdate(req.params.id, req.body, { new: true }, (e, _category) => {
-					if (!_category) return next(NotFound());
-					if (e) return next(ServerError());
-
-					return next(SendData(_category.getPublicFields()));
 				});
+			}
+
+			return Category.findByIdAndUpdate(req.params.id, req.body, { new: true }, (e, _category) => {
+				if (!_category) return next(NotFound());
+				if (e) return next(ServerError());
+
+				return next(SendData(_category.getPublicFields()));
 			});
-		}
-		return next(NotAcceptable());
+		});
 	});
 };
 
@@ -70,7 +66,7 @@ exports.delete = (req, res, next) => {
 		if (!category) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return Nft.find({ 'category.name': category.name }, (_err, nfts) => {
+		return Nft.find({ 'category.id': req.params.id }, (_err, nfts) => {
 			if (nfts.length === 0) {
 				return Category.findByIdAndDelete(req.params.id, (e, _category) => {
 					if (!_category) return next(NotFound());

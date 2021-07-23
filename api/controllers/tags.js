@@ -77,7 +77,7 @@ exports.delete = (req, res, next) => {
 		if (!tag) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return Nft.find({ 'tags.name': tag.name }, (_err, nfts) => {
+		return Nft.find({ tags: tag.name }, (_err, nfts) => {
 			if (nfts.length === 0) {
 				return Tag.findByIdAndDelete(req.params.id, (e, _tag) => {
 					if (!_tag) return next(NotFound());

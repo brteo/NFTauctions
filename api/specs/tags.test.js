@@ -5,6 +5,7 @@ const db = require('../db/connect-test');
 const User = require('../models/user');
 const Tag = require('../models/tag');
 const Category = require('../models/category');
+const Nft = require('../models/nft');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
@@ -18,28 +19,12 @@ const wrongSchemaTag = {
 	title: 'FILE'
 };
 
-const newNft = {
-	title: 'Nft title',
-	description: 'Nft description',
-	category: {
-		name: 'category'
-	},
-	tags: [
-		{
-			name: 'tag'
-		},
-		{
-			name: 'tag2'
-		}
-	],
-	url: 'path/to/image'
-};
-
 let admin;
 let adminToken;
 let user;
 let userToken;
 let tag;
+let tagOfNft;
 
 beforeAll(async () => await db.connect());
 beforeEach(async () => {
@@ -48,6 +33,8 @@ beforeEach(async () => {
 	admin = await new User({
 		email: 'admin@meblabs.com',
 		password: 'testtest',
+		account: 'user1234',
+		nickname: 'alandormenellapaglia',
 		name: 'Super',
 		lastname: 'Admin',
 		role: 'admin',
@@ -58,6 +45,8 @@ beforeEach(async () => {
 	user = await new User({
 		email: 'user@meblabs.com',
 		password: 'testtest',
+		account: 'user4321',
+		nickname: 'ziocarmelitano',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
@@ -69,12 +58,32 @@ beforeEach(async () => {
 		name: 'tag'
 	}).save();
 
-	await new Tag({
+	tagOfNft = await new Tag({
 		name: 'tag2'
 	}).save();
 
-	await new Category({
-		name: 'category'
+	const category = await new Category({
+		name: {
+			it: 'Immagini',
+			en: 'Images'
+		}
+	}).save();
+
+	await new Nft({
+		_id: 1000005,
+		title: 'Nft title',
+		description: 'Nft description',
+		category: {
+			id: category.id,
+			name: {
+				it: 'Immagini',
+				en: 'Images'
+			}
+		},
+		tags: ['tag2'],
+		url: 'path/to/image',
+		author: admin.id,
+		owner: admin.id
 	}).save();
 });
 afterAll(async () => await db.close());
@@ -107,13 +116,13 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get wrong tagId should be not found', done => {
+		test('Get wrong tagId should be not done', done => {
 			agent
 				.get('/tags/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});
@@ -177,9 +186,19 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update should be done in every nft that contains category', async () => {
-			await agent.post('/nfts').set('Cookie', `TvgAccessToken=${adminToken}`).send(newNft).expect(201);
+		test('Update with wrong tagId should be not done', done => {
+			agent
+				.put('/tags/1234')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.send({ name: 'tag changed' })
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+					done();
+				});
+		});
 
+		test('Update should be done in every nft that contains tag', async () => {
 			await agent
 				.put('/tags/' + tag.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -199,18 +218,6 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update wrong tagId should be not found', done => {
-			agent
-				.put('/tags/1234')
-				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ name: 'tag changed' })
-				.expect(404)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
-					done();
-				});
-		});
-
 		test('Update with wrong data should not be done', done => {
 			agent
 				.put('/tags/' + tag.id)
@@ -223,7 +230,7 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Update deleted user should be not found', async () => {
+		test('Update deleted tag should be not found', async () => {
 			await agent
 				.delete('/tags/' + tag.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -255,25 +262,24 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Delete should not be done if tag exist in a nft', async () => {
-			await agent.post('/nfts').set('Cookie', `TvgAccessToken=${adminToken}`).send(newNft).expect(201);
-
-			return agent
-				.delete('/tags/' + tag.id)
+		test('Delete should not be done if tag exist in a nft', done => {
+			agent
+				.delete('/tags/' + tagOfNft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(406)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 406 }));
+					done();
 				});
 		});
 
-		test('Delete tag userId should be not found', done => {
+		test('Delete tag with wrong tagId should be not done', done => {
 			agent
 				.delete('/tags/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.expect(404)
+				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
 					done();
 				});
 		});

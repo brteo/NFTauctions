@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Layout, Button } from 'antd';
+import { Layout, Button, Modal } from 'antd';
 
 import AppContext from '../helpers/AppContext';
 import APICheck from './extra/APICheck';
@@ -30,7 +30,16 @@ const HeaderComponent = props => {
 		</>
 	);
 
-	const toggleLogin = () => setShowLogin(!showLogin);
+	const toggleLogin = () => {
+		if (navigator.cookieEnabled) {
+			setShowLogin(!showLogin);
+		} else {
+			Modal.error({
+				title: t('cookie.title'),
+				content: t('cookie.message')
+			});
+		}
+	};
 
 	return (
 		<>

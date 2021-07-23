@@ -23,5 +23,26 @@
 	"profile": {
 		"bio_placeholder":"your bio",
 		"bio_tip":"edit bio"
+	},
+	"cookie": {
+		"title": "Cookies blocked", 
+		"message": "Enable cookies to login"
+	},
+	"auction": {
+		"basePrice": "Base price",
+		"nftTitle": "Title of nft",
+		"nftDescription": "Description of nft",
+		"auctionDescription": "Description of auction",
+		"category": "Category",
+		"tags": "Tags",
+		"deadline": "The auction expires in",
+		"author": "Author",
+		"owner": "Owner",
+		"bet": "Bet",
+		"months": "Months",
+		"days": "Days",
+		"hours": "Hours",
+		"minutes": "Minutes",
+		"seconds": "Seconds"
 	}
 }

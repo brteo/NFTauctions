@@ -23,5 +23,26 @@
 	"profile": {
 		"bio_placeholder":"la tua biografia",
 		"bio_tip":"modifica bio"
+	},
+	"cookie": {
+		"title": "Cookie bloccati", 
+		"message": "Attivare i cookie per eseguire l'accesso"
+	},
+	"auction": {
+		"basePrice": "Prezzo base",
+		"nftTitle": "Titolo dell'nft",
+		"nftDescription": "Descrizione dell'nft",
+		"auctionDescription": "Descrizione dell'asta",
+		"category": "Categoria",
+		"tags": "Tags",
+		"deadline": "L'asta scade tra",
+		"author": "Autore",
+		"owner": "Proprietario",
+		"bet": "Punta",
+		"months": "Mesi",
+		"days": "Giorni",
+		"hours": "Ore",
+		"minutes": "Minuti",
+		"seconds": "Secondi"
 	}
 }

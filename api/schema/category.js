@@ -3,7 +3,12 @@ module.exports = {
 		$id: 'category',
 		type: 'object',
 		properties: {
-			name: { type: 'string' }
+			name: {
+				type: 'object',
+				properties: {
+					'^[a-z]{2}$': { type: 'string' }
+				}
+			}
 		},
 		required: ['name'],
 		additionalProperties: false
