@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const cryptoJS = require('crypto-js');
 const softDelete = require('../helpers/softDelete');
-const publicFields = require('../helpers/publicFields');
+const toJson = require('../helpers/toJson');
 
 const { Schema } = mongoose;
 
@@ -84,7 +84,11 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(publicFields, ['_id', 'nickname', 'role', 'lang']);
+schema.plugin(toJson, {
+	publicFields: ['_id', 'nickname', 'role', 'lang'],
+	profileFields: ['_id', 'nickname', 'pic', 'header', 'bio'],
+	dataFields: ['pic', 'header']
+});
 
 schema.pre('save', async function (next) {
 	try {

@@ -21,7 +21,7 @@ exports.getById = (req, res, next) => {
 		if (err) return next(ServerError());
 		if (!nft) return next(NotFound());
 
-		return next(SendData(nft.getPublicFields()));
+		return next(SendData(nft.toJson()));
 	});
 };
 
@@ -98,7 +98,7 @@ exports.create = async (req, res, next) => {
 		}
 		*/
 
-		return next(SendData(nft.getPublicFields(), 201));
+		return next(SendData(nft.toJson(), 201));
 	});
 };
 
@@ -107,7 +107,7 @@ exports.getByTitle = (req, res, next) => {
 	Nft.findByTitle(req.params.title, (err, nft) => {
 		if (err) return next(NotFound());
 
-		return next(SendData(nft.getPublicFields()));
+		return next(SendData(nft.toJson()));
 	});
 };
 
@@ -124,7 +124,7 @@ exports.update = (req, res, next) => {
 		return Nft.findByIdAndUpdate(req.params.id, req.body, { new: true }, (_err, _nft) => {
 			if (err) return next(ServerError());
 
-			return next(SendData(_nft.getPublicFields()));
+			return next(SendData(_nft.toJson()));
 		});
 	});
 };

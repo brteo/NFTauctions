@@ -5,6 +5,7 @@ const db = require('../db/connect-test');
 const User = require('../models/user');
 const { genereteAuthToken } = require('../helpers/auth');
 
+const { AWS_S3_ENDPOINT, AWS_S3_BUCKET_NAME } = process.env;
 const agent = supertest.agent(app);
 
 let admin;
@@ -25,8 +26,8 @@ beforeEach(async () => {
 		nickname: 'Admin',
 		name: 'Super',
 		lastname: 'Admin',
-		pic: 'url/pic',
-		header: 'url/pic',
+		pic: 'pic.jpg',
+		header: 'header.jpg',
 		bio: 'my admin bio',
 		role: 'admin',
 		active: 1
@@ -40,8 +41,8 @@ beforeEach(async () => {
 		nickname: 'DormiPaglia',
 		name: 'John',
 		lastname: 'Doe',
-		pic: 'url/pic',
-		header: 'url/pic',
+		pic: 'pic.jpg',
+		header: 'header.jpg',
 		bio: 'my bio',
 		role: 'user',
 		active: 1
@@ -55,8 +56,8 @@ beforeEach(async () => {
 		nickname: 'Cicciopasticcio',
 		name: 'Alice',
 		lastname: 'Keen',
-		pic: 'url/pic',
-		header: 'url/pic',
+		pic: 'pic.jpg',
+		header: 'header.jpg',
 		bio: 'my bio 2',
 		role: 'user',
 		active: 1
@@ -69,8 +70,8 @@ beforeEach(async () => {
 		nickname: 'Deleted',
 		name: 'John',
 		lastname: 'Doe',
-		pic: 'url/pic',
-		header: 'url/pic',
+		pic: 'pic.jpg',
+		header: 'header.jpg',
 		bio: 'my bio',
 		role: 'user',
 		active: 1,
@@ -79,6 +80,8 @@ beforeEach(async () => {
 });
 afterEach(() => jest.clearAllMocks());
 afterAll(async () => await db.close());
+
+const getUrl = file => AWS_S3_ENDPOINT + '/' + AWS_S3_BUCKET_NAME + '/' + file;
 
 /*
  * User Role
@@ -103,7 +106,7 @@ describe('Role: user', () => {
 				.expect(200)
 				.then(res => {
 					const { id, nickname, pic, header, bio } = user;
-					expect(res.body).toMatchObject({ _id: id, nickname, pic, header, bio });
+					expect(res.body).toMatchObject({ _id: id, nickname, pic: getUrl(pic), header: getUrl(header), bio });
 					done();
 				});
 		});
@@ -115,7 +118,7 @@ describe('Role: user', () => {
 				.expect(200)
 				.then(res => {
 					const { id, nickname, pic, header, bio } = user2;
-					expect(res.body).toMatchObject({ _id: id, nickname, pic, header, bio });
+					expect(res.body).toMatchObject({ _id: id, nickname, pic: getUrl(pic), header: getUrl(header), bio });
 					done();
 				});
 		});

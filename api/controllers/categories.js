@@ -18,7 +18,7 @@ exports.getById = (req, res, next) => {
 		if (!category) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return next(SendData(category.getPublicFields()));
+		return next(SendData(category.toJson()));
 	});
 };
 
@@ -29,7 +29,7 @@ exports.add = (req, res, next) => {
 	_category.save((err, category) => {
 		if (err) return next(err);
 
-		return next(SendData(category.getPublicFields(), 201));
+		return next(SendData(category.toJson(), 201));
 	});
 };
 
@@ -54,7 +54,7 @@ exports.update = (req, res, next) => {
 				if (!_category) return next(NotFound());
 				if (e) return next(ServerError());
 
-				return next(SendData(_category.getPublicFields()));
+				return next(SendData(_category.toJson()));
 			});
 		});
 	});

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const publicFields = require('../helpers/publicFields');
+const toJson = require('../helpers/toJson');
 
 const schema = new mongoose.Schema(
 	{
@@ -13,6 +13,6 @@ const schema = new mongoose.Schema(
 	}
 );
 
-schema.plugin(publicFields, ['_id', 'name']);
+schema.plugin(toJson, { publicFields: ['_id', 'name'] });
 
 module.exports = mongoose.model('Category', schema);

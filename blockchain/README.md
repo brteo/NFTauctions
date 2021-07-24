@@ -29,7 +29,7 @@ info  2021-07-14T07:51:44.901 nodeos    producer_plugin.cpp:2333      produce_bl
 ./nodeos.sh reset # remove all data and restart
 ```
 
-To manually delete all data: stop the container and empty `data`, `keys` and `logs` folders
+To manually delete all data: stop the container and empty `data`, `keys`, `wallet` and `logs` folders
 
 #### CLEOS
 

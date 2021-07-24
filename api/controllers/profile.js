@@ -1,8 +1,6 @@
 const User = require('../models/user');
 const { SendData, ServerError, Forbidden, NotFound } = require('../helpers/response');
 
-const profileFields = ['_id', 'nickname', 'pic', 'header', 'bio'];
-
 exports.get = (req, res, next) => {
 	User.find({}, (err, users) => {
 		if (err) next(ServerError());
@@ -10,17 +8,18 @@ exports.get = (req, res, next) => {
 	});
 };
 
-exports.getById = (req, res, next) =>
-	User.findById(req.params.id, profileFields, (err, user) => {
+exports.getById = (req, res, next) => {
+	User.findById(req.params.id, User.getFields('profileFields'), (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user));
+		return next(SendData(user.toJson('profileFields')));
 	});
+};
 
 exports.update = (req, res, next) => {
 	if (res.locals.user.id !== req.params.id) return next(Forbidden());
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user.getFields(Object.keys(req.body))));
+		return next(SendData(user.toJson(Object.keys(req.body))));
 	});
 };

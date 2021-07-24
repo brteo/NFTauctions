@@ -18,7 +18,7 @@ exports.getById = (req, res, next) => {
 		if (!tag) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return next(SendData(tag.getPublicFields()));
+		return next(SendData(tag.toJson()));
 	});
 };
 
@@ -29,7 +29,7 @@ exports.add = (req, res, next) => {
 	tag.save((err, tags) => {
 		if (err) return next(ServerError());
 
-		return next(SendData(tag.getPublicFields(), 201));
+		return next(SendData(tag.toJson(), 201));
 	});
 };
 
@@ -56,7 +56,7 @@ exports.update = (req, res, next) => {
 					if (!_tag) return next(NotFound());
 					if (e) return next(ServerError());
 
-					return next(SendData(_tag.getPublicFields()));
+					return next(SendData(_tag.toJson()));
 				});
 			});
 		}
@@ -67,7 +67,7 @@ exports.update = (req, res, next) => {
 		if (!tag) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return next(SendData(tag.getPublicFields()));
+		return next(SendData(tag.toJson()));
 	});
 };
 
