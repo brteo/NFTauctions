@@ -8,6 +8,8 @@
 		"nickname":"Admin",
 		"name": "Super",
 		"lastname": "Admin",
+		"pic": "admin-pic.jpg",
+		"lang": "en",
 		"role": "admin",
 		"deleted": false,
 		"active": true
@@ -22,6 +24,7 @@
 		"name": "John",
 		"lastname": "Doe",
 		"bio":"Mi piace dormire nella paglia",
+		"lang": "it",
 		"role": "user",
 		"deleted": false,
 		"active": true
@@ -35,6 +38,7 @@
 		"nickname":"Buyer90",
 		"name": "Pinco",
 		"lastname": "Pallino",
+		"lang": "it",
 		"role": "user",
 		"deleted": false,
 		"active": true

@@ -49,13 +49,23 @@ const schema = Schema(
 		},
 		birthdate: Date,
 		bio: {
-			type: String
+			type: String,
+			trim: true
 		},
 		pic: {
-			type: String
+			type: String,
+			trim: true
 		},
 		header: {
-			type: String
+			type: String,
+			trim: true
+		},
+		lang: {
+			type: String,
+			maxlength: 2,
+			minlength: 2,
+			default: 'en',
+			required: true
 		},
 		role: {
 			type: String,
@@ -74,7 +84,7 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(publicFields, ['_id', 'nickname', 'role']);
+schema.plugin(publicFields, ['_id', 'nickname', 'role', 'lang']);
 
 schema.pre('save', async function (next) {
 	try {

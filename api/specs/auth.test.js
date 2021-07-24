@@ -19,6 +19,7 @@ const userInfo = (active = 1, deleted = 0) => {
 		lastname: 'Doe',
 		account: 'john1234',
 		nickname: 'DormiPaglia',
+		lang: 'en',
 		active,
 		deleted
 	};
@@ -55,7 +56,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'wrong@email', password: 'wrongpwd' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
 			});
 	});
 
@@ -67,7 +68,7 @@ describe('POST /auth/login', () => {
 			.send({ email: 'wrong@email.it' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/password' }));
 			});
 	});
 
@@ -220,7 +221,7 @@ describe('GET /auth/email/:email', () => {
 			.get('/auth/email/')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/email' }));
 			}));
 
 	test('Check with incorrect email should be ValidationError', async () =>
@@ -228,7 +229,7 @@ describe('GET /auth/email/:email', () => {
 			.get('/auth/email/wrong@email')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
 			}));
 });
 
@@ -241,7 +242,13 @@ describe('POST /auth/register', () => {
 	test('Register new user with email and password should be OK and response with auth token + refresh token', async () => {
 		await agent
 			.post('/auth/register')
-			.send({ email: 'test@meblabs.com', password: 'testtest', nickname: 'Paglia2000', account: 'newjohn12' })
+			.send({
+				email: 'test@meblabs.com',
+				password: 'testtest',
+				nickname: 'Paglia2000',
+				account: 'newjohn12',
+				lang: 'en'
+			})
 			.expect(200)
 			.then(res => {
 				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
@@ -299,7 +306,7 @@ describe('POST /auth/register', () => {
 			.send({ email: 'test2@meblabs.com', password: 'testtest', account: 'john01234' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 211, data: '/account' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
@@ -308,7 +315,7 @@ describe('POST /auth/register', () => {
 			.post('/auth/register')
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'email' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/email' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
@@ -318,7 +325,7 @@ describe('POST /auth/register', () => {
 			.send({ email: 'test@meblabs.com' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'password' }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/password' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
 			}));
 
@@ -328,8 +335,58 @@ describe('POST /auth/register', () => {
 			.send({ email: 'wrong@email', password: 'testtest' })
 			.expect(400)
 			.then(res => {
-				expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				expect(res.body).toEqual(expect.objectContaining({ error: 210, data: '/email' }));
 				expect(eos.transact.mock.calls.length).toBe(0);
+			}));
+
+	test('Register new user with not send lang filed has registered as "en"', async () =>
+		agent
+			.post('/auth/register')
+			.send({
+				email: 'test@meblabs.com',
+				password: 'testtest',
+				nickname: 'Paglia2000',
+				account: 'newjohn12'
+			})
+			.expect(200)
+			.then(res => {
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: 'Paglia2000', lang: 'en' }));
+				expect(eos.transact.mock.calls.length).toBe(1);
+			}));
+
+	test('Register new user with supported lang "it"', async () =>
+		agent
+			.post('/auth/register')
+			.send({
+				email: 'test@meblabs.com',
+				password: 'testtest',
+				nickname: 'Paglia2000',
+				account: 'newjohn12',
+				lang: 'it'
+			})
+			.expect(200)
+			.then(res => {
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: 'Paglia2000', lang: 'it' }));
+				expect(eos.transact.mock.calls.length).toBe(1);
+			}));
+
+	test('Register new user with not supported lang has registered as "en" ', async () =>
+		agent
+			.post('/auth/register')
+			.send({
+				email: 'test@meblabs.com',
+				password: 'testtest',
+				nickname: 'Paglia2000',
+				account: 'newjohn12',
+				lang: 'de'
+			})
+			.expect(200)
+			.then(res => {
+				expect(res.headers['set-cookie']).toEqual(expect.arrayContaining([expect.any(String), expect.any(String)]));
+				expect(res.body).toEqual(expect.objectContaining({ nickname: 'Paglia2000', lang: 'en' }));
+				expect(eos.transact.mock.calls.length).toBe(1);
 			}));
 });
 

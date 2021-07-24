@@ -243,7 +243,7 @@ describe('Role: admin', () => {
 				.send({ title: 'Categoria aggiornata' })
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'name' }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/name' }));
 					done();
 				});
 		});

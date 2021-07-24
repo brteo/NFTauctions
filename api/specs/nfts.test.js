@@ -211,7 +211,7 @@ describe('Role: admin', () => {
 				.send(wrongSchemaNft)
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: 'name' }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: '/name' }));
 					expect(eos.transact.mock.calls.length).toBe(0);
 					done();
 				});
@@ -254,7 +254,7 @@ describe('Role: admin', () => {
 				.send({ name: 'Nft changed' })
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: 'name' }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 202, data: '/name' }));
 					done();
 				});
 		});

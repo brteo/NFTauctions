@@ -3,13 +3,13 @@ import { useTranslation } from 'react-i18next';
 import { Form, Input, Button, Modal, Divider } from 'antd';
 import { UserOutlined, LockOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
-import { login, register, checkEmail } from '../helpers/api';
+import { connect } from '../helpers/api';
 import AppContext from '../helpers/AppContext';
 
 const Login = props => {
 	const { show, handleClose } = props;
 
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { setLogged } = useContext(AppContext);
 
 	const MODE = { INIT: t('login.continue'), LOGIN: t('login.login'), REGISTER: t('login.register') };
@@ -29,7 +29,8 @@ const Login = props => {
 	};
 
 	const handleCheckEmail = email =>
-		checkEmail(email)
+		connect
+			.get(`/auth/email/${email}`)
 			.then(res => setLoginMode(MODE.LOGIN))
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -40,9 +41,11 @@ const Login = props => {
 			});
 
 	const handleLogin = (email, password) =>
-		login(email, password)
+		connect
+			.post(`/auth/login`, { email, password })
 			.then(res => {
 				setLogged(res.data);
+				i18n.changeLanguage(res.data.lang);
 				handleClose();
 				handleReset();
 			})
@@ -54,9 +57,11 @@ const Login = props => {
 			});
 
 	const handleRegister = (email, password, nickname, account) =>
-		register(email, password, nickname, account)
+		connect
+			.post('/auth/register', { email, password, nickname, account, lang: i18n.language })
 			.then(res => {
 				setLogged(res.data);
+				i18n.changeLanguage(res.data.lang);
 				handleClose();
 				handleReset();
 			})

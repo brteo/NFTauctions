@@ -31,27 +31,27 @@ Stack MERN with Docker Compose:
 
 1. Install api npm package on "api" folder
 
-```sh
-npm i
-```
+   ```sh
+   npm i
+   ```
 
 2. Install api npm package on "web" folder
 
-```sh
-npm i --legacy-peer-deps
-```
+   ```sh
+   npm i --legacy-peer-deps
+   ```
 
 3. Launch docker in the "main" folder
 
-```sh
-docker compose up -d
-```
+   ```sh
+   docker compose up -d
+   ```
 
 4. Seed Mongo DB in api folder
 
-```sh
-npm run seed
-```
+   ```sh
+   npm run seed
+   ```
 
 ## VScode
 
@@ -92,3 +92,16 @@ docker volume prune #remove all volumes
 docker images -a #List of images
 docker rmi $(docker images -a -q) #Remove all images
 ```
+
+## Localstack
+
+- [Git](https://github.com/localstack/localstack)
+- [Learn How to Run AWS on Your Local Machine With LocalStack](https://betterprogramming.pub/-dont-be-intimidated-learn-how-to-run-aws-on-your-local-machine-with-localstack-2f3448462254)
+- [Docker-localstack-tutorial](https://dev.to/goodidea/how-to-fake-aws-locally-with-localstack-27me)
+
+Starting with releases after v0.11.5, all services are now exposed via the edge service (port 4566) only! Please update your client configurations to use this new endpoint.
+
+- Health [http://localhost:4566/health](http://localhost:4566/)
+
+- WEB UI DEPRECATED -> PORT_WEB_UI: Port for the Web user interface / dashboard (default: 8080 mapped on 8055 on docker).
+  Note that the Web UI is now deprecated (needs to be activated with START_WEB=1), and requires to use the localstack/localstack-full Docker image.

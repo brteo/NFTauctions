@@ -6,7 +6,7 @@ module.exports = (toSend, res) => {
 		return res.status(statusCode).json(data);
 	}
 
-	// console.log('[ERROR]', toSend);
+	if (process.env.ENV === 'production') console.log('[ERROR]', toSend);
 
 	return res.status(statusCode).json({
 		error,

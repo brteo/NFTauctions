@@ -1,4 +1,5 @@
 const passport = require('passport');
+
 const User = require('../models/user');
 const {
 	SendData,
@@ -9,7 +10,8 @@ const {
 	NicknameAlreadyExists
 } = require('../helpers/response');
 const { generateToken } = require('../helpers/auth');
-const { eos, addKey, generateKeys } = require('../helpers/eosjs');
+const { eos, generateKeys } = require('../helpers/eosjs');
+const { registerEmail } = require('../emails');
 
 exports.login = (req, res, next) =>
 	passport.authenticate('local', { session: false }, async (err, user) => {
@@ -37,6 +39,13 @@ exports.checkIfEmailExists = (req, res, next) => {
 };
 
 exports.register = async (req, res, next) => {
+	const langs = ['it', 'en'];
+	const defaultLang = 'en';
+
+	if (req.body.lang && !langs.includes(req.body.lang)) {
+		req.body.lang = defaultLang;
+	}
+
 	try {
 		const check = await User.findOne({ email: req.body.email }).exec();
 		if (check) return next(EmailAlreadyExists());
@@ -119,6 +128,8 @@ exports.register = async (req, res, next) => {
 
 		try {
 			await generateToken(res, user);
+
+			registerEmail(user.email, user.lang, user.nickname).catch(erremail => console.log('[EMAIL ERROR]', erremail));
 
 			return next(SendData(user.getPublicFields()));
 		} catch (e) {

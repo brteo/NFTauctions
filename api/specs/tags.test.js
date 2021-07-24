@@ -167,7 +167,7 @@ describe('Role: admin', () => {
 				.send(wrongSchemaTag)
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'name' }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/name' }));
 					done();
 				});
 		});
@@ -225,7 +225,7 @@ describe('Role: admin', () => {
 				.send({ title: 'tag changed' })
 				.expect(400)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: 'name' }));
+					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/name' }));
 					done();
 				});
 		});

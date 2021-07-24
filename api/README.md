@@ -11,10 +11,15 @@ MongoDB at localhost:27017
 - [cookie-parser](http://expressjs.com/en/resources/middleware/cookie-parser.html)
 - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
 - [mongoose](https://mongoosejs.com)
-- [ajv](https://ajv.js.org/) [ajv-formats](https://github.com/ajv-validator/ajv-formats)
+- [ajv](https://ajv.js.org/) [ajv-formats](https://github.com/ajv-validator/ajv-formats) [ajv-errors](https://github.com/ajv-validator/ajv-errors)
 - [jsonwebtoken](https://jwt.io)
 - [Passport](http://www.passportjs.org) passport-jwt passport-local
 - [uuid](https://www.npmjs.com/package/uuid)
+- [nodemailer](https://nodemailer.com/about/)
+- [ejs](https://ejs.co/)
+- [email-templates](https://www.npmjs.com/package/email-templates)
+- [sprintf-js](https://www.npmjs.com/package/sprintf-js)
+- [aws-sdk](https://www.npmjs.com/package/aws-sdk)
 
 DEV
 
@@ -199,9 +204,17 @@ module.exports = {
 		type: 'object',
 		properties: {
 			email: { type: 'string', format: 'email' },
-			password: { type: 'string' }
+			password: { type: 'string' },
+			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' }
 		},
-		additionalProperties: false
+		additionalProperties: false,
+		errorMessage: {
+			//optional response error message for each properties
+			properties: {
+				email: '210',
+				account: '211'
+			}
+		}
 	},
 	loginAuth: {
 		type: 'object',

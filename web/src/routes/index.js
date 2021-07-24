@@ -4,9 +4,11 @@ import { Layout } from 'antd';
 
 import ErrorPage from '../components/extra/ErrorPage';
 import Header from '../components/Header';
-import Auction from '../components/Auction';
-import Profile from './Profile';
+
 import Home from './Home';
+import Profile from './Profile';
+import Upload from './Upload';
+import Auctions from './Auctions';
 
 const { Content, Footer } = Layout;
 
@@ -19,8 +21,9 @@ const Routes = props => {
 					<Switch>
 						<Route exact path="/" component={Home} />
 						<Route exact path="/index.html" component={Home} />
-						<Route exact path="/auctions" component={Auction} />
+						<Route exact path="/auctions" component={Auctions} />
 						<Route exact path="/profile/:id" component={Profile} />
+						<Route exact path="/upload" component={Upload} />
 						<Route component={() => <ErrorPage status="404" />} />
 					</Switch>
 				</Content>

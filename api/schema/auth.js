@@ -6,9 +6,16 @@ module.exports = {
 			email: { type: 'string', format: 'email' },
 			password: { type: 'string' },
 			account: { type: 'string', pattern: '^[a-z1-5.]{1,12}$' },
-			nickname: { type: 'string' }
+			nickname: { type: 'string' },
+			lang: { type: 'string' }
 		},
-		additionalProperties: false
+		additionalProperties: false,
+		errorMessage: {
+			properties: {
+				email: '210',
+				account: '211'
+			}
+		}
 	},
 	loginAuth: {
 		type: 'object',

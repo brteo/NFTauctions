@@ -12,8 +12,14 @@ module.exports = {
 			birthdate: { type: 'string', format: 'date' },
 			bio: { type: 'string' },
 			pic: { type: 'string' },
-			header: { type: 'string' }
+			header: { type: 'string' },
+			lang: { type: 'string' }
 		},
-		additionalProperties: false
+		additionalProperties: false,
+		errorMessage: {
+			properties: {
+				email: '210'
+			}
+		}
 	}
 };
