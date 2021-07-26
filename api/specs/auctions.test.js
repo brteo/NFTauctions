@@ -7,6 +7,7 @@ const Auction = require('../models/auction');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
 const Nft = require('../models/nft');
+const Bet = require('../models/bet');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
@@ -47,13 +48,14 @@ beforeEach(async () => {
 	adminToken = genereteAuthToken(admin).token;
 
 	user = await new User({
-		email: 'user@meblabs.com',
+		email: 'user1@meblabs.com',
 		password: 'testtest',
 		account: 'user4321',
 		nickname: 'pluto',
 		name: 'John',
 		lastname: 'Doe',
 		role: 'user',
+		pic: 'user1-pic.jpg',
 		active: 1
 	}).save();
 	userToken = genereteAuthToken(user).token;
@@ -100,6 +102,7 @@ beforeEach(async () => {
 	auction = await new Auction({
 		description: 'Description',
 		basePrice: 100,
+		currentPrice: 100,
 		deadlineTimestamp: '2029-07-02 00:00:00',
 		nft: nft.id,
 		active: 1
@@ -458,5 +461,27 @@ describe('Role: user', () => {
 					done();
 				});
 		});
+	});
+});
+
+describe('Bets', () => {
+	describe('GET /auctions/:id/bets', () => {
+		test('Get auction bets should be empty', async () =>
+			agent
+				.get('/auctions/' + auction.id + '/bets')
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual([]);
+				}));
+
+		test.todo('Get auction bets should be 2');
+		test.todo('Get last 10 auction bets');
+
+		test.todo('Get auction bets');
+	});
+	describe('PUT /auctions/:id/bets', () => {
+		test.todo('Add a new bet should be ok');
+		test.todo('Add a new bet without auth should be Unauthorized');
+		test.todo('Add a new bet without price should be a ValidationError');
 	});
 });

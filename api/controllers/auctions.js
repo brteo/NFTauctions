@@ -1,5 +1,6 @@
 const Auction = require('../models/auction');
 const Nft = require('../models/nft');
+const Bet = require('../models/bet');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
 
@@ -51,6 +52,7 @@ exports.getById = (req, res, next) => {
 /* Add new auction */
 exports.add = async (req, res, next) => {
 	const auction = new Auction(req.body);
+	auction.currentPrice = req.body.basePrice;
 
 	await Nft.findById(auction.nft, (err, nfts) => {
 		if (err || !nfts || nfts.length === 0) {
@@ -111,5 +113,53 @@ exports.delete = (req, res, next) => {
 			await auction.softdelete();
 			return next(SendData({ message: 'Auction deleted sucessfully!' }));
 		});
+	});
+};
+
+exports.getBets = (req, res, next) => {
+	Bet.find({ auction: req.params.id }, (err, bets) => {
+		if (err) next(ServerError());
+		else next(SendData(bets));
+	});
+};
+
+exports.addBet = (req, res, next) => {
+	const { user: logged } = res.locals;
+	const auctionId = req.params.id;
+	const betPrice = req.body.price;
+
+	// todo: check price
+	// todo: transaction
+
+	const bet = new Bet({
+		auction: auctionId,
+		user: {
+			id: logged.id,
+			nickname: logged.nickname,
+			pic: logged.pic
+		},
+		price: betPrice
+	});
+
+	return bet.save((err, doc) => {
+		if (err) next(err);
+
+		return Bet.find({ auction: auctionId })
+			.sort('-createdAt')
+			.limit(10)
+			.exec((errBets, bets) => {
+				if (errBets) next(ServerError());
+
+				const newBets = bets.map(({ id, user, price }) => ({ id, user, price }));
+
+				return Auction.findByIdAndUpdate(
+					auctionId,
+					{ currentPrice: betPrice, bets: newBets },
+					(errAcution, acution) => {
+						if (errAcution) return next(ServerError());
+						return next(SendData(doc.getPublicFields(), 201));
+					}
+				);
+			});
 	});
 };

@@ -14,6 +14,10 @@ const schema = Schema(
 			type: Number,
 			required: true
 		},
+		currentPrice: {
+			type: Number,
+			required: true
+		},
 		deadlineTimestamp: {
 			type: Date,
 			required: true
@@ -23,6 +27,27 @@ const schema = Schema(
 			ref: 'Nft',
 			required: true
 		},
+		bets: [
+			{
+				id: {
+					type: mongoose.Schema.Types.ObjectId,
+					required: true
+				},
+				user: {
+					id: {
+						type: mongoose.Schema.Types.ObjectId,
+						required: true
+					},
+					nickname: String,
+					pic: String
+				},
+				price: {
+					type: Number,
+					maxlength: 128,
+					required: true
+				}
+			}
+		],
 		active: {
 			type: Boolean,
 			default: true

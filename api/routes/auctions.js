@@ -14,6 +14,17 @@ router
 	.patch(validator({ body: 'auction', params: 'objectId' }), isAuth, rbac('auctions', 'update'), controller.update)
 	.delete(validator({ params: 'objectId' }), isAuth, rbac('auctions', 'delete'), controller.delete);
 
+router
+	.route('/:id/bets')
+	.get(validator({ params: 'objectId' }), controller.getBets)
+	.put(validator({ params: 'objectId', body: 'bet' }), isAuth, rbac('bets', 'create'), controller.addBet);
+
 router.route('/basePrice/:basePrice').get(controller.getByBasePrice);
+
+router
+	.route('/bets')
+	.get(validator({ params: 'objectId' }), controller.getById)
+	.patch(validator({ body: 'auction', params: 'objectId' }), isAuth, rbac('auctions', 'update'), controller.update)
+	.delete(validator({ params: 'objectId' }), isAuth, rbac('auctions', 'delete'), controller.delete);
 
 module.exports = router;

@@ -20,5 +20,9 @@
 		"read:any": ["*"],
 		"update:own": ["*"],
 		"delete:own": ["*"]
+	},
+	"bets": {
+		"create:own": ["*"],
+		"read:any": ["*"]
 	}
 }
