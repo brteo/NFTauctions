@@ -5,11 +5,8 @@ const db = require('../db/connect-test');
 const User = require('../models/user');
 const { genereteAuthToken } = require('../helpers/auth');
 
-const { AWS_S3_ENDPOINT, AWS_S3_BUCKET_NAME } = process.env;
 const agent = supertest.agent(app);
 
-let admin;
-let adminToken;
 let user;
 let userToken;
 let user2;
@@ -18,21 +15,6 @@ let user3;
 beforeAll(async () => await db.connect());
 beforeEach(async () => {
 	await db.clear();
-
-	admin = await new User({
-		email: 'admin@meblabs.com',
-		password: 'testtest',
-		account: 'admin1234',
-		nickname: 'Admin',
-		name: 'Super',
-		lastname: 'Admin',
-		pic: 'pic.jpg',
-		header: 'header.jpg',
-		bio: 'my admin bio',
-		role: 'admin',
-		active: 1
-	}).save();
-	adminToken = genereteAuthToken(admin).token;
 
 	user = await new User({
 		email: 'user@meblabs.com',
@@ -81,8 +63,6 @@ beforeEach(async () => {
 afterEach(() => jest.clearAllMocks());
 afterAll(async () => await db.close());
 
-const getUrl = file => AWS_S3_ENDPOINT + '/' + AWS_S3_BUCKET_NAME + '/' + file;
-
 /*
  * User Role
  */
@@ -94,7 +74,7 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					expect(res.body.length).toBe(3);
+					expect(res.body.length).toBe(2);
 					done();
 				});
 		});
@@ -105,8 +85,7 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					const { id, nickname, pic, header, bio } = user;
-					expect(res.body).toMatchObject({ _id: id, nickname, pic: getUrl(pic), header: getUrl(header), bio });
+					expect(res.body).toMatchObject({ ...user.response('profile'), _id: user.id });
 					done();
 				});
 		});
@@ -117,8 +96,7 @@ describe('Role: user', () => {
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.expect(200)
 				.then(res => {
-					const { id, nickname, pic, header, bio } = user2;
-					expect(res.body).toMatchObject({ _id: id, nickname, pic: getUrl(pic), header: getUrl(header), bio });
+					expect(res.body).toMatchObject({ ...user2.response('profile'), _id: user2.id });
 					done();
 				});
 		});

@@ -1,6 +1,5 @@
 const Auction = require('../models/auction');
 const Nft = require('../models/nft');
-const User = require('../models/user');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
 
@@ -45,7 +44,7 @@ exports.getById = (req, res, next) => {
 		.exec((_err, auction) => {
 			if (!auction) return next(NotFound());
 			if (_err) return next(ServerError());
-			return next(SendData(auction.toJson()));
+			return next(SendData(auction.response()));
 		});
 };
 
@@ -62,7 +61,7 @@ exports.add = async (req, res, next) => {
 	await auction.save((err, doc) => {
 		if (err) next(err);
 
-		return next(SendData(auction.toJson(), 201));
+		return next(SendData(auction.response(), 201));
 	});
 };
 
@@ -91,7 +90,7 @@ exports.update = (req, res, next) => {
 
 			return Auction.findByIdAndUpdate(req.params.id, req.body, { new: true }, (e, _auction) => {
 				if (e) return next(ServerError());
-				return next(SendData(_auction.toJson()));
+				return next(SendData(_auction.response()));
 			});
 		});
 	});

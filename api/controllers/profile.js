@@ -9,9 +9,9 @@ exports.get = (req, res, next) => {
 };
 
 exports.getById = (req, res, next) => {
-	User.findById(req.params.id, User.getFields('profileFields'), (err, user) => {
+	User.findById(req.params.id, User.getFields('profile'), (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user.toJson('profileFields')));
+		return next(SendData(user));
 	});
 };
 
@@ -20,6 +20,6 @@ exports.update = (req, res, next) => {
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user.toJson(Object.keys(req.body))));
+		return next(SendData(user.response('profile')));
 	});
 };

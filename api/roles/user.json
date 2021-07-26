@@ -1,8 +1,4 @@
 {
-	"users": {
-		"read:own": ["*"],
-		"update:own": ["*"]
-	},
 	"profile": {
 		"read:any": ["*"],
 		"update:own": ["*"]

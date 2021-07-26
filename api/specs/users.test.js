@@ -10,7 +10,6 @@ const agent = supertest.agent(app);
 let admin;
 let adminToken;
 let user;
-let userToken;
 
 beforeAll(async () => await db.connect());
 beforeEach(async () => {
@@ -35,10 +34,11 @@ beforeEach(async () => {
 		nickname: 'DormiPaglia',
 		name: 'John',
 		lastname: 'Doe',
+		pic: 'pic.jpg',
 		role: 'user',
+		lang: 'it',
 		active: 1
 	}).save();
-	userToken = genereteAuthToken(user).token;
 });
 afterEach(() => jest.clearAllMocks());
 afterAll(async () => await db.close());
@@ -59,15 +59,13 @@ describe('Role: admin', () => {
 				});
 		});
 
-		test('Get any specific userId should be done with correct public fields', done => {
+		test('Get any specific userId should be done with correct cp fields', done => {
 			agent
 				.get('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					const { nickname } = user;
-					const { _id, role } = res.body;
-					expect(res.body).toMatchObject({ _id, nickname, role });
+					expect(res.body).toMatchObject({ ...user.response('cp'), _id: user.id });
 					done();
 				});
 		});
@@ -267,82 +265,6 @@ describe('Role: admin', () => {
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(1);
-				});
-		});
-	});
-});
-
-/*
- * User Role
- */
-describe('Role: user', () => {
-	describe('GET /users', () => {
-		test('Get all users should be Forbidden', done => {
-			agent
-				.get('/users')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.expect(403)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
-					done();
-				});
-		});
-
-		test('Get only his userID should be done', async () => {
-			await agent
-				.get('/users/' + user.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.expect(200)
-				.then(res => {
-					const { nickname } = user;
-					expect(res.body).toEqual(expect.objectContaining({ nickname }));
-				});
-
-			return agent
-				.get('/users/' + admin.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.expect(403)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
-				});
-		});
-	});
-
-	describe('PUT /users', () => {
-		test('His own user should be changed', done => {
-			agent
-				.put('/users/' + user.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ nickname: 'edit' })
-				.expect(200)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ nickname: 'edit' }));
-					done();
-				});
-		});
-
-		test('Any other user should be Forbidden', done => {
-			agent
-				.put('/users/' + admin.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ name: 'edit' })
-				.expect(403)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
-					done();
-				});
-		});
-	});
-
-	describe('DELETE /users', () => {
-		test('Any users should be Forbidden', done => {
-			agent
-				.delete('/users/' + user.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.expect(403)
-				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
-					done();
 				});
 		});
 	});

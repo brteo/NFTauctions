@@ -170,48 +170,56 @@ To soft delete a resource:
 user.softdelete();
 ```
 
-## toJson Schema plugin
+## dbFields Schema plugin
 
 Plugin to define public and data fields that are filtered and manipulated before response.
 
 ```js
-const toJson = require('../helpers/toJson');
+const dbFields = require('../helpers/dbFields');
 const { Schema } = mongoose;
 
 const schema = Schema({
 	// schema
 });
-schema.plugin(toJson, {
-	publicFields: ['_id', 'nickname', 'role', 'lang'],
-	dataFields: ['pic', 'header'],
-	// optional other fields with custom name
-	profileFields: ['_id', 'nickname', 'pic', 'header', 'bio']
+schema.plugin(dbFields, {
+	public: ['_id', 'nickname', 'role', 'lang'],
+	profile: ['pic', 'header'], // optional other fields with custom name
+	...
 });
 ```
 
-All `find` queries without specific select automatically use publicFields.
+All `find` queries without specific select automatically use `public` fields.
 
-When you load all field for some reason, you can response with method `toJson`:
+When you load all field for some reason, you can response with method `response`:
 
 ```js
 User.findById(req.params.id, (err, user) => {
 	if (err || !user) return next(NotFound());
-	return next(SendData(user.toJson()));
+	return next(SendData(user.response()));
 });
 ```
 
-If the method are called without parames the response return `publicFields`.
+If the method are called without parames the response return `public` fields.
 
 Otherwise you can specificate your custom fields or array:
 
 ```js
 
 	...
-	return next(SendData(user.toJson('profileFields')));
+	return next(SendData(user.response('profile')));
 
 	...
 	return next(SendData(user.toJson(['_id','nickname'])));
 
+```
+
+Or you can specificate select fields on query
+
+```js
+User.findById(req.params.id, User.getFields('profile'), (err, user) => {
+	if (err || !user) return next(NotFound());
+	return next(SendData(user));
+});
 ```
 
 ## Schema validation

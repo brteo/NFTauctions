@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const softDelete = require('../helpers/softDelete');
-const toJson = require('../helpers/toJson');
+const dbFields = require('../helpers/dbFields');
 
 const { Schema } = mongoose;
 
@@ -55,6 +55,6 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(toJson, { publicFields: ['_id', 'title', 'description', 'category', 'tags', 'url', 'author', 'owner'] });
+schema.plugin(dbFields, { public: ['_id', 'title', 'description', 'category', 'tags', 'url', 'author', 'owner'] });
 
 module.exports = mongoose.models.Nft || mongoose.model('Nft', schema);

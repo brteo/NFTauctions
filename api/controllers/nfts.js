@@ -1,7 +1,5 @@
 const Nft = require('../models/nft');
 const Category = require('../models/category');
-const User = require('../models/user');
-const Tag = require('../models/tag');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
 const { eos, addKey } = require('../helpers/eosjs');
@@ -21,7 +19,7 @@ exports.getById = (req, res, next) => {
 		if (err) return next(ServerError());
 		if (!nft) return next(NotFound());
 
-		return next(SendData(nft.toJson()));
+		return next(SendData(nft.response()));
 	});
 };
 
@@ -98,7 +96,7 @@ exports.create = async (req, res, next) => {
 		}
 		*/
 
-		return next(SendData(nft.toJson(), 201));
+		return next(SendData(nft.response(), 201));
 	});
 };
 
@@ -107,7 +105,7 @@ exports.getByTitle = (req, res, next) => {
 	Nft.findByTitle(req.params.title, (err, nft) => {
 		if (err) return next(NotFound());
 
-		return next(SendData(nft.toJson()));
+		return next(SendData(nft.response()));
 	});
 };
 
@@ -124,7 +122,7 @@ exports.update = (req, res, next) => {
 		return Nft.findByIdAndUpdate(req.params.id, req.body, { new: true }, (_err, _nft) => {
 			if (err) return next(ServerError());
 
-			return next(SendData(_nft.toJson()));
+			return next(SendData(_nft.response()));
 		});
 	});
 };

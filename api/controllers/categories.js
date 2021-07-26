@@ -18,7 +18,7 @@ exports.getById = (req, res, next) => {
 		if (!category) return next(NotFound());
 		if (err) return next(ServerError());
 
-		return next(SendData(category.toJson()));
+		return next(SendData(category.response()));
 	});
 };
 
@@ -29,7 +29,7 @@ exports.add = (req, res, next) => {
 	_category.save((err, category) => {
 		if (err) return next(err);
 
-		return next(SendData(category.toJson(), 201));
+		return next(SendData(category.response(), 201));
 	});
 };
 
@@ -44,9 +44,7 @@ exports.update = (req, res, next) => {
 
 			if (nfts.length !== 0) {
 				nfts.forEach(nft => {
-					Nft.findByIdAndUpdate(nft.id, { 'category.name': req.body.name }, (e, _nft) => {
-						if (e) return next(ServerError());
-					});
+					Nft.findByIdAndUpdate(nft.id, { 'category.name': req.body.name }, (e, _nft) => e && next(ServerError()));
 				});
 			}
 
@@ -54,7 +52,7 @@ exports.update = (req, res, next) => {
 				if (!_category) return next(NotFound());
 				if (e) return next(ServerError());
 
-				return next(SendData(_category.toJson()));
+				return next(SendData(_category.response()));
 			});
 		});
 	});

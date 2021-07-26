@@ -20,7 +20,7 @@ exports.login = (req, res, next) =>
 		try {
 			await generateToken(res, user);
 
-			return next(SendData(user.toJson()));
+			return next(SendData(user.response()));
 		} catch (e) {
 			return next(ServerError(e));
 		}
@@ -131,7 +131,7 @@ exports.register = async (req, res, next) => {
 
 			registerEmail(user.email, user.lang, user.nickname).catch(erremail => console.log('[EMAIL ERROR]', erremail));
 
-			return next(SendData(user.toJson()));
+			return next(SendData(user.response()));
 		} catch (e) {
 			return next(ServerError(e));
 		}
@@ -142,7 +142,7 @@ exports.refreshToken = async (req, res, next) => {
 	try {
 		await generateToken(res, res.locals.user);
 
-		return next(SendData(res.locals.user.toJson()));
+		return next(SendData(res.locals.user.response()));
 	} catch (e) {
 		return next(ServerError(e));
 	}

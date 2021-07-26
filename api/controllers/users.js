@@ -11,9 +11,9 @@ exports.get = (req, res, next) => {
 exports.getById = (req, res, next) => {
 	if (res.locals.grants.type !== 'any' && res.locals.user.id !== req.params.id) return next(Forbidden());
 
-	return User.findById(req.params.id, (err, user) => {
+	return User.findById(req.params.id, User.getFields('cp'), (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user.toJson()));
+		return next(SendData(user));
 	});
 };
 
@@ -22,7 +22,7 @@ exports.update = (req, res, next) => {
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err || !user) return next(NotFound());
-		return next(SendData(user.toJson(Object.keys(req.body))));
+		return next(SendData(user.response('cp')));
 	});
 };
 

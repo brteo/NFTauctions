@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const softDelete = require('../helpers/softDelete');
-const toJson = require('../helpers/toJson');
+const dbFields = require('../helpers/dbFields');
 
 const { Schema } = mongoose;
 
@@ -33,6 +33,6 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(toJson, { publicFields: ['_id', 'description', 'basePrice', 'deadlineTimestamp', 'nft'] });
+schema.plugin(dbFields, { public: ['_id', 'description', 'basePrice', 'deadlineTimestamp', 'nft'] });
 
 module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);
