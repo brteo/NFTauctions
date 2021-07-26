@@ -14,6 +14,4 @@ router
 	.patch(validator({ params: 'nftId', body: 'nft' }), isAuth, rbac('nfts', 'update'), controller.update)
 	.delete(validator({ params: 'nftId' }), isAuth, rbac('nfts', 'delete'), controller.delete);
 
-router.route('/:title').get(controller.getByTitle);
-
 module.exports = router;

@@ -100,15 +100,6 @@ exports.create = async (req, res, next) => {
 	});
 };
 
-/* Get nft by title */
-exports.getByTitle = (req, res, next) => {
-	Nft.findByTitle(req.params.title, (err, nft) => {
-		if (err) return next(NotFound());
-
-		return next(SendData(nft.response()));
-	});
-};
-
 /* Update an nft by id */
 exports.update = (req, res, next) => {
 	const author = res.locals.user.id;

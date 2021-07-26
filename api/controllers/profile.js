@@ -1,4 +1,5 @@
 const User = require('../models/user');
+const Nft = require('../models/nft');
 const { SendData, ServerError, Forbidden, NotFound } = require('../helpers/response');
 
 exports.get = (req, res, next) => {
@@ -23,3 +24,15 @@ exports.update = (req, res, next) => {
 		return next(SendData(user.response('profile')));
 	});
 };
+
+exports.getCreated = (req, res, next) =>
+	Nft.find({ author: req.params.id }, (err, nfts) => {
+		if (err || !nfts) return next(NotFound());
+		return next(SendData(nfts.response()));
+	});
+
+exports.getOwned = (req, res, next) =>
+	Nft.find({ owner: req.params.id }, (err, nfts) => {
+		if (err || !nfts) return next(NotFound());
+		return next(SendData(nfts.response()));
+	});

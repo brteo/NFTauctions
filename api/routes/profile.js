@@ -13,4 +13,8 @@ router
 	.get(validator({ params: 'objectId' }), controller.getById)
 	.put(validator({ body: 'user', params: 'objectId' }), isAuth, rbac('profile', 'update:own'), controller.update);
 
+router.route('/:id/owned').get(validator({ params: 'objectId' }), controller.getOwned);
+
+router.route('/:id/created').get(validator({ params: 'objectId' }), controller.getCreated);
+
 module.exports = router;
