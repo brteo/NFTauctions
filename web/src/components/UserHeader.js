@@ -1,6 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 import React from 'react';
-import { Image } from 'antd';
 
 const UserHeader = props => {
 	const { user } = props;

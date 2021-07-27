@@ -140,10 +140,10 @@ input:-webkit-autofill:active {
 /*
 Image Uploader
 */
-.imageUploader{
+.ant-upload.ant-upload-drag.imageUploader{
 	@imageUploaderHeight: 200px;
 	height:@imageUploaderHeight;
-	.ant-upload.ant-upload-drag .ant-upload{padding:0;}
+	.ant-upload{padding:0 !important;}
 
 	.imageUploader-preview{
 		height:@imageUploaderHeight;
@@ -179,6 +179,4 @@ Image Uploader
 			}
 		}
 	}
-
-	.imageUploader-info{}
 }

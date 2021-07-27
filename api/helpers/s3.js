@@ -90,8 +90,9 @@ const getSign = ext => {
 			if (err) return reject(err);
 			return resolve({
 				signedRequest: data,
+				url: AWS_S3_ENDPOINT + '/' + AWS_S3_BUCKET_TMP + '/' + fileName,
 				fileType,
-				url: AWS_S3_ENDPOINT + '/' + AWS_S3_BUCKET_TMP + '/' + fileName
+				fileName
 			});
 		});
 	});
