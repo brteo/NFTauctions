@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Col, Row } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { listAuctions, getNftById } from '../helpers/api';
+import Api from '../helpers/api';
 
 const { Meta } = Card;
 
@@ -11,7 +11,7 @@ const Auction = props => {
 	const [rows, setRows] = useState();
 
 	const getAuctions = () => {
-		listAuctions()
+		Api.get('/auctions')
 			.then(res => {
 				const auctions = res.data;
 
@@ -21,7 +21,7 @@ const Auction = props => {
 					const auction = auctions[i];
 
 					const getNft = nftId => {
-						getNftById(nftId)
+						Api.get(`/nfts/`, nftId)
 							.then(response => {
 								console.log(response.data);
 							})

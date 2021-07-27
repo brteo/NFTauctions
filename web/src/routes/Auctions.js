@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Row } from 'antd';
-import { listAuctions } from '../helpers/api';
+import Api from '../helpers/api';
 
 import AuctionCard from '../components/AuctionCard';
 import SearchBar from '../components/SearchBar';
@@ -9,7 +9,7 @@ const Auction = props => {
 	const [auctions, setAuctions] = useState([]);
 
 	const getAuctions = () => {
-		listAuctions()
+		Api.get('/auctions')
 			.then(res => {
 				const auctionList = res.data;
 				let i = 0;

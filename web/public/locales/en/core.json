@@ -32,5 +32,10 @@
 		"password": "password",
 		"name": "name",
 		"lastname": "lastname"
+	},
+	"imageUploader": {
+		"crop": "Crop image",
+		"text": "Click or drag file to this area to upload",
+		"opt": "Support file: JPG, GIF, PNG"
 	}
 }

@@ -3,10 +3,11 @@ import axios from 'axios';
 import { Modal } from 'antd';
 import i18n from './i18n';
 
-export const connect = axios.create({
+const Api = axios.create({
 	baseURL: process.env.REACT_APP_ENDPOINT
 });
-connect.defaults.withCredentials = true;
+Api.defaults.withCredentials = true;
+export default Api;
 
 const errorComposer = error => () => {
 	if (error.response) {
@@ -23,29 +24,10 @@ const errorComposer = error => () => {
 	}
 };
 
-connect.interceptors.response.use(
+Api.interceptors.response.use(
 	response => response,
 	error => {
 		error.globalHandler = errorComposer(error);
 		return Promise.reject(error);
 	}
 );
-
-export const checkApi = () => connect.get('/');
-
-export const login = (email, password) => connect.post(`/auth/login`, { email, password });
-
-export const register = (email, password, nickname, account) =>
-	connect.post('/auth/register', { email, password, nickname, account });
-
-export const checkEmail = email => connect.get(`/auth/email/${email}`);
-
-export const authCheck = () => connect.get(`/auth/check`);
-
-export const refreshToken = () => connect.get('/auth/rt');
-
-export const logout = () => connect.get('/auth/logout');
-
-export const listAuctions = () => connect.get('/auctions');
-
-export const getNftById = nftId => connect.get(`/nfts/`, nftId);

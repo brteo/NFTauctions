@@ -32,5 +32,10 @@
 		"password": "password",
 		"name": "nome",
 		"lastname": "cognome"
+	},
+	"imageUploader": {
+		"crop": "Ritaglia immagine",
+		"text": "Click o trascina il file in questa area per caricarlo",
+		"opt": "file supportato: JPG, GIF, PNG"
 	}
 }

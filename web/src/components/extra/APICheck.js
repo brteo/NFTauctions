@@ -3,14 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { Tag } from 'antd';
 import { CheckCircleOutlined, ExclamationCircleOutlined, SyncOutlined } from '@ant-design/icons';
 
-import { checkApi } from '../../helpers/api';
+import Api from '../../helpers/api';
 
 const APICheck = props => {
 	const [message, setMessage] = useState('Loading...');
 	const [check, setCheck] = useState(0);
 
 	useEffect(() => {
-		checkApi()
+		Api.get('/')
 			.then(res => {
 				setMessage(res.data.message);
 				setCheck(1);

@@ -7,7 +7,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import { sprintf } from 'sprintf-js';
 
-import { connect } from '../helpers/api';
+import Api from '../helpers/api';
 
 const { Dragger } = Upload;
 
@@ -29,8 +29,7 @@ const UploadPage = props => {
 	const img = 'http://localhost:4566/data/test.jpg';
 
 	const req = ({ file, onError, onSuccess }) => {
-		connect
-			.get(`/s3/sign/${file.name.split('.').pop()}`)
+		Api.get(`/s3/sign/${file.name.split('.').pop()}`)
 			.then(({ data }) => {
 				const { url, fileType, signedRequest } = data;
 				const options = {
@@ -44,8 +43,7 @@ const UploadPage = props => {
 					}
 				};
 
-				connect
-					.put(signedRequest, file, options)
+				Api.put(signedRequest, file, options)
 					.then(res => {
 						setUploaded(url);
 						setPreview(null);
@@ -93,7 +91,7 @@ const UploadPage = props => {
 			<br />
 			<br />
 			<div className="imageUploader">
-				<ImgCrop aspect={4 / 3} quality={0.8}>
+				<ImgCrop aspect={4 / 3} quality={0.8} modalTitle={t('core:imageUploader.crop')}>
 					<Dragger
 						name="file"
 						multiple={false}
@@ -127,10 +125,8 @@ const UploadPage = props => {
 								<p className="ant-upload-drag-icon">
 									<InboxOutlined />
 								</p>
-								<p className="ant-upload-text">Click or drag file to this area to upload</p>
-								<p className="ant-upload-hint">
-									Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
-								</p>
+								<p className="ant-upload-text">{t('core:imageUploader.text')}</p>
+								<p className="ant-upload-hint">{t('core:imageUploader.opt')}</p>
 							</div>
 						)}
 					</Dragger>

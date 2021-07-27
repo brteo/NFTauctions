@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Button, Tabs, Typography, Skeleton, Input, Space, Tooltip, Form } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 
-import { connect } from '../helpers/api';
+import Api from '../helpers/api';
 import UserHeader from '../components/UserHeader';
 import UserPic from '../components/UserPic';
 import AppContext from '../helpers/AppContext';
@@ -23,8 +23,7 @@ const Profile = props => {
 	const bioInputRef = React.useRef(null);
 
 	useEffect(() => {
-		connect
-			.get('/profile/' + match.params.id)
+		Api.get('/profile/' + match.params.id)
 			.then(res => {
 				setUser(res.data);
 			})
@@ -40,8 +39,7 @@ const Profile = props => {
 
 	function bioChange({ target: { value } }) {}
 	function edit(data) {
-		connect
-			.put('/profile/' + match.params.id, data)
+		Api.put('/profile/' + match.params.id, data)
 			.then(res => {
 				setUser(prevState => ({ ...prevState, ...res.data }));
 				setBioEditing(false);
