@@ -27,7 +27,6 @@ npm init react-app . --legacy-peer-deps # create CRA
 - @craco/craco craco-less ([Less ant customization](https://ant.design/docs/react/use-with-create-react-app))
 - i18next react-i18next i18next-browser-languagedetector i18next-http-backend ([Langs](https://react.i18next.com/latest/using-with-hooks))
 - [aws-sdk](https://www.npmjs.com/package/aws-sdk)
-- [uuid](https://www.npmjs.com/package/uuid)
 
 DEV
 

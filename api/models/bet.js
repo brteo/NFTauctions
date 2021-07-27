@@ -14,8 +14,7 @@ const schema = new mongoose.Schema(
 				type: mongoose.Schema.Types.ObjectId,
 				required: true
 			},
-			nickname: String,
-			pic: String
+			nickname: String
 		},
 		price: {
 			type: Number,

@@ -1,12 +1,7 @@
 const supertest = require('supertest');
 const app = require('../app');
-const db = require('../db/connect-test');
 
 const agent = supertest.agent(app);
-
-beforeAll(async () => await db.connect());
-beforeEach(async () => await db.clear());
-afterAll(async () => await db.close());
 
 describe('GET /', () => {
 	test('It should be live', done => {

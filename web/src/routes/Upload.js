@@ -7,9 +7,16 @@ import { InboxOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import { sprintf } from 'sprintf-js';
 
-import { uploadFile, deleteFile, generateName, getBase64 } from '../helpers/S3';
-
 const { Dragger } = Upload;
+
+const getBase64 = file => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.readAsDataURL(file);
+		reader.onload = () => resolve(reader.result);
+		reader.onerror = error => reject(error);
+	});
+};
 
 const UploadPage = props => {
 	const { t } = useTranslation();
@@ -19,6 +26,7 @@ const UploadPage = props => {
 
 	const img = 'http://localhost:4566/data/test.jpg';
 
+	/*
 	const req = ({ file, onError, onSuccess, onProgress }) =>
 		uploadFile(file, generateName(file.name.split('.').pop()), file.type, ({ loaded, total }) => {
 			setProgress(Math.round((loaded / total) * 100));
@@ -52,6 +60,7 @@ const UploadPage = props => {
 			setPreview(await getBase64(info.file.originFileObj));
 		}
 	};
+	*/
 
 	const beforeHandler = file => {
 		const isLt2M = file.size / 1024 / 1024 < 2;

@@ -128,8 +128,10 @@ exports.addBet = (req, res, next) => {
 	const auctionId = req.params.id;
 	const betPrice = req.body.price;
 
-	// todo: check price
-	// todo: transaction
+	// Auction.findByIdAndUpdate().then(
+	// add bet with auction updatedAt
+	// mongo add element array embedded + shift
+	// )
 
 	const bet = new Bet({
 		auction: auctionId,

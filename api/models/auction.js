@@ -27,7 +27,7 @@ const schema = Schema(
 			ref: 'Nft',
 			required: true
 		},
-		bets: [
+		lastBet: [
 			{
 				id: {
 					type: mongoose.Schema.Types.ObjectId,
@@ -38,8 +38,7 @@ const schema = Schema(
 						type: mongoose.Schema.Types.ObjectId,
 						required: true
 					},
-					nickname: String,
-					pic: String
+					nickname: String
 				},
 				price: {
 					type: Number,
