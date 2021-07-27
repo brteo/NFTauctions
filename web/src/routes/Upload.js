@@ -2,10 +2,12 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Upload, Modal, Image, Progress } from 'antd';
+import { Upload, Modal, Progress } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import { sprintf } from 'sprintf-js';
+
+import { connect } from '../helpers/api';
 
 const { Dragger } = Upload;
 
@@ -26,41 +28,53 @@ const UploadPage = props => {
 
 	const img = 'http://localhost:4566/data/test.jpg';
 
-	/*
-	const req = ({ file, onError, onSuccess, onProgress }) =>
-		uploadFile(file, generateName(file.name.split('.').pop()), file.type, ({ loaded, total }) => {
-			setProgress(Math.round((loaded / total) * 100));
-		})
-			.then(res => {
-				setUploaded(res);
-				onSuccess(res);
+	const req = ({ file, onError, onSuccess }) => {
+		connect
+			.get(`/s3/sign/${file.name.split('.').pop()}`)
+			.then(({ data }) => {
+				const { url, fileType, signedRequest } = data;
+				const options = {
+					withCredentials: false,
+					headers: {
+						'Content-Type': fileType
+					},
+					onUploadProgress: event => {
+						const percent = Math.floor((event.loaded / event.total) * 100);
+						setProgress(percent);
+					}
+				};
+
+				connect
+					.put(signedRequest, file, options)
+					.then(res => {
+						setUploaded(url);
+						setPreview(null);
+						onSuccess(url);
+					})
+					.catch(es3 => {
+						setPreview(null);
+						setUploaded(null);
+						setProgress(0);
+						onError();
+						return es3.globalHandler && es3.globalHandler();
+					});
 			})
-			.catch(res => {
-				Modal.error({
-					title: t('common.error'),
-					content: (
-						<>
-							{t('core:errors.212')}
-							<br />
-							<br />
-							{res.message}
-						</>
-					)
-				});
+			.catch(e => {
 				setPreview(null);
+				setUploaded(null);
 				setProgress(0);
 				onError();
+				return e.globalHandler && e.globalHandler();
 			});
-
-	const removeHandler = file => deleteFile(file.response.Key).then(res => setUploaded(null));
+	};
 
 	const changeHandler = async info => {
 		if (info.file.status === 'uploading') {
 			setUploaded(null);
+			setProgress(0);
 			setPreview(await getBase64(info.file.originFileObj));
 		}
 	};
-	*/
 
 	const beforeHandler = file => {
 		const isLt2M = file.size / 1024 / 1024 < 2;
@@ -78,36 +92,50 @@ const UploadPage = props => {
 			<img src={img} alt="test s3" height="200" />
 			<br />
 			<br />
-			<ImgCrop aspect={4 / 3} quality={0.8}>
-				<Dragger
-					name="file"
-					multiple={false}
-					maxCount="1"
-					accept="image/png, image/gif, image/jpeg"
-					itemRender={() => null}
-					customRequest={req}
-					onRemove={removeHandler}
-					onChange={changeHandler}
-					beforeUpload={beforeHandler}
-				>
-					{uploaded || preview ? (
-						<>
-							<img height="200" src={uploaded ? uploaded.Location : preview} alt="Dragger Preview" />
-							<Progress percent={progress} />
-						</>
-					) : (
-						<>
-							<p className="ant-upload-drag-icon">
-								<InboxOutlined />
-							</p>
-							<p className="ant-upload-text">Click or drag file to this area to upload</p>
-							<p className="ant-upload-hint">
-								Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
-							</p>
-						</>
-					)}
-				</Dragger>
-			</ImgCrop>
+			<div className="imageUploader">
+				<ImgCrop aspect={4 / 3} quality={0.8}>
+					<Dragger
+						name="file"
+						multiple={false}
+						maxCount="1"
+						accept="image/png, image/gif, image/jpeg"
+						itemRender={() => null}
+						customRequest={req}
+						onChange={changeHandler}
+						beforeUpload={beforeHandler}
+					>
+						{uploaded || preview ? (
+							<div className="imageUploader-preview">
+								<div className="imageUploader-preview-box">
+									{(uploaded || preview) && (
+										<img
+											src={uploaded || preview}
+											alt="Dragger Preview"
+											className={preview && 'imageUploader-uploading'}
+										/>
+									)}
+									<Progress
+										type="circle"
+										percent={progress}
+										className={uploaded ? 'progress-done' : ''}
+										width={uploaded ? 40 : 100}
+									/>
+								</div>
+							</div>
+						) : (
+							<div className="imageUploader-info">
+								<p className="ant-upload-drag-icon">
+									<InboxOutlined />
+								</p>
+								<p className="ant-upload-text">Click or drag file to this area to upload</p>
+								<p className="ant-upload-hint">
+									Support for a single or bulk upload. Strictly prohibit from uploading company data or other band files
+								</p>
+							</div>
+						)}
+					</Dragger>
+				</ImgCrop>
+			</div>
 		</section>
 	);
 };

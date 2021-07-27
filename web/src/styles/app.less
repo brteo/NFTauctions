@@ -136,3 +136,49 @@ input:-webkit-autofill:active {
   }
 	
 }
+
+/*
+Image Uploader
+*/
+.imageUploader{
+	@imageUploaderHeight: 200px;
+	height:@imageUploaderHeight;
+	.ant-upload.ant-upload-drag .ant-upload{padding:0;}
+
+	.imageUploader-preview{
+		height:@imageUploaderHeight;
+
+		.imageUploader-preview-box{
+			position:relative;
+			display: inline-block;
+			height:100%;
+
+			img {
+				height:100%;
+				width:auto;
+				position:relative;
+				z-index:1;
+				&.imageUploader-uploading{
+					opacity:0.6;
+				}
+			}
+	
+			.ant-progress{
+				position:absolute;
+				z-index:10;
+				top:50%;
+				right:50%;
+				transform: translate3d(50%, -50%, 0);
+				transition: all 300ms;
+	
+				&.progress-done{
+					top:10px;
+					right:10px;
+					transform: translate3d(0, 0, 0);
+				}
+			}
+		}
+	}
+
+	.imageUploader-info{}
+}

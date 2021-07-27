@@ -14,6 +14,7 @@ const signRes = {
 	signedRequest:
 		// eslint-disable-next-line max-len
 		'http://localhost:4566/tmp/99f94a2e-eeb1-11eb-a505-c59533920857.png?AWSAccessKeyId=awstest&Content-Type=image%2Fpng&Expires=1627374112&Signature=kqWp8KdeSGYprckAmsBlNxx5ouQ%3D&x-amz-acl=public-read',
+	fileType: 'image/jpeg',
 	url: 'http://localhost:4566/tmp/99f94a2e-eeb1-11eb-a505-c59533920857.png'
 };
 getSign.mockResolvedValue(signRes);
