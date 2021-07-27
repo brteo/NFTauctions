@@ -8,7 +8,6 @@ import Header from '../components/Header';
 import Home from './Home';
 import Profile from './Profile';
 import Upload from './Upload';
-import Auctions from './Auctions';
 
 const { Content, Footer } = Layout;
 
@@ -21,7 +20,6 @@ const Routes = props => {
 					<Switch>
 						<Route exact path="/" component={Home} />
 						<Route exact path="/index.html" component={Home} />
-						<Route exact path="/auctions" component={Auctions} />
 						<Route exact path="/profile/:id" component={Profile} />
 						<Route exact path="/upload" component={Upload} />
 						<Route component={() => <ErrorPage status="404" />} />

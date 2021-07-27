@@ -31,7 +31,7 @@ exports.getCreated = (req, res, next) =>
 		.populate('author')
 		.populate('owner')
 		.exec((err, nfts) => {
-			if (err || !nfts) return next(NotFound());
+			if (err) return next(ServerError());
 			return next(SendData(nfts));
 		});
 
@@ -41,6 +41,6 @@ exports.getOwned = (req, res, next) =>
 		.populate('author')
 		.populate('owner')
 		.exec((err, nfts) => {
-			if (err || !nfts) return next(NotFound());
+			if (err) return next(ServerError());
 			return next(SendData(nfts));
 		});

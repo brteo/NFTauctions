@@ -6,11 +6,29 @@ const { eos, addKey } = require('../helpers/eosjs');
 
 /* Get all nfts */
 exports.get = (req, res, next) => {
-	Nft.find({}, (err, nfts) => {
-		if (err) return next(ServerError());
+	Nft.find({}, Nft.getFields())
+		.populate({ path: 'auction', select: 'price deadline' })
+		.populate('author')
+		.populate('owner')
+		.exec((err, nfts) => {
+			if (err) return next(ServerError());
+			return next(SendData(nfts));
+		});
+};
 
-		return next(SendData(nfts));
-	});
+/* Get all nfts with auctions */
+exports.getAuctions = (req, res, next) => {
+	Nft.find({}, Nft.getFields())
+		.populate({
+			path: 'auction',
+			select: 'price deadline'
+		})
+		.populate('author')
+		.populate('owner')
+		.exec((err, nfts) => {
+			if (err) return next(ServerError());
+			return next(SendData(nfts));
+		});
 };
 
 /* Get nft by id */
