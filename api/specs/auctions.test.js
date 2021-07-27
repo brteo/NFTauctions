@@ -16,7 +16,7 @@ const agent = supertest.agent(app);
 const newAuction = {
 	description: 'newDescription',
 	basePrice: 100,
-	deadlineTimestamp: '2029-07-02 00:00:00'
+	deadline: '2029-07-02 00:00:00'
 };
 
 const wrongSchemaAuction = {
@@ -102,8 +102,8 @@ beforeEach(async () => {
 	auction = await new Auction({
 		description: 'Description',
 		basePrice: 100,
-		currentPrice: 100,
-		deadlineTimestamp: '2029-07-02 00:00:00',
+		price: 100,
+		deadline: '2029-07-02 00:00:00',
 		nft: nft.id,
 		active: 1
 	}).save();
@@ -172,8 +172,8 @@ describe('Role: admin', () => {
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { basePrice, description, deadlineTimestamp } = res.body;
-					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
+					const { basePrice, description, deadline } = res.body;
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadline }));
 					done();
 				});
 			delete newAuction.nft;
@@ -347,8 +347,8 @@ describe('Role: user', () => {
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { basePrice, description, deadlineTimestamp } = res.body;
-					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
+					const { basePrice, description, deadline } = res.body;
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadline }));
 					done();
 				});
 			delete newAuction.nft;
@@ -382,9 +382,9 @@ describe('Role: user', () => {
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { _id, basePrice, description, deadlineTimestamp } = res.body;
+					const { _id, basePrice, description, deadline } = res.body;
 					id = _id;
-					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadline }));
 				});
 
 			return agent
@@ -437,9 +437,9 @@ describe('Role: user', () => {
 				.send(newAuction)
 				.expect(201)
 				.then(res => {
-					const { _id, basePrice, description, deadlineTimestamp } = res.body;
+					const { _id, basePrice, description, deadline } = res.body;
 					id = _id;
-					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadlineTimestamp }));
+					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadline }));
 				});
 
 			return agent

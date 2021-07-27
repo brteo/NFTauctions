@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Tabs, Typography, Skeleton, Input, Space, Tooltip, Form } from 'antd';
@@ -6,6 +7,7 @@ import { EditOutlined } from '@ant-design/icons';
 import Api from '../helpers/api';
 import UserHeader from '../components/UserHeader';
 import UserPic from '../components/UserPic';
+import Nfts from '../components/Nfts';
 import AppContext from '../helpers/AppContext';
 
 const { Title, Paragraph } = Typography;
@@ -35,7 +37,7 @@ const Profile = props => {
 			setUser(null);
 			setBioEditing(false);
 		};
-	}, []);
+	}, [match.params.id]);
 
 	function bioChange({ target: { value } }) {}
 	function edit(data) {
@@ -45,7 +47,7 @@ const Profile = props => {
 				setBioEditing(false);
 			})
 			.catch(err => {
-				const errorCode = err.response && err.response.data ? err.response.data.error : null;
+				// const errorCode = err.response && err.response.data ? err.response.data.error : null;
 
 				return err.globalHandler && err.globalHandler();
 			});
@@ -54,7 +56,8 @@ const Profile = props => {
 	let page;
 	if (user) {
 		let { bio } = user;
-		if (logged && user.id === logged.id) {
+
+		if (logged && user._id === logged._id) {
 			if (!bio) bio = t('profile.bio_placeholder');
 
 			if (!bioEditing)
@@ -109,12 +112,12 @@ const Profile = props => {
 			<UserHeader user={user} />
 			<UserPic user={user} size={110} />
 			{page}
-			<Tabs defaultActiveKey="1" centered>
-				<TabPane tab="Created" key="1">
-					Content of Tab Pane 1
+			<Tabs defaultActiveKey="created" centered>
+				<TabPane tab="Created" key="created">
+					<Nfts by="creator" user={user} />
 				</TabPane>
-				<TabPane tab="Owned" key="2">
-					Content of Tab Pane 2
+				<TabPane tab="Owned" key="owned">
+					<Nfts by="owner" user={user} />
 				</TabPane>
 			</Tabs>
 		</section>

@@ -28,21 +28,15 @@
 		"title": "Cookies blocked", 
 		"message": "Enable cookies to login"
 	},
-	"auction": {
-		"basePrice": "Base price",
-		"nftTitle": "Title of nft",
-		"nftDescription": "Description of nft",
-		"auctionDescription": "Description of auction",
-		"category": "Category",
-		"tags": "Tags",
-		"deadline": "The auction expires in",
+	"nft" : {
 		"author": "Author",
-		"owner": "Owner",
-		"bet": "Bet",
-		"months": "Months",
-		"days": "Days",
-		"hours": "Hours",
-		"minutes": "Minutes",
-		"seconds": "Seconds"
+		"owner": "Owner"
+	},
+	"auction": {
+		"no":"Not for sale",
+		"basePrice": "Start price",
+		"price": "Price",
+		"deadline": "L'asta scade tra",
+		"bet": "Punta"
 	}
 }

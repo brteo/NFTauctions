@@ -5,7 +5,7 @@ module.exports = {
 		properties: {
 			description: { type: 'string' },
 			basePrice: { type: 'integer' },
-			deadlineTimestamp: {
+			deadline: {
 				type: 'string',
 				format: 'date-time'
 			},
@@ -16,6 +16,6 @@ module.exports = {
 	addAuction: {
 		type: 'object',
 		allOf: [{ $ref: 'auction' }],
-		required: ['description', 'basePrice', 'deadlineTimestamp', 'nft']
+		required: ['description', 'basePrice', 'deadline', 'nft']
 	}
 };

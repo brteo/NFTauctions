@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import moment from 'moment';
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 
 const Countdown = props => {
-	const { t } = useTranslation();
+	// const { t } = useTranslation();
 
 	const calculateTimeLeft = () => {
 		const eventTime = new Date(props.eventTime).getTime() / 1000;
@@ -17,23 +17,7 @@ const Countdown = props => {
 		}
 
 		duration = moment.duration(duration.asSeconds() - 1, 'seconds');
-		return (
-			duration.days() +
-			' ' +
-			t('auction.days') +
-			' ' +
-			duration.hours() +
-			' ' +
-			t('auction.hours') +
-			' ' +
-			duration.minutes() +
-			' ' +
-			t('auction.minutes') +
-			' ' +
-			duration.seconds() +
-			' ' +
-			t('auction.seconds')
-		);
+		return moment.utc(duration.asMilliseconds()).format('DD:HH:mm:ss');
 	};
 
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());

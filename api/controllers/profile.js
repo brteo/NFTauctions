@@ -26,13 +26,21 @@ exports.update = (req, res, next) => {
 };
 
 exports.getCreated = (req, res, next) =>
-	Nft.find({ author: req.params.id }, (err, nfts) => {
-		if (err || !nfts) return next(NotFound());
-		return next(SendData(nfts.response()));
-	});
+	Nft.find({ author: req.params.id }, Nft.getFields())
+		.populate({ path: 'auction', select: 'price deadline' })
+		.populate('author')
+		.populate('owner')
+		.exec((err, nfts) => {
+			if (err || !nfts) return next(NotFound());
+			return next(SendData(nfts));
+		});
 
 exports.getOwned = (req, res, next) =>
-	Nft.find({ owner: req.params.id }, (err, nfts) => {
-		if (err || !nfts) return next(NotFound());
-		return next(SendData(nfts.response()));
-	});
+	Nft.find({ owner: req.params.id }, Nft.getFields())
+		.populate({ path: 'auction', select: 'price deadline' })
+		.populate('author')
+		.populate('owner')
+		.exec((err, nfts) => {
+			if (err || !nfts) return next(NotFound());
+			return next(SendData(nfts));
+		});

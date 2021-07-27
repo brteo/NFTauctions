@@ -42,19 +42,31 @@ const schema = Schema(
 		author: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
+			index: true,
 			required: true
 		},
 		owner: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'User',
+			index: true,
 			required: true
 		}
 	},
 	{
-		timestamps: true
+		timestamps: true,
+		toJSON: { virtuals: true }, // So `res.json()` and other `JSON.stringify()` functions include virtuals
+		toObject: { virtuals: true } // So `toObject()` output includes virtuals
 	}
 );
 schema.plugin(softDelete);
 schema.plugin(dbFields, { public: ['_id', 'title', 'description', 'category', 'tags', 'url', 'author', 'owner'] });
+
+schema.virtual('auction', {
+	ref: 'Auction',
+	localField: '_id',
+	foreignField: 'nft',
+	justOne: true,
+	match: { active: true }
+});
 
 module.exports = mongoose.models.Nft || mongoose.model('Nft', schema);

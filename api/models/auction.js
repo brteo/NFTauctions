@@ -14,11 +14,11 @@ const schema = Schema(
 			type: Number,
 			required: true
 		},
-		currentPrice: {
+		price: {
 			type: Number,
 			required: true
 		},
-		deadlineTimestamp: {
+		deadline: {
 			type: Date,
 			required: true
 		},
@@ -57,6 +57,6 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(dbFields, { public: ['_id', 'description', 'basePrice', 'deadlineTimestamp', 'nft'] });
+schema.plugin(dbFields, { public: ['_id', 'description', 'base', 'deadline', 'nft'] });
 
 module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);

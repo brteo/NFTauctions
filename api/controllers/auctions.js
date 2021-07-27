@@ -52,7 +52,7 @@ exports.getById = (req, res, next) => {
 /* Add new auction */
 exports.add = async (req, res, next) => {
 	const auction = new Auction(req.body);
-	auction.currentPrice = req.body.basePrice;
+	auction.price = req.body.basePrice;
 
 	await Nft.findById(auction.nft, (err, nfts) => {
 		if (err || !nfts || nfts.length === 0) {
@@ -154,14 +154,10 @@ exports.addBet = (req, res, next) => {
 
 				const newBets = bets.map(({ id, user, price }) => ({ id, user, price }));
 
-				return Auction.findByIdAndUpdate(
-					auctionId,
-					{ currentPrice: betPrice, bets: newBets },
-					(errAcution, acution) => {
-						if (errAcution) return next(ServerError());
-						return next(SendData(doc.getPublicFields(), 201));
-					}
-				);
+				return Auction.findByIdAndUpdate(auctionId, { price: betPrice, bets: newBets }, (errAcution, acution) => {
+					if (errAcution) return next(ServerError());
+					return next(SendData(doc.getPublicFields(), 201));
+				});
 			});
 	});
 };
