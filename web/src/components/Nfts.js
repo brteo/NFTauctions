@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
-import { Row } from 'antd';
+import { useTranslation } from 'react-i18next';
+import { Row, Col } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import Api from '../helpers/api';
 import NftCard from './NftCard';
@@ -8,6 +9,7 @@ import NftCard from './NftCard';
 const Nfts = props => {
 	const { by, user, filter } = props;
 
+	const { t } = useTranslation();
 	const [nfts, setNfts] = useState(null);
 
 	let endpoint = null;
@@ -31,7 +33,6 @@ const Nfts = props => {
 
 	useEffect(() => {
 		if (endpoint) {
-			console.log(endpoint);
 			Api.get(endpoint)
 				.then(res => {
 					const nftsList = res.data;
@@ -43,7 +44,15 @@ const Nfts = props => {
 						nftsComponents.push(elem);
 					});
 
-					setNfts(nftsComponents);
+					setNfts(
+						nftsComponents.length ? (
+							nftsComponents
+						) : (
+							<Col xs={12} sm={8} md={6} lg={6} xl={6} xxl={4}>
+								{t('common.no_results')}
+							</Col>
+						)
+					);
 				})
 				.catch(err => {
 					return err.globalHandler && err.globalHandler();
@@ -63,7 +72,7 @@ const Nfts = props => {
 
 	return (
 		<section className="nfts">
-			<Row justify="center" gutter={[16, 16]}>
+			<Row justify="left" gutter={[16, 16]}>
 				{nfts || skeleton}
 			</Row>
 		</section>

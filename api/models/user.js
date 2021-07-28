@@ -90,6 +90,8 @@ schema.plugin(dbFields, {
 	cp: ['_id', 'email', 'account', 'nickname', 'name', 'lastname', 'pic', 'lang', 'role', 'active']
 });
 
+schema.index({ nickname: 'text' }, { name: 'text' });
+
 schema.pre('save', async function (next) {
 	try {
 		if (this.isModified('password')) {

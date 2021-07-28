@@ -44,7 +44,7 @@ const HeaderComponent = props => {
 		}
 	};
 	const onChange = e => console.log(e.target.value);
-	const onSearch = q => history.push(`search?query=${q}`);
+	const onSearch = q => history.push('/search?query=' + q);
 
 	return (
 		<>

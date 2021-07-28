@@ -3,7 +3,8 @@
 		"error": "Errore",
 		"title": "Titolo",
 		"back": "Indietro",
-		"save": "salva"
+		"save": "salva",
+		"no_results":"Nessun risultato trovato"
 	},
 	"login": {
 		"btn": "accedi",

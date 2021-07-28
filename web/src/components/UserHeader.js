@@ -8,7 +8,7 @@ const UserHeader = props => {
 	return (
 		<div
 			className="userHeader"
-			style={user !== null && user.header ? { backgroundImage: 'url(' + process.env.PUBLIC_URL + user._id + ')' } : {}}
+			style={user && user.header ? { backgroundImage: 'url(' + process.env.PUBLIC_URL + user._id + ')' } : {}}
 		/>
 	);
 };

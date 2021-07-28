@@ -7,6 +7,7 @@ const { validator } = require('../middlewares/validator');
 const router = express.Router();
 
 router.route('/').get(controller.get);
+router.route('/filter/:filter').get(controller.filter);
 
 router
 	.route('/:id')

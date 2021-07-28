@@ -9,13 +9,9 @@ const { Title } = Typography;
 const Home = props => {
 	const { t } = useTranslation();
 
-	console.log(props.location);
 	return (
-		<section>
+		<section className="padded-content">
 			<Space>
-				<Link to="profile/60f1a2e408c1b430d95aa632">
-					<Button>Admin profile</Button>
-				</Link>
 				<Link to="upload">
 					<Button>upload demo</Button>
 				</Link>
@@ -23,6 +19,8 @@ const Home = props => {
 					<Button>not found</Button>
 				</Link>
 			</Space>
+			<br />
+			<br />
 			<Nfts by="auctions" />
 		</section>
 	);

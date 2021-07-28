@@ -9,6 +9,16 @@ exports.get = (req, res, next) => {
 	});
 };
 
+/* Search profiles */
+exports.filter = (req, res, next) => {
+	User.find({ $text: { $search: req.params.filter } }, { score: { $meta: 'textScore' } })
+		.sort({ score: { $meta: 'textScore' } })
+		.exec((err, users) => {
+			if (err) return next(ServerError(err));
+			return next(SendData(users));
+		});
+};
+
 exports.getById = (req, res, next) => {
 	User.findById(req.params.id, User.getFields('profile'), (err, user) => {
 		if (err || !user) return next(NotFound());
@@ -25,6 +35,7 @@ exports.update = (req, res, next) => {
 	});
 };
 
+/* Get profile nfts */
 exports.getCreated = (req, res, next) =>
 	Nft.find({ author: req.params.id }, Nft.getFields())
 		.populate({ path: 'auction', select: 'price deadline' })

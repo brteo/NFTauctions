@@ -9,7 +9,7 @@ const UserPic = props => {
 	const { user, size, link, ...spreadProps } = props;
 
 	let el;
-	if (user !== null) {
+	if (user) {
 		el = user.pic ? (
 			<Avatar {...spreadProps} size={size} src={process.env.PUBLIC_URL + user._id} alt={user.nickname + ' avatar'} />
 		) : (
@@ -19,7 +19,7 @@ const UserPic = props => {
 		el = <Skeleton.Avatar active size={size} />;
 	}
 
-	if (link && user !== null) {
+	if (link && user) {
 		return (
 			<Link className="userPic" to={'/profile/' + user._id}>
 				{el}

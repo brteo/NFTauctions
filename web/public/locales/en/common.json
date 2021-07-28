@@ -3,7 +3,8 @@
 		"error": "Error",
 		"title": "Title",
 		"back": "Back",
-		"save": "save"
+		"save": "save",
+		"no_results":"No result found"
 	},	
 	"login": {
 		"btn": "Sign In",
