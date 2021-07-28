@@ -9,6 +9,7 @@ import Home from './Home';
 import Search from './Search';
 import Profile from './Profile';
 import Upload from './Upload';
+import Nft from './Nft';
 
 const { Content, Footer } = Layout;
 
@@ -24,6 +25,7 @@ const Routes = props => {
 						<Route exact path="/search" component={Search} />
 						<Route exact path="/profile/:id" component={Profile} />
 						<Route exact path="/upload" component={Upload} />
+						<Route exact path="/nft/:id" component={Nft} />
 						<Route component={() => <ErrorPage status="404" />} />
 					</Switch>
 				</Content>
