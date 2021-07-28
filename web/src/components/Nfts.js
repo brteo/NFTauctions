@@ -48,7 +48,7 @@ const Nfts = props => {
 						nftsComponents.length ? (
 							nftsComponents
 						) : (
-							<Col xs={12} sm={8} md={6} lg={6} xl={6} xxl={4}>
+							<Col xs={12} sm={8} md={6} lg={6} xl={6} xxl={4} className="no-results">
 								{t('common.no_results')}
 							</Col>
 						)
