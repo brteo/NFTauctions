@@ -6,35 +6,39 @@ import Api from '../helpers/api';
 import NftCard from './NftCard';
 
 const Nfts = props => {
-	const { by, user } = props;
+	const { by, user, filter } = props;
 
 	const [nfts, setNfts] = useState(null);
 
 	let endpoint = null;
-	switch (by) {
-		case 'owner':
-			if (user) endpoint = '/profile/' + user._id + '/owned';
-			break;
-		case 'creator':
-			if (user) endpoint = '/profile/' + user._id + '/created';
-			break;
-		case 'auctions':
-			endpoint = '/nfts/auctions';
-			break;
-		default:
-			endpoint = '/nfts';
-			break;
+	if (filter) endpoint = '/nfts/filter/' + filter;
+	else {
+		switch (by) {
+			case 'owner':
+				if (user) endpoint = '/profile/' + user._id + '/owned';
+				break;
+			case 'creator':
+				if (user) endpoint = '/profile/' + user._id + '/created';
+				break;
+			case 'auctions':
+				endpoint = '/nfts/auctions';
+				break;
+			default:
+				endpoint = '/nfts';
+				break;
+		}
 	}
 
 	useEffect(() => {
 		if (endpoint) {
+			console.log(endpoint);
 			Api.get(endpoint)
 				.then(res => {
 					const nftsList = res.data;
 					const nftsComponents = [];
 
 					nftsList.forEach(nft => {
-						const elem = <NftCard nft={nft} key={nft.id} />;
+						const elem = <NftCard nft={nft} key={nft._id} />;
 
 						nftsComponents.push(elem);
 					});

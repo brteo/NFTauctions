@@ -9,6 +9,7 @@ const { Title } = Typography;
 const Home = props => {
 	const { t } = useTranslation();
 
+	console.log(props.location);
 	return (
 		<section>
 			<Space>

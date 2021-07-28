@@ -13,7 +13,20 @@ exports.get = (req, res, next) => {
 		.populate('author')
 		.populate('owner')
 		.exec((err, nfts) => {
-			if (err) return next(ServerError());
+			if (err) return next(ServerError(err));
+			return next(SendData(nfts));
+		});
+};
+
+/* Search nfts */
+exports.filter = (req, res, next) => {
+	Nft.find({ $text: { $search: req.params.filter } }, { score: { $meta: 'textScore' } })
+		.populate({ path: 'auction', select: 'price deadline' })
+		.populate('author')
+		.populate('owner')
+		.sort({ score: { $meta: 'textScore' } })
+		.exec((err, nfts) => {
+			if (err) return next(ServerError(err));
 			return next(SendData(nfts));
 		});
 };

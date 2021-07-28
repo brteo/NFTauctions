@@ -69,4 +69,16 @@ schema.virtual('auction', {
 	match: { active: true }
 });
 
+schema.index(
+	{ title: 'text', description: 'text', tags: 'text' },
+	{
+		weights: {
+			title: 10,
+			description: 1,
+			keywords: 5
+		},
+		name: 'text'
+	}
+);
+
 module.exports = mongoose.models.Nft || mongoose.model('Nft', schema);

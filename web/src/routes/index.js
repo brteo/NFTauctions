@@ -6,6 +6,7 @@ import ErrorPage from '../components/extra/ErrorPage';
 import Header from '../components/Header';
 
 import Home from './Home';
+import Search from './Search';
 import Profile from './Profile';
 import Upload from './Upload';
 
@@ -20,6 +21,7 @@ const Routes = props => {
 					<Switch>
 						<Route exact path="/" component={Home} />
 						<Route exact path="/index.html" component={Home} />
+						<Route exact path="/search" component={Search} />
 						<Route exact path="/profile/:id" component={Profile} />
 						<Route exact path="/upload" component={Upload} />
 						<Route component={() => <ErrorPage status="404" />} />
