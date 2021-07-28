@@ -11,6 +11,13 @@ module.exports = (schema, options) => {
 
 	schema.statics.getFields = getFields;
 
+	schema.statics.getProjectFields = function (fields) {
+		return schema.statics.getFields(fields).reduce((acc, item) => {
+			acc[item] = 1;
+			return acc;
+		}, {});
+	};
+
 	schema.methods.response = function (fields) {
 		return getFields(fields).reduce((acc, item) => {
 			acc[item] = this[item];

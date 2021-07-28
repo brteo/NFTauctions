@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
-import { Skeleton, Row } from 'antd';
+import { Row } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import Api from '../helpers/api';
 import NftCard from './NftCard';

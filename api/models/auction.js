@@ -56,6 +56,12 @@ const schema = Schema(
 		timestamps: true
 	}
 );
+schema.index({ deadline: 1 }, { name: 'auctions list', partialFilterExpression: { active: true, deleted: false } });
+schema.index(
+	{ nft: 1 },
+	{ name: 'active nft auction', partialFilterExpression: { active: true, deleted: false }, unique: true }
+);
+
 schema.plugin(softDelete);
 schema.plugin(dbFields, { public: ['_id', 'description', 'base', 'deadline', 'nft'] });
 

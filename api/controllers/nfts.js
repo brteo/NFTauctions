@@ -1,4 +1,6 @@
 const Nft = require('../models/nft');
+const Auction = require('../models/auction');
+const User = require('../models/user');
 const Category = require('../models/category');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
@@ -6,7 +8,7 @@ const { eos, addKey } = require('../helpers/eosjs');
 
 /* Get all nfts */
 exports.get = (req, res, next) => {
-	Nft.find({}, Nft.getFields())
+	Nft.find({})
 		.populate({ path: 'auction', select: 'price deadline' })
 		.populate('author')
 		.populate('owner')
@@ -18,17 +20,48 @@ exports.get = (req, res, next) => {
 
 /* Get all nfts with auctions */
 exports.getAuctions = (req, res, next) => {
-	Nft.find({}, Nft.getFields())
-		.populate({
-			path: 'auction',
-			select: 'price deadline'
-		})
-		.populate('author')
-		.populate('owner')
-		.exec((err, nfts) => {
-			if (err) return next(ServerError());
-			return next(SendData(nfts));
-		});
+	Auction.aggregate([
+		{ $match: { active: true } },
+		{
+			$lookup: {
+				from: Nft.collection.name,
+				localField: 'nft',
+				foreignField: '_id',
+				as: 'nfts',
+				pipeline: [{ $project: Nft.getProjectFields() }]
+			}
+		},
+		{
+			$replaceRoot: {
+				newRoot: {
+					$mergeObjects: [{ $arrayElemAt: ['$nfts', 0] }, { auction: { price: '$price', deadline: '$deadline' } }]
+				}
+			}
+		},
+		{
+			$lookup: {
+				from: User.collection.name,
+				localField: 'author',
+				foreignField: '_id',
+				as: 'author',
+				pipeline: [{ $project: User.getProjectFields() }]
+			}
+		},
+		{ $unwind: '$author' },
+		{
+			$lookup: {
+				from: User.collection.name,
+				localField: 'owner',
+				foreignField: '_id',
+				as: 'owner',
+				pipeline: [{ $project: User.getProjectFields() }]
+			}
+		},
+		{ $unwind: '$owner' }
+	]).exec((err, nfts) => {
+		if (err) return next(ServerError(err));
+		return next(SendData(nfts));
+	});
 };
 
 /* Get nft by id */
