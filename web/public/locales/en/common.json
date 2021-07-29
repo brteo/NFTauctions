@@ -40,6 +40,7 @@
 		"deadline": "The auction expires in",
 		"bet": "Bet",
 		"owner": "Owner",
-		"category": "Category"
+		"category": "Category",
+		"author": "Author"
 	}
 }

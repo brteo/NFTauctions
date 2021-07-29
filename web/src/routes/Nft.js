@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Image } from 'antd';
+import { Typography, Image, Button } from 'antd';
 import { FieldTimeOutlined } from '@ant-design/icons';
 import Api from '../helpers/api';
 import UserPic from '../components/UserPic';
@@ -21,7 +21,7 @@ const Nft = props => {
 	const getNft = idNft => {
 		Api.get('/nfts/' + idNft)
 			.then(res => {
-				console.log(res);
+				console.log(res.data);
 				const nftData = res.data;
 				const elem = (
 					<>
@@ -37,23 +37,36 @@ const Nft = props => {
 
 							<Title level={5}>{nftData.description}</Title>
 
-							<Title level={5}> Tags: {nftData.tags.join(', ')}</Title>
-
 							<Title level={5}>
+								<UserPic user={nftData.owner} size={110} />
+								<br />
+								<br />
 								<Link to={'/profile/' + nftData.owner._id}>
 									{t('auction.owner')}: {nftData.owner.nickname}
 								</Link>
 								<br />
-								<br />
-								<UserPic user={nftData.owner} size={110} />
+								<Link to={'/profile/' + nftData.author._id}>
+									{t('auction.author')}: {nftData.author.nickname}
+								</Link>
 							</Title>
+
+							<Title level={5}> Tags: {nftData.tags.join(', ')}</Title>
 
 							{nftData.auction !== undefined ? (
 								<>
 									<Title level={5}>{nftData.auction.description}</Title>
-									<Title level={5}> Tags: {nftData.tags.join(', ')}</Title>
-									<br /> {nftData.auction.price} ETH <br />
-									<FieldTimeOutlined /> <Countdown eventTime={nftData.auction.deadline} />
+									<br />
+									<Title level={5}>
+										{t('auction.price')}: {nftData.auction.price} ETH
+									</Title>
+									<br />
+									<Title>
+										<FieldTimeOutlined /> <Countdown eventTime={nftData.auction.deadline} />
+									</Title>
+									<br />
+									<Button type="primary" htmlType="submit" size="large" shape="round">
+										{t('auction.bet')}
+									</Button>
 								</>
 							) : (
 								<></>
@@ -80,9 +93,9 @@ const Nft = props => {
 			<br />
 			<Title level={1}>NFT Info</Title>
 			{!matches ? (
-				<div style={{ display: 'flex', flexDirection: 'row' }}>{nft}</div>
+				<div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}>{nft}</div>
 			) : (
-				<div style={{ display: 'flex', flexDirection: 'column' }}>{nft}</div>
+				<div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column' }}>{nft}</div>
 			)}
 		</>
 	);

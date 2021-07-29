@@ -40,6 +40,7 @@
 		"deadline": "L'asta scade tra",
 		"bet": "Punta",
 		"owner": "Proprietario",
-		"category": "Categoria"
+		"category": "Categoria",
+		"author": "Autore"
 	}
 }
