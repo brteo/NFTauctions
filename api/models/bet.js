@@ -6,7 +6,6 @@ const schema = new mongoose.Schema(
 		auction: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Auction',
-			index: true,
 			required: true
 		},
 		user: {
@@ -15,6 +14,10 @@ const schema = new mongoose.Schema(
 				required: true
 			},
 			nickname: String
+		},
+		time: {
+			type: Date,
+			required: true
 		},
 		price: {
 			type: Number,
@@ -26,7 +29,8 @@ const schema = new mongoose.Schema(
 		timestamps: true
 	}
 );
+schema.index({ auction: -1, time: -1 }, { name: 'bet list' });
 
-schema.plugin(dbFields, { public: ['_id', 'auction', 'user', 'price'] });
+schema.plugin(dbFields, { public: ['_id', 'auction', 'user', 'time', 'price'] });
 
 module.exports = mongoose.model('Bet', schema);

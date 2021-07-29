@@ -8,6 +8,7 @@
 		"211": "Invalid account",
 		"212": "Cannot upload the file",
 		"213": "The file size must be less then %s MB!",
+		"215": "Bet price not valid",
 		"300": "Wrong email",
 		"301": "Wrong password",
 		"302": "Inactive account",

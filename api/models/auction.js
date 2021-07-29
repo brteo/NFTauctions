@@ -27,7 +27,7 @@ const schema = Schema(
 			ref: 'Nft',
 			required: true
 		},
-		lastBet: [
+		lastBets: [
 			{
 				id: {
 					type: mongoose.Schema.Types.ObjectId,
@@ -39,6 +39,10 @@ const schema = Schema(
 						required: true
 					},
 					nickname: String
+				},
+				time: {
+					type: Date,
+					required: true
 				},
 				price: {
 					type: Number,
@@ -63,6 +67,6 @@ schema.index(
 );
 
 schema.plugin(softDelete);
-schema.plugin(dbFields, { public: ['_id', 'description', 'base', 'deadline', 'nft'] });
+schema.plugin(dbFields, { public: ['_id', 'description', 'basePrice', 'deadline', 'nft'] });
 
 module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);

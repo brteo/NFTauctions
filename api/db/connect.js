@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const config = require('./config');
 
-const { MONGO_INITDB_DATABASE, MONGO_DATABASE_USERNAME, MONGO_DATABASE_PASSWORD } = process.env;
+const { ENV, MONGO_INITDB_DATABASE, MONGO_DATABASE_USERNAME, MONGO_DATABASE_PASSWORD } = process.env;
 
-mongoose.set('debug', true);
+if (ENV === 'development') mongoose.set('debug', true);
 
 mongoose
 	.connect(

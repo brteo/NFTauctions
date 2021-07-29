@@ -164,9 +164,27 @@ describe('Role: admin', () => {
 	});
 
 	describe('POST /auctions', () => {
-		test('A new auction should be added', done => {
-			newAuction.nft = Number(nft.id);
-			agent
+		test('A new auction should be added', async () => {
+			const newNft = await new Nft({
+				_id: 2000002,
+				title: 'Nft title',
+				description: 'Nft description',
+				category: {
+					id: categoryInNft.id,
+					name: {
+						it: 'Immagini',
+						en: 'Images'
+					}
+				},
+				tags: ['tag'],
+				url: 'path/to/url',
+				author: admin.id,
+				owner: admin.id
+			}).save();
+
+			newAuction.nft = Number(newNft.id);
+
+			return agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send(newAuction)
@@ -174,9 +192,7 @@ describe('Role: admin', () => {
 				.then(res => {
 					const { basePrice, description, deadline } = res.body;
 					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadline }));
-					done();
 				});
-			delete newAuction.nft;
 		});
 
 		test('A wrong auction should not be added', done => {
@@ -193,6 +209,7 @@ describe('Role: admin', () => {
 
 		test('An auction with inexistent nft should not be added', done => {
 			newAuction.nft = 123456789;
+
 			agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
@@ -203,7 +220,6 @@ describe('Role: admin', () => {
 					expect(res.body.message).toBe('Nft not found');
 					done();
 				});
-			delete newAuction.nft;
 		});
 	});
 
@@ -339,9 +355,27 @@ describe('Role: user', () => {
 	});
 
 	describe('POST /auctions', () => {
-		test('Add new auction should be Permitted', done => {
-			newAuction.nft = Number(nft.id);
-			agent
+		test('Add new auction should be Permitted', async () => {
+			const newNft = await new Nft({
+				_id: 2000002,
+				title: 'Nft title',
+				description: 'Nft description',
+				category: {
+					id: categoryInNft.id,
+					name: {
+						it: 'Immagini',
+						en: 'Images'
+					}
+				},
+				tags: ['tag'],
+				url: 'path/to/url',
+				author: admin.id,
+				owner: admin.id
+			}).save();
+
+			newAuction.nft = Number(newNft.id);
+
+			return agent
 				.post('/auctions')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send(newAuction)
@@ -349,9 +383,7 @@ describe('Role: user', () => {
 				.then(res => {
 					const { basePrice, description, deadline } = res.body;
 					expect(res.body).toEqual(expect.objectContaining({ basePrice, description, deadline }));
-					done();
 				});
-			delete newAuction.nft;
 		});
 	});
 

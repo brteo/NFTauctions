@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Auction = require('../models/auction');
 const Nft = require('../models/nft');
 const Bet = require('../models/bet');
@@ -61,7 +62,7 @@ exports.add = async (req, res, next) => {
 	});
 
 	await auction.save((err, doc) => {
-		if (err) next(err);
+		if (err) next(ServerError(err));
 
 		return next(SendData(auction.response(), 201));
 	});
@@ -116,48 +117,63 @@ exports.delete = (req, res, next) => {
 	});
 };
 
-exports.getBets = (req, res, next) => {
+exports.getBets = async (req, res, next) => {
+	await Auction.findById(req.params.id, (err, auction) => {
+		if (err || !auction || auction.length === 0) {
+			next(NotFound());
+		}
+	});
+
 	Bet.find({ auction: req.params.id }, (err, bets) => {
 		if (err) next(ServerError());
 		else next(SendData(bets));
 	});
 };
 
-exports.addBet = (req, res, next) => {
+exports.addBet = async (req, res, next) => {
 	const { user: logged } = res.locals;
 	const auctionId = req.params.id;
 	const betPrice = req.body.price;
 
-	// Auction.findByIdAndUpdate().then(
-	// add bet with auction updatedAt
-	// mongo add element array embedded + shift
-	// )
+	await Auction.findById(req.params.id, (err, auction) => {
+		if (err || !auction || auction.length === 0) {
+			next(NotFound());
+		}
+	});
 
-	const bet = new Bet({
-		auction: auctionId,
+	const newBets = {
+		_id: new mongoose.Types.ObjectId(),
 		user: {
 			id: logged.id,
-			nickname: logged.nickname,
-			pic: logged.pic
+			nickname: logged.nickname
 		},
+		time: new Date(),
 		price: betPrice
-	});
+	};
 
-	return bet.save((err, doc) => {
-		if (err) next(err);
+	return Auction.findOneAndUpdate(
+		{ _id: auctionId, price: { $lt: betPrice } },
+		{
+			price: betPrice,
+			$push: {
+				lastBets: {
+					$each: [newBets],
+					$position: 0,
+					$slice: 10
+				}
+			}
+		},
+		{ new: true },
+		(err, auction) => {
+			if (err) return next(ServerError());
+			if (!auction) return next(CustomError('Bet not valid', 400, {}, 215));
 
-		return Bet.find({ auction: auctionId })
-			.sort('-createdAt')
-			.limit(10)
-			.exec((errBets, bets) => {
-				if (errBets) next(ServerError());
+			newBets.auction = auctionId;
+			return new Bet(newBets).save((errBet, bet) => {
+				if (errBet) next(ServerError(errBet));
 
-				const newBets = bets.map(({ id, user, price }) => ({ id, user, price }));
-
-				return Auction.findByIdAndUpdate(auctionId, { price: betPrice, bets: newBets }, (errAcution, acution) => {
-					if (errAcution) return next(ServerError());
-					return next(SendData(doc.getPublicFields(), 201));
-				});
+				next(SendData(bet.response(), 201));
 			});
-	});
+		}
+	);
 };
