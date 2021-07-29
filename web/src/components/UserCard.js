@@ -8,7 +8,7 @@ const { Title } = Typography;
 
 const UserCard = props => {
 	const { user } = props;
-	console.log(user);
+
 	return (
 		<Col xs={12} sm={8} md={6} lg={6} xl={6} xxl={4} className="userCard">
 			{user ? (

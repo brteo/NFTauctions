@@ -10,13 +10,13 @@ exports.get = (req, res, next) => {
 };
 
 /* Search profiles */
-exports.filter = (req, res, next) => {
-	User.find({ $text: { $search: req.params.filter } }, { score: { $meta: 'textScore' } })
-		.sort({ score: { $meta: 'textScore' } })
-		.exec((err, users) => {
-			if (err) return next(ServerError(err));
-			return next(SendData(users));
-		});
+exports.filter = async (req, res, next) => {
+	try {
+		const users = await User.search(req.params.filter);
+		return next(SendData(users));
+	} catch (err) {
+		return next(ServerError(err));
+	}
 };
 
 exports.getById = (req, res, next) => {

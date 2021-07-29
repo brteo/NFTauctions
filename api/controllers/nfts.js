@@ -19,16 +19,13 @@ exports.get = (req, res, next) => {
 };
 
 /* Search nfts */
-exports.filter = (req, res, next) => {
-	Nft.find({ $text: { $search: req.params.filter } }, { score: { $meta: 'textScore' } })
-		.populate({ path: 'auction', select: 'price deadline' })
-		.populate('author')
-		.populate('owner')
-		.sort({ score: { $meta: 'textScore' } })
-		.exec((err, nfts) => {
-			if (err) return next(ServerError(err));
-			return next(SendData(nfts));
-		});
+exports.filter = async (req, res, next) => {
+	try {
+		const nfts = await Nft.search(req.params.filter);
+		return next(SendData(nfts));
+	} catch (err) {
+		return next(ServerError(err));
+	}
 };
 
 /* Get all nfts with auctions */

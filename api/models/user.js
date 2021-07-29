@@ -135,5 +135,12 @@ console.log(ekey);
 console.log(dkey);
 */
 
+schema.statics.search = function (q) {
+	return this.model('User')
+		.find({ $text: { $search: q } }, { ...this.model('User').getProjectFields(), ...{ score: { $meta: 'textScore' } } })
+		.sort({ score: { $meta: 'textScore' } })
+		.exec();
+};
+
 /* How to Fix Mongoose Cannot Overwrite Model Once Compiled Error */
 module.exports = mongoose.models.User || mongoose.model('User', schema);

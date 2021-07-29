@@ -9,14 +9,21 @@ const { Title } = Typography;
 
 const Search = props => {
 	const { t } = useTranslation();
-	const query = new URLSearchParams(useLocation().search);
+	const query = new URLSearchParams(useLocation().search).get('query');
 
 	return (
 		<section className="padded-content">
-			<Title level={2}>Users</Title>
-			<Users filter={query.get('query')} />
-			<Title level={2}>Nfts</Title>
-			<Nfts filter={query.get('query')} />
+			{' '}
+			{query ? (
+				<>
+					<Title level={2}>Users</Title>
+					<Users filter={query} />
+					<Title level={2}>Nfts</Title>
+					<Nfts filter={query} />
+				</>
+			) : (
+				<>No search</>
+			)}
 		</section>
 	);
 };

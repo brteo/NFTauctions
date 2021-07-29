@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useContext } from 'react';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Layout, Button, Modal, Row, Col, Input } from 'antd';
 
@@ -10,15 +10,16 @@ import Login from './Login';
 
 import logo from '../img/logo.svg';
 
+import GlobalSearch from './controls/GlobalSearch';
+import UserPic from './UserPic';
+
 const { Header } = Layout;
-const { Search } = Input;
 
 const HeaderComponent = props => {
 	const { t, i18n } = useTranslation();
-	const history = useHistory();
+
 	const { logged, handleLogout } = useContext(AppContext);
 	const [showLogin, setShowLogin] = useState(false);
-	const query = new URLSearchParams(useLocation().search);
 
 	const changeLanguage = lang => i18n.changeLanguage(lang);
 
@@ -43,8 +44,53 @@ const HeaderComponent = props => {
 			});
 		}
 	};
-	const onChange = e => console.log(e.target.value);
-	const onSearch = q => history.push('/search?query=' + q);
+
+	const history = useHistory();
+
+	const onSearchSelect = (value, option) =>
+		option.type === 'nft' ? history.push('/nft/' + option.id) : history.push('/profile/' + option.id);
+	const parseSearchResults = results => {
+		const options = [];
+
+		if (results.users.length > 0) {
+			const users = { label: 'Users', options: [] };
+			results.users.forEach(user => {
+				users.options.push({
+					type: 'user',
+					id: user._id,
+					value: 'user' + user._id,
+					label: (
+						<>
+							<UserPic user={user} size={40} /> <span className="userNick">{user.nickname}</span>
+						</>
+					)
+				});
+			});
+
+			options.push(users);
+		}
+
+		if (results.nfts.length > 0) {
+			const nfts = { label: 'Nfts', options: [] };
+			results.nfts.forEach(nft => {
+				nfts.options.push({
+					type: 'nft',
+					id: nft._id,
+					value: 'nft' + nft._id,
+					label: (
+						<>
+							<img alt={nft.description} src={nft.url} className="nftImage" />{' '}
+							<span className="nftTitle">{nft.title}</span>
+						</>
+					)
+				});
+			});
+
+			options.push(nfts);
+		}
+
+		return options;
+	};
 
 	return (
 		<>
@@ -56,13 +102,7 @@ const HeaderComponent = props => {
 						</Link>
 					</Col>
 					<Col flex="auto">
-						<Search
-							placeholder="Search"
-							onSearch={onSearch}
-							onChange={onChange}
-							defaultValue={query.get('query')}
-							allowClear
-						/>
+						<GlobalSearch resultParser={parseSearchResults} onSelect={onSearchSelect} />
 					</Col>
 					<Col flex="none">
 						{process.env.NODE_ENV === 'development' && <APICheck />}

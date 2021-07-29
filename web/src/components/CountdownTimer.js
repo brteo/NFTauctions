@@ -22,10 +22,16 @@ const Countdown = props => {
 
 	const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
+	let timer;
 	useEffect(() => {
-		setTimeout(() => {
+		timer = setTimeout(() => {
 			setTimeLeft(calculateTimeLeft());
 		}, 1000);
+
+		return () => {
+			if (timer) clearTimeout(timer);
+			// setTimeLeft(null);
+		};
 	});
 
 	return timeLeft;

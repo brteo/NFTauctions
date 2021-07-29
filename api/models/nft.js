@@ -59,7 +59,10 @@ const schema = Schema(
 	}
 );
 schema.plugin(softDelete);
-schema.plugin(dbFields, { public: ['_id', 'title', 'description', 'category', 'tags', 'url', 'author', 'owner'] });
+schema.plugin(dbFields, {
+	public: ['_id', 'title', 'description', 'category', 'url', 'author', 'owner'],
+	detail: ['_id', 'title', 'description', 'category', 'tags', 'url', 'author', 'owner']
+});
 
 schema.virtual('auction', {
 	ref: 'Auction',
@@ -80,5 +83,15 @@ schema.index(
 		name: 'text'
 	}
 );
+
+schema.statics.search = function (q) {
+	return this.model('Nft')
+		.find({ $text: { $search: q } }, { ...this.model('Nft').getProjectFields(), ...{ score: { $meta: 'textScore' } } })
+		.populate({ path: 'auction', select: 'price deadline' })
+		.populate('author')
+		.populate('owner')
+		.sort({ score: { $meta: 'textScore' } })
+		.exec();
+};
 
 module.exports = mongoose.models.Nft || mongoose.model('Nft', schema);
