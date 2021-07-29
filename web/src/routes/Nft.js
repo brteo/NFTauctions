@@ -1,14 +1,20 @@
+/* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Image, Row, Col, View } from 'antd';
+import { Typography, Image } from 'antd';
+import { FieldTimeOutlined } from '@ant-design/icons';
 import Api from '../helpers/api';
+import UserPic from '../components/UserPic';
+import Countdown from '../components/CountdownTimer';
 
 const { Title } = Typography;
 
 const Nft = props => {
 	const { t } = useTranslation();
 
-	const [nft, setNft] = React.useState();
+	const [nft, setNft] = useState();
+	const [matches, setMatch] = useState(window.matchMedia('(max-width: 800px)').matches);
 
 	const { id } = props.match.params;
 
@@ -19,17 +25,39 @@ const Nft = props => {
 				const nftData = res.data;
 				const elem = (
 					<>
-						<div style={{ flex: '0 0 50%', height: '100%', width: '100%', maxWidth: '100%', maxHeight: '100%' }}>
+						<div style={{ flex: '0 0 50%' }}>
 							<Image
 								alt="nft"
 								src={nftData.url}
-								style={{ height: '100%', width: '100%', maxWidth: '100%', maxHeight: '100%' }}
+								style={{ borderRadius: 50, border: '3px solid yellow', position: 'fixed', maxWidth: '50%' }}
 							/>
 						</div>
-						<div style={{ flex: '0 0 50%' }}>
-							<Title level={3} style={{ textAlign: 'center' }}>
-								{nftData.title}
+						<div style={{ flex: '0 0 50%', textAlign: 'center' }}>
+							<Title level={2}>{nftData.title}</Title>
+
+							<Title level={5}>{nftData.description}</Title>
+
+							<Title level={5}> Tags: {nftData.tags.join(', ')}</Title>
+
+							<Title level={5}>
+								<Link to={'/profile/' + nftData.owner._id}>
+									{t('auction.owner')}: {nftData.owner.nickname}
+								</Link>
+								<br />
+								<br />
+								<UserPic user={nftData.owner} size={110} />
 							</Title>
+
+							{nftData.auction !== undefined ? (
+								<>
+									<Title level={5}>{nftData.auction.description}</Title>
+									<Title level={5}> Tags: {nftData.tags.join(', ')}</Title>
+									<br /> {nftData.auction.price} ETH <br />
+									<FieldTimeOutlined /> <Countdown eventTime={nftData.auction.deadline} />
+								</>
+							) : (
+								<></>
+							)}
 						</div>
 					</>
 				);
@@ -43,9 +71,21 @@ const Nft = props => {
 
 	useEffect(() => {
 		getNft(id);
+		const handler = e => setMatch(e.matches);
+		window.matchMedia('(max-width: 800px)').addListener(handler);
 	}, []);
 
-	return <div style={{ display: 'flex', flexDirection: 'row' }}>{nft}</div>;
+	return (
+		<>
+			<br />
+			<Title level={1}>NFT Info</Title>
+			{!matches ? (
+				<div style={{ display: 'flex', flexDirection: 'row' }}>{nft}</div>
+			) : (
+				<div style={{ display: 'flex', flexDirection: 'column' }}>{nft}</div>
+			)}
+		</>
+	);
 };
 
 export default Nft;

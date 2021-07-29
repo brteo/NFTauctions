@@ -37,7 +37,9 @@
 		"no":"Not for sale",
 		"basePrice": "Start price",
 		"price": "Price",
-		"deadline": "L'asta scade tra",
-		"bet": "Punta"
+		"deadline": "The auction expires in",
+		"bet": "Bet",
+		"owner": "Owner",
+		"category": "Category"
 	}
 }
