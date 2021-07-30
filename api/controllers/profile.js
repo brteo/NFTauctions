@@ -1,6 +1,9 @@
 const User = require('../models/user');
 const Nft = require('../models/nft');
 const { SendData, ServerError, Forbidden, NotFound } = require('../helpers/response');
+const { moveTmpFile } = require('../helpers/s3');
+
+const { AWS_S3_BUCKET_DATA, AWS_S3_ENDPOINT_PUBLIC } = process.env;
 
 exports.get = (req, res, next) => {
 	User.find({}, (err, users) => {
@@ -26,8 +29,28 @@ exports.getById = (req, res, next) => {
 	});
 };
 
-exports.update = (req, res, next) => {
+exports.update = async (req, res, next) => {
 	if (res.locals.user.id !== req.params.id) return next(Forbidden());
+
+	if (req.body.pic) {
+		try {
+			await moveTmpFile(req.body.pic, req.body.pic);
+		} catch (err) {
+			return next(ServerError(err));
+		}
+
+		req.body.pic = AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + req.body.pic;
+	}
+
+	if (req.body.header) {
+		try {
+			await moveTmpFile(req.body.header, req.body.header);
+		} catch (err) {
+			return next(ServerError(err));
+		}
+
+		req.body.header = AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + req.body.header;
+	}
 
 	return User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, user) => {
 		if (err || !user) return next(NotFound());

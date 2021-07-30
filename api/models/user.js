@@ -85,7 +85,7 @@ const schema = Schema(
 );
 schema.plugin(softDelete);
 schema.plugin(dbFields, {
-	public: ['_id', 'nickname', 'role', 'lang'],
+	public: ['_id', 'nickname', 'pic', 'role', 'lang'],
 	profile: ['_id', 'nickname', 'pic', 'header', 'bio'],
 	cp: ['_id', 'email', 'account', 'nickname', 'name', 'lastname', 'pic', 'lang', 'role', 'active']
 });

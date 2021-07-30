@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { InboxOutlined, FileImageOutlined } from '@ant-design/icons';
+import { InboxOutlined, FileImageOutlined, CameraOutlined } from '@ant-design/icons';
 
 import ImageUploader from '../components/controls/ImageUploader';
 
@@ -8,6 +8,11 @@ const UploadPage = props => {
 	const { t } = useTranslation();
 
 	const img = 'http://localhost:4566/data/test.jpg';
+
+	const [picUploaded, setPicUploaded] = useState(null);
+	const onUploadedMoveTheFileToNewUrl = data => setPicUploaded(img);
+
+	const onUpload = file => console.log(file);
 
 	const noCropChange = file => console.log(file);
 
@@ -18,8 +23,12 @@ const UploadPage = props => {
 			<img src={img} alt="test s3" height="200" />
 			<br />
 			<br />
-			<h2>Without crop</h2>
-			<ImageUploader onChange={noCropChange} sizeLimit="2">
+			<h2>Standard with overlay Icon</h2>
+			<ImageUploader onChange={onUpload} sizeLimit="2" overlay={<CameraOutlined />} />
+			<br />
+			<br />
+			<h2>With custom children</h2>
+			<ImageUploader onChange={onUpload} sizeLimit="2">
 				<p className="ant-upload-drag-icon">
 					<InboxOutlined />
 				</p>
@@ -35,6 +44,50 @@ const UploadPage = props => {
 			>
 				<p className="ant-upload-drag-icon">
 					<FileImageOutlined />
+				</p>
+				<p className="ant-upload-text">{t('core:imageUploader.text')}</p>
+				<p className="ant-upload-hint">{t('core:imageUploader.opt')}</p>
+			</ImageUploader>
+			<h2>With init image</h2>
+			<ImageUploader onChange={onUpload} sizeLimit="2" initImage={img}>
+				<p className="ant-upload-drag-icon">
+					<InboxOutlined />
+				</p>
+				<p className="ant-upload-text">{t('core:imageUploader.text')}</p>
+				<p className="ant-upload-hint">{t('core:imageUploader.opt')}</p>
+			</ImageUploader>
+			<br />
+			<br />
+			<h2>With cover image</h2>
+			<ImageUploader onChange={onUpload} sizeLimit="2" cover initImage={img}>
+				<p className="ant-upload-drag-icon">
+					<InboxOutlined />
+				</p>
+				<p className="ant-upload-text">{t('core:imageUploader.text')}</p>
+				<p className="ant-upload-hint">{t('core:imageUploader.opt')}</p>
+			</ImageUploader>
+			<br />
+			<br />
+			<h2>With init uploaded image</h2>
+			<ImageUploader onChange={onUpload} sizeLimit="2" cover initUploadImage={img}>
+				<p className="ant-upload-drag-icon">
+					<InboxOutlined />
+				</p>
+				<p className="ant-upload-text">{t('core:imageUploader.text')}</p>
+				<p className="ant-upload-hint">{t('core:imageUploader.opt')}</p>
+			</ImageUploader>
+			<br />
+			<br />
+			<h2>With skipSetUploaded - image updated with initUploadImage after moved by parent</h2>
+			<ImageUploader
+				onChange={onUploadedMoveTheFileToNewUrl}
+				sizeLimit="2"
+				cover
+				skipSetUploaded
+				initUploadImage={picUploaded}
+			>
+				<p className="ant-upload-drag-icon">
+					<InboxOutlined />
 				</p>
 				<p className="ant-upload-text">{t('core:imageUploader.text')}</p>
 				<p className="ant-upload-hint">{t('core:imageUploader.opt')}</p>

@@ -23,7 +23,9 @@
 	},
 	"profile": {
 		"bio_placeholder":"your bio",
-		"bio_tip":"edit bio"
+		"bio_tip":"edit bio",
+		"pic_tip":"change pic",
+		"header_tip":"change header"
 	},
 	"cookie": {
 		"title": "Cookies blocked", 

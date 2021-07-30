@@ -1,10 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Tabs, Typography, Skeleton, Input, Space, Tooltip, Form } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
+import { Button, Tabs, Typography, Skeleton, Input, Tooltip, Form } from 'antd';
+import { EditOutlined, CameraOutlined, UserOutlined } from '@ant-design/icons';
 
 import Api from '../helpers/api';
+import ImageUploader from '../components/controls/ImageUploader';
 import UserHeader from '../components/UserHeader';
 import UserPic from '../components/UserPic';
 import Nfts from '../components/Nfts';
@@ -16,11 +17,13 @@ const { TabPane } = Tabs;
 
 const Profile = props => {
 	const { t } = useTranslation();
-	const { logged } = useContext(AppContext);
+	const { logged, setLogged } = useContext(AppContext);
 	const { match } = props;
 
 	const [user, setUser] = useState(null);
 	const [bioEditing, setBioEditing] = useState(false);
+	const [picUploaded, setPicUploaded] = useState(null);
+	const [headerUploaded, setHeaderUploaded] = useState(null);
 
 	const bioInputRef = React.useRef(null);
 
@@ -44,7 +47,10 @@ const Profile = props => {
 		Api.put('/profile/' + match.params.id, data)
 			.then(res => {
 				setUser(prevState => ({ ...prevState, ...res.data }));
+				setLogged(prevState => ({ ...prevState, ...res.data }));
 				setBioEditing(false);
+				if (res.data.pic) setPicUploaded(res.data.pic);
+				if (res.data.header) setHeaderUploaded(res.data.header);
 			})
 			.catch(err => {
 				// const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -107,10 +113,51 @@ const Profile = props => {
 		);
 	}
 
+	const headerUploadedHandler = v => v && edit({ header: v.fileName });
+	const picUploadedHandler = v => v && edit({ pic: v.fileName });
+
 	return (
 		<section className="userProfilePage">
-			<UserHeader user={user} />
-			<UserPic user={user} size={110} />
+			{user && user._id === logged._id ? (
+				<>
+					<ImageUploader
+						onChange={headerUploadedHandler}
+						skipSetUploaded
+						sizeLimit="2"
+						overlay={
+							<Tooltip title={t('profile.header_tip')}>
+								<CameraOutlined />
+							</Tooltip>
+						}
+						cover
+						initImage={user.header}
+						initUploadImage={headerUploaded}
+						className="header-uploader"
+					/>
+					<ImageUploader
+						onChange={picUploadedHandler}
+						skipSetUploaded
+						sizeLimit="2"
+						overlay={
+							<Tooltip title={t('profile.pic_tip')}>
+								<CameraOutlined />
+							</Tooltip>
+						}
+						initImage={user.pic}
+						initUploadImage={picUploaded}
+						className="userPic-uploader"
+						withCrop={{ aspect: 1, quality: 0.85, modalTitle: t('core:imageUploader.crop') }}
+					>
+						<UserOutlined />
+					</ImageUploader>
+				</>
+			) : (
+				<>
+					<UserHeader user={user} />
+					<UserPic user={user} size={110} />
+				</>
+			)}
+
 			{page}
 			<Tabs defaultActiveKey="created" centered>
 				<TabPane tab="Created" key="created">

@@ -23,7 +23,9 @@
 	},
 	"profile": {
 		"bio_placeholder":"la tua biografia",
-		"bio_tip":"modifica bio"
+		"bio_tip":"modifica bio",
+		"pic_tip":"cambia pic",
+		"header_tip":"cambia testata"
 	},
 	"cookie": {
 		"title": "Cookie bloccati", 

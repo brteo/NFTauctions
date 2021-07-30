@@ -2,7 +2,7 @@
 import { Modal, Progress, Upload } from 'antd';
 import axios from 'axios';
 import ImgCrop from 'antd-img-crop';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { sprintf } from 'sprintf-js';
 import Api from '../../helpers/api';
@@ -21,12 +21,28 @@ const getBase64 = file => {
 let cancelTokenSource;
 
 const ImageUploader = props => {
-	const { className, onChange, initImage, overlay, withCrop, cover, sizeLimit, progressSize } = props;
+	const {
+		className,
+		onChange,
+		initImage,
+		initUploadImage,
+		skipSetUploaded,
+		overlay,
+		withCrop,
+		cover,
+		sizeLimit,
+		progressSize
+	} = props;
 
 	const { t } = useTranslation();
-	const [uploaded, setUploaded] = useState(null);
+
+	const [uploaded, setUploaded] = useState(initUploadImage || null);
 	const [preview, setPreview] = useState(null);
 	const [progress, setProgress] = useState(0);
+
+	useEffect(() => {
+		setUploaded(initUploadImage);
+	}, [initUploadImage]);
 
 	const req = async ({ file, onError, onSuccess }) => {
 		if (cancelTokenSource) cancelTokenSource.cancel();
@@ -39,7 +55,7 @@ const ImageUploader = props => {
 		Api.get(`/s3/sign/${file.name.split('.').pop()}`)
 			.then(({ data }) => {
 				cancelTokenSource = axios.CancelToken.source();
-				console.log('token', cancelTokenSource);
+
 				const { url, fileType, fileName, signedRequest } = data;
 				const options = {
 					cancelToken: cancelTokenSource.token,
@@ -54,10 +70,13 @@ const ImageUploader = props => {
 				};
 
 				Api.put(signedRequest, file, options)
-					.then(res => {
+					.then(async res => {
 						cancelTokenSource = null;
-						setUploaded(url);
-						// setPreview(null);
+						// let newUrl = url;
+						// if (moveOnUpload) newUrl = await moveOnUpload({ url, fileName, fileType });
+
+						if (!skipSetUploaded) setUploaded(url);
+						// setPreview(null); è da togliere solo dopo che la upload image è caricata
 						onSuccess(url);
 						if (onChange) onChange({ url, fileName, fileType });
 					})
@@ -101,7 +120,7 @@ const ImageUploader = props => {
 
 	const previewCovers = [];
 	if (cover) {
-		if (initImage)
+		if (!uploaded && initImage)
 			previewCovers.push(
 				<div
 					key="cover3"

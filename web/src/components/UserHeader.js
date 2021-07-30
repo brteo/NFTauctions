@@ -9,7 +9,9 @@ const UserHeader = props => {
 		<div
 			className="userHeader"
 			style={user && user.header ? { backgroundImage: 'url(' + process.env.PUBLIC_URL + user._id + ')' } : {}}
-		/>
+		>
+			{props.children}
+		</div>
 	);
 };
 

@@ -2,8 +2,14 @@
 const AWS = require('aws-sdk');
 const { v1: uuidv1 } = require('uuid');
 
-const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_S3_BUCKET_DATA, AWS_S3_BUCKET_TMP, AWS_S3_ENDPOINT } =
-	process.env;
+const {
+	AWS_ACCESS_KEY_ID,
+	AWS_SECRET_ACCESS_KEY,
+	AWS_S3_BUCKET_DATA,
+	AWS_S3_BUCKET_TMP,
+	AWS_S3_ENDPOINT,
+	AWS_S3_ENDPOINT_PUBLIC
+} = process.env;
 
 const s3 = new AWS.S3({
 	credentials: {
@@ -14,12 +20,21 @@ const s3 = new AWS.S3({
 	s3ForcePathStyle: true
 });
 
+const s3Pub = new AWS.S3({
+	credentials: {
+		accessKeyId: AWS_ACCESS_KEY_ID,
+		secretAccessKey: AWS_SECRET_ACCESS_KEY
+	},
+	endpoint: AWS_S3_ENDPOINT_PUBLIC,
+	s3ForcePathStyle: true
+});
+
 const generateName = ext => uuidv1({ msecs: new Date().getTime(), nsecs: 5678 }) + '.' + ext;
 
 const uploadFile = (data, fileName, type, progress = () => {}) =>
 	new Promise((resolve, reject) => {
 		s3.upload({
-			Bucket: AWS_S3_BUCKET_DATA,
+			Bucket: AWS_S3_BUCKET_TMP,
 			Key: fileName,
 			Body: data,
 			ACL: 'public-read',
@@ -31,10 +46,12 @@ const uploadFile = (data, fileName, type, progress = () => {}) =>
 			});
 	});
 
-const getFile = fileName =>
+const copyFile = (sourcePath, fileName) =>
 	new Promise((resolve, reject) => {
-		s3.getObject(
+		s3.copyObject(
 			{
+				ACL: 'public-read',
+				CopySource: sourcePath,
 				Bucket: AWS_S3_BUCKET_DATA,
 				Key: fileName
 			},
@@ -44,9 +61,27 @@ const getFile = fileName =>
 		);
 	});
 
-const deleteFile = fileName =>
+const deleteFile = (fileName, bucket = AWS_S3_BUCKET_DATA) =>
 	new Promise((resolve, reject) => {
 		s3.deleteObject(
+			{
+				Bucket: bucket,
+				Key: fileName
+			},
+			(err, res) => {
+				err ? reject(err) : resolve(res);
+			}
+		);
+	});
+
+const moveTmpFile = async (tmpName, fileName) => {
+	await copyFile(AWS_S3_BUCKET_TMP + '/' + tmpName, fileName);
+	return deleteFile(tmpName, AWS_S3_BUCKET_TMP);
+};
+
+const getFile = fileName =>
+	new Promise((resolve, reject) => {
+		s3.getObject(
 			{
 				Bucket: AWS_S3_BUCKET_DATA,
 				Key: fileName
@@ -86,11 +121,11 @@ const getSign = ext => {
 	};
 
 	return new Promise((resolve, reject) => {
-		s3.getSignedUrl('putObject', s3Params, (err, data) => {
+		s3Pub.getSignedUrl('putObject', s3Params, (err, data) => {
 			if (err) return reject(err);
 			return resolve({
 				signedRequest: data,
-				url: AWS_S3_ENDPOINT + '/' + AWS_S3_BUCKET_TMP + '/' + fileName,
+				url: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_TMP + '/' + fileName,
 				fileType,
 				fileName
 			});
@@ -101,6 +136,7 @@ const getSign = ext => {
 module.exports = {
 	generateName,
 	uploadFile,
+	moveTmpFile,
 	getFile,
 	deleteFile,
 	getSign
