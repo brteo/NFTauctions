@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 import { Modal, Progress, Upload } from 'antd';
+import axios from 'axios';
 import ImgCrop from 'antd-img-crop';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,19 +18,31 @@ const getBase64 = file => {
 	});
 };
 
+let cancelTokenSource;
+
 const ImageUploader = props => {
-	const { withCrop, onChange, sizeLimit } = props;
+	const { className, onChange, initImage, overlay, withCrop, cover, sizeLimit, progressSize } = props;
 
 	const { t } = useTranslation();
 	const [uploaded, setUploaded] = useState(null);
 	const [preview, setPreview] = useState(null);
 	const [progress, setProgress] = useState(0);
 
-	const req = ({ file, onError, onSuccess }) => {
+	const req = async ({ file, onError, onSuccess }) => {
+		if (cancelTokenSource) cancelTokenSource.cancel();
+
+		setUploaded(null);
+		setProgress(0);
+		if (onChange) onChange(null);
+		setPreview(await getBase64(file));
+
 		Api.get(`/s3/sign/${file.name.split('.').pop()}`)
 			.then(({ data }) => {
+				cancelTokenSource = axios.CancelToken.source();
+				console.log('token', cancelTokenSource);
 				const { url, fileType, fileName, signedRequest } = data;
 				const options = {
+					cancelToken: cancelTokenSource.token,
 					withCredentials: false,
 					headers: {
 						'Content-Type': fileType
@@ -42,8 +55,9 @@ const ImageUploader = props => {
 
 				Api.put(signedRequest, file, options)
 					.then(res => {
+						cancelTokenSource = null;
 						setUploaded(url);
-						setPreview(null);
+						// setPreview(null);
 						onSuccess(url);
 						if (onChange) onChange({ url, fileName, fileType });
 					})
@@ -51,9 +65,12 @@ const ImageUploader = props => {
 						setUploaded(null);
 						setPreview(null);
 						setProgress(0);
-						onError();
 						if (onChange) onChange(null);
-						return es3.globalHandler && es3.globalHandler();
+
+						if (axios.isCancel(es3)) return;
+						onError();
+
+						if (es3.globalHandler) es3.globalHandler();
 					});
 			})
 			.catch(e => {
@@ -64,15 +81,6 @@ const ImageUploader = props => {
 				if (onChange) onChange(null);
 				return e.globalHandler && e.globalHandler();
 			});
-	};
-
-	const changeHandler = async info => {
-		if (info.file.status === 'uploading') {
-			setUploaded(null);
-			setProgress(0);
-			if (onChange) onChange(null);
-			setPreview(await getBase64(info.file.originFileObj));
-		}
 	};
 
 	const beforeHandler = file => {
@@ -89,6 +97,36 @@ const ImageUploader = props => {
 		return true;
 	};
 
+	const progSize = progressSize || { uploaded: 40, default: 100 };
+
+	const previewCovers = [];
+	if (cover) {
+		if (initImage)
+			previewCovers.push(
+				<div
+					key="cover3"
+					className="imageUploader-cover"
+					style={{ backgroundImage: "url('" + initImage + "')", backgroundSize: 'cover' }}
+				/>
+			);
+		if (preview)
+			previewCovers.push(
+				<div
+					key="cover2"
+					className="imageUploader-cover"
+					style={{ backgroundImage: "url('" + preview + "')", backgroundSize: 'cover' }}
+				/>
+			);
+		if (uploaded)
+			previewCovers.push(
+				<div
+					key="cover1"
+					className="imageUploader-cover"
+					style={{ backgroundImage: "url('" + uploaded + "')", backgroundSize: 'cover' }}
+				/>
+			);
+	}
+
 	const uploader = (
 		<Dragger
 			name="file"
@@ -97,31 +135,38 @@ const ImageUploader = props => {
 			accept="image/png, image/gif, image/jpeg"
 			itemRender={() => null}
 			customRequest={req}
-			onChange={changeHandler}
 			beforeUpload={beforeHandler}
-			className="imageUploader"
+			className={'imageUploader' + (className ? ' ' + className : '')}
 		>
-			{uploaded || preview ? (
-				<div className="imageUploader-preview">
-					<div className="imageUploader-preview-box">
-						{(uploaded || preview) && (
-							<img src={uploaded || preview} alt="Dragger Preview" className={preview && 'imageUploader-uploading'} />
+			{overlay && <div className="imageUploader-overlay">{overlay}</div>}
+			<div className="imageUploader-content">
+				{uploaded || preview || initImage ? (
+					<div className="imageUploader-preview">
+						{cover && previewCovers}
+						{!cover && (uploaded || preview || initImage) && (
+							<img
+								src={uploaded || preview || initImage}
+								alt="Dragger Preview"
+								className={preview && 'imageUploader-uploading'}
+							/>
 						)}
-						<Progress
-							type="circle"
-							percent={progress}
-							className={uploaded ? 'progress-done' : ''}
-							width={uploaded ? 40 : 100}
-						/>
+						{(uploaded || preview) && (
+							<Progress
+								type="circle"
+								percent={progress}
+								className={uploaded ? 'progress-done' : ''}
+								width={uploaded ? progSize.uploaded : progSize.default}
+							/>
+						)}
 					</div>
-				</div>
-			) : (
-				<div className="imageUploader-info">{props.children}</div>
-			)}
+				) : (
+					<div className="imageUploader-info">{props.children}</div>
+				)}
+			</div>
 		</Dragger>
 	);
 
 	return withCrop ? <ImgCrop {...withCrop}>{uploader}</ImgCrop> : uploader;
 };
 
-export default ImageUploader;
+export default React.memo(ImageUploader);
