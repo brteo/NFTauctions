@@ -37,13 +37,3 @@ module.exports = {
 		return { private: key.privateKey.toLegacyString(), public: key.publicKey.toLegacyString() };
 	}
 };
-
-/*
-module.exports = sp =>
-	new Api({
-		rpc,
-		signatureProvider: sp || signatureProvider,
-		textDecoder: new TextDecoder(),
-		textEncoder: new TextEncoder()
-	});
-*/

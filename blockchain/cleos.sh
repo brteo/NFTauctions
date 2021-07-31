@@ -1,3 +1,3 @@
 #!/bin/bash
 args=$@
-docker exec -it blockchain bash -c "cd /contracts; source /root/env.sh; cleos $args"
+docker exec -it blockchain bash -c "cd /contracts; source /scripts/env.sh; cleos $args"

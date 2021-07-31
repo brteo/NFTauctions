@@ -93,7 +93,6 @@ A blockchain reset will **_preserve_** all key files
 To add seed data edit `.scripts/seed.sh` then:
 
 ```bash
-docker compose up -d --build
 ./nodeos.sh reset
 ```
 
