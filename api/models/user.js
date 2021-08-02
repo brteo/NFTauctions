@@ -127,7 +127,7 @@ schema.methods.getPrivateKey = function () {
 // cifratura chiave privata di un SEED
 /*
 const ekey = cryptoJS.AES.encrypt(
-	'CHIAVE',
+	'CHIAVE_PRIVATA',
 	process.env.EOS_SECRET
 ).toString();
 const dkey = cryptoJS.AES.decrypt(ekey, process.env.EOS_SECRET).toString(cryptoJS.enc.Utf8);

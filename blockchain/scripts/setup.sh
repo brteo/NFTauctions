@@ -53,7 +53,7 @@ if [[ $FIRST_INSTALL == 1 ]]; then
 	fi
 fi
 
-source /root/env.sh
+source /scripts/env.sh
 
 timeout=5
 
@@ -123,13 +123,16 @@ if [[ $FIRST_INSTALL == 1 ]]; then
 
 	cleos set contract eosio /contracts/eosio.bios
 
+	sleep 1s
+
+	# cleos system buyram mebtradingvg mebtradingvg "5 EOS" -p mebtradingvg@active
+
 fi
 
-sleep 1
 if [[ -f /contracts/$CONTRACT/build/$CONTRACT/$CONTRACT.wasm ]]; then
 	cleos set contract $ACCOUNT /contracts/$CONTRACT/build/$CONTRACT
 fi
 
 if [[ $FIRST_INSTALL == 1 ]]; then
-	source /root/seed.sh
+	source /scripts/seed.sh
 fi

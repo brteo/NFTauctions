@@ -39,7 +39,7 @@ Launch cleos commands - wallet already unlocked
 ./cleos.sh arg1 arg2 ...
 
 ./cleos.sh get account tvgadmin # get account info
-./cleos.sh get table mebtradingvg mebtradingvg nfts # get nfts table data
+./cleos.sh get table -l 50 mebtradingvg mebtradingvg nfts # get nfts table 50 records
 ./cleos.sh push action eosio.token transfer '[ "eosio", "tvguser1", "1000.0000 EOS", "deposit" ]' -p eosio@active # transfer 1000 EOS to tvguser1
 ./cleos.sh push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"-\",\"url\":\"-\"}"]' -p tvguser1@active -p mebtradingvg@active # create NFT
 ```
