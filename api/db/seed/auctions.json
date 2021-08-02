@@ -64,7 +64,7 @@
 		"basePrice": 0.5,
 		"price": 0.9,
 		"deadline": {"$date":"2021-09-13T22:26:00Z"},
-		"nft": 10000017,
+		"nft": 1000017,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -74,7 +74,7 @@
 		"basePrice": 2,
 		"price": 5.1,
 		"deadline": {"$date":"2021-09-12T22:26:00Z"},
-		"nft": 10000018,
+		"nft": 1000018,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -84,7 +84,7 @@
 		"basePrice": 2,
 		"price": 3.2,
 		"deadline": {"$date":"2021-09-13T18:26:00Z"},
-		"nft": 10000020,
+		"nft": 1000020,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -94,7 +94,7 @@
 		"basePrice": 4,
 		"price": 6,
 		"deadline": {"$date":"2021-09-12T15:26:00Z"},
-		"nft": 10000023,
+		"nft": 1000023,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -104,7 +104,7 @@
 		"basePrice": 2,
 		"price": 2,
 		"deadline": {"$date":"2021-09-17T15:26:00Z"},
-		"nft": 10000024,
+		"nft": 1000024,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -124,7 +124,7 @@
 		"basePrice": 3,
 		"price": 3.5,
 		"deadline": {"$date":"2021-09-14T12:26:00Z"},
-		"nft": 10000027,
+		"nft": 1000027,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -134,7 +134,7 @@
 		"basePrice": 2,
 		"price": 2.5,
 		"deadline": {"$date":"2021-09-13T13:26:00Z"},
-		"nft": 10000030,
+		"nft": 1000030,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -144,7 +144,7 @@
 		"basePrice": 0.5,
 		"price": 0.6,
 		"deadline": {"$date":"2021-09-12T18:36:00Z"},
-		"nft": 10000031,
+		"nft": 1000031,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -154,7 +154,7 @@
 		"basePrice": 0.75,
 		"price": 0.86,
 		"deadline": {"$date":"2021-09-13T19:36:00Z"},
-		"nft": 10000034,
+		"nft": 1000034,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -164,7 +164,7 @@
 		"basePrice": 0.95,
 		"price": 1,
 		"deadline": {"$date":"2021-09-12T19:16:00Z"},
-		"nft": 10000035,
+		"nft": 1000035,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
@@ -174,7 +174,7 @@
 		"basePrice": 2,
 		"price": 2,
 		"deadline": {"$date":"2021-09-15T14:16:00Z"},
-		"nft": 10000037,
+		"nft": 1000037,
 		"lastBet":[],
 		"active": true,
 		"deleted": false
