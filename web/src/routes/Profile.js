@@ -118,7 +118,7 @@ const Profile = props => {
 
 	return (
 		<section className="userProfilePage">
-			{user && user._id === logged._id ? (
+			{user && logged && user._id === logged._id ? (
 				<>
 					<ImageUploader
 						onChange={headerUploadedHandler}
