@@ -40,6 +40,9 @@
 		"basePrice": "Prezzo di partenza",
 		"price": "Prezzo",
 		"deadline": "L'asta scade tra",
-		"bet": "Punta"
+		"bet": "Punta",
+		"owner": "Proprietario",
+		"category": "Categoria",
+		"author": "Autore"
 	}
 }

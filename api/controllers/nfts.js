@@ -76,12 +76,16 @@ exports.getAuctions = (req, res, next) => {
 
 /* Get nft by id */
 exports.getById = (req, res, next) => {
-	Nft.findById(req.params.id, (err, nft) => {
-		if (err) return next(ServerError());
-		if (!nft) return next(NotFound());
+	Nft.findById(req.params.id)
+		.populate({ path: 'auction', select: 'price deadline description' })
+		.populate('author')
+		.populate('owner')
+		.exec((err, nft) => {
+			if (err) return next(ServerError());
+			if (!nft) return next(NotFound());
 
-		return next(SendData(nft.response()));
-	});
+			return next(SendData(nft));
+		});
 };
 
 /* Add new nft */
