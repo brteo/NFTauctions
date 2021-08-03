@@ -7,7 +7,6 @@ const Auction = require('../models/auction');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
 const Nft = require('../models/nft');
-const Bet = require('../models/bet');
 
 const { genereteAuthToken } = require('../helpers/auth');
 
@@ -498,6 +497,22 @@ describe('Role: user', () => {
 
 describe('Bets', () => {
 	describe('GET /auctions/:id/bets', () => {
+		test('Get auction with invalid auctionID should be ValidationError', async () =>
+			agent
+				.get('/auctions/1232341/bets')
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				}));
+
+		test('Get auction with not existent auctionID should be NotFound', async () =>
+			agent
+				.get('/auctions/60f1a329e7c5446dfdccd8fd/bets')
+				.expect(404)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+				}));
+
 		test('Get auction bets should be empty', async () =>
 			agent
 				.get('/auctions/' + auction.id + '/bets')
@@ -505,15 +520,189 @@ describe('Bets', () => {
 				.then(res => {
 					expect(res.body).toEqual([]);
 				}));
-
-		test.todo('Get auction bets should be 2');
-		test.todo('Get last 10 auction bets');
-
-		test.todo('Get auction bets');
 	});
+
 	describe('PUT /auctions/:id/bets', () => {
-		test.todo('Add a new bet should be ok');
-		test.todo('Add a new bet without auth should be Unauthorized');
-		test.todo('Add a new bet without price should be a ValidationError');
+		test('Add a new bet without auth should be Unauthorized', async () =>
+			agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 110 })
+				.expect(401)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 401 }));
+				}));
+
+		test('Add a new bet with invalid auctionID should be ValidationError', async () =>
+			agent
+				.get('/auctions/1232341/bets')
+				.send({ price: 110 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200 }));
+				}));
+
+		test('Add a new bet with not existent auctionID should be NotFound', async () =>
+			agent
+				.put('/auctions/60f1a329e7c5446dfdccd8fd/bets')
+				.send({ price: 110 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(404)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+				}));
+
+		test('Add a new bet without price should be a MissingRequiredParameters', async () =>
+			agent
+				.put('/auctions/' + auction.id + '/bets')
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 201, data: '/price' }));
+				}));
+
+		test('Add a new bet with invalid price should be a ValidationError', async () => {
+			await agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 'abc' })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200, data: '/price' }));
+				});
+
+			return agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 110.123 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200, data: '/price' }));
+				});
+		});
+
+		test('Add a new bet with price less or equal to current price should be a ValidationError', async () => {
+			await agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 100 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 215, message: 'Bet not valid' }));
+				});
+
+			return agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 90 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 215, message: 'Bet not valid' }));
+				});
+		});
+
+		test('Add a new bets should be ok', async () => {
+			await agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 110 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(201)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ price: 110 }));
+				});
+
+			await agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 115.52 })
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(201)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ price: 115.52 }));
+				});
+
+			return agent
+				.get('/auctions/' + auction.id + '/bets')
+				.expect(200)
+				.then(res => {
+					expect(res.body.length).toBe(2);
+					expect(res.body).toEqual(
+						expect.arrayContaining([
+							expect.objectContaining({
+								user: { id: admin.id, nickname: admin.nickname },
+								price: 115.52,
+								auction: auction.id
+							}),
+							expect.objectContaining({
+								user: { id: user.id, nickname: user.nickname },
+								price: 110,
+								auction: auction.id
+							})
+						])
+					);
+				});
+		});
+
+		test('Add a new bets should be update last bets on auction', async () => {
+			await agent
+				.get('/auctions/' + auction.id)
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ lastBets: [] }));
+				});
+
+			await agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 110 })
+				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.expect(201)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ price: 110 }));
+				});
+
+			await agent
+				.get('/auctions/' + auction.id)
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							lastBets: expect.arrayContaining([
+								expect.objectContaining({
+									user: { id: user.id, nickname: user.nickname },
+									price: 110
+								})
+							])
+						})
+					);
+				});
+
+			await agent
+				.put('/auctions/' + auction.id + '/bets')
+				.send({ price: 115.52 })
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(201)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ price: 115.52 }));
+				});
+
+			return agent
+				.get('/auctions/' + auction.id)
+				.expect(200)
+				.then(res => {
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							lastBets: expect.arrayContaining([
+								expect.objectContaining({
+									user: { id: admin.id, nickname: admin.nickname },
+									price: 115.52
+								}),
+								expect.objectContaining({
+									user: { id: user.id, nickname: user.nickname },
+									price: 110
+								})
+							])
+						})
+					);
+				});
+		});
 	});
 });

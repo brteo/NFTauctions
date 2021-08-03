@@ -3,7 +3,7 @@ module.exports = {
 		$id: 'bet',
 		type: 'object',
 		properties: {
-			price: { type: 'string' }
+			price: { type: 'number', multipleOf: 0.01 }
 		},
 		required: ['price'],
 		additionalProperties: false
