@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Row, Col } from 'antd';
-import { EditOutlined } from '@ant-design/icons';
 import Api from '../helpers/api';
 import NftCard from './NftCard';
 

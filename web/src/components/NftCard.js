@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { Card, Row, Col, Typography, Button, Avatar, Tooltip, Skeleton } from 'antd';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FieldTimeOutlined } from '@ant-design/icons';
 import Countdown from './CountdownTimer';
@@ -13,7 +13,6 @@ const NftCard = props => {
 	const { t } = useTranslation();
 
 	const { nft } = props;
-	// const history = useHistory();
 
 	let auction = '';
 	if (nft && nft.auction) {
@@ -50,7 +49,7 @@ const NftCard = props => {
 						<Link to={'/nft/' + nft._id}>
 							<img alt={nft.description} src={nft.url} />
 						</Link>
-					} // onClick={() => history.push('/nft/' + nft._id)}
+					}
 				>
 					<Title level={5} ellipsis>
 						<Link to={'/nft/' + nft._id}>{nft.title}</Link>

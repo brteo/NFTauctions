@@ -2,102 +2,92 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Image, Button } from 'antd';
-import { FieldTimeOutlined } from '@ant-design/icons';
+import { Typography, Image, Row, Col, Skeleton } from 'antd';
+import io from 'socket.io-client';
+
 import Api from '../helpers/api';
 import UserPic from '../components/UserPic';
-import Countdown from '../components/CountdownTimer';
+import AuctionBetForm from '../components/AcutionBetForm';
+import BetsList from '../components/BetsList';
 
 const { Title } = Typography;
 
 const Nft = props => {
+	const { id: nftID } = props.match.params;
 	const { t } = useTranslation();
-
-	const [nft, setNft] = useState();
-	const [matches, setMatch] = useState(window.matchMedia('(max-width: 800px)').matches);
-
-	const { id } = props.match.params;
-
-	const getNft = idNft => {
-		Api.get('/nfts/' + idNft)
-			.then(res => {
-				console.log(res.data);
-				const nftData = res.data;
-				const elem = (
-					<>
-						<div style={{ flex: '0 0 50%' }}>
-							<Image
-								alt="nft"
-								src={nftData.url}
-								style={{ borderRadius: 50, border: '3px solid yellow', position: 'fixed', maxWidth: '50%' }}
-							/>
-						</div>
-						<div style={{ flex: '0 0 50%', textAlign: 'center' }}>
-							<Title level={2}>{nftData.title}</Title>
-
-							<Title level={5}>{nftData.description}</Title>
-
-							<Title level={5}>
-								<UserPic user={nftData.owner} size={110} />
-								<br />
-								<br />
-								<Link to={'/profile/' + nftData.owner._id}>
-									{t('auction.owner')}: {nftData.owner.nickname}
-								</Link>
-								<br />
-								<Link to={'/profile/' + nftData.author._id}>
-									{t('auction.author')}: {nftData.author.nickname}
-								</Link>
-							</Title>
-
-							<Title level={5}> Tags: {nftData.tags.join(', ')}</Title>
-
-							{nftData.auction !== undefined ? (
-								<>
-									<Title level={5}>{nftData.auction.description}</Title>
-									<br />
-									<Title level={5}>
-										{t('auction.price')}: {nftData.auction.price} ETH
-									</Title>
-									<br />
-									<Title>
-										<FieldTimeOutlined /> <Countdown eventTime={nftData.auction.deadline} />
-									</Title>
-									<br />
-									<Button type="primary" htmlType="submit" size="large" shape="round">
-										{t('auction.bet')}
-									</Button>
-								</>
-							) : (
-								<></>
-							)}
-						</div>
-					</>
-				);
-
-				setNft(elem);
-			})
-			.catch(err => {
-				return err.globalHandler && err.globalHandler();
-			});
-	};
+	const [nft, setNft] = useState(null);
+	let socket;
 
 	useEffect(() => {
-		getNft(id);
-		const handler = e => setMatch(e.matches);
-		window.matchMedia('(max-width: 800px)').addListener(handler);
+		Api.get('/nfts/' + nftID)
+			.then(res => {
+				setNft(res.data);
+				if (res.data.auction !== undefined) {
+					socket = io(process.env.REACT_APP_ENDPOINT);
+
+					socket.on('auctions/' + res.data.auction._id, data => {
+						setNft(prevState => ({
+							...prevState,
+							auction: {
+								...prevState.auction,
+								price: data.price
+							}
+						}));
+					});
+				}
+			})
+			.catch(err => err.globalHandler && err.globalHandler());
+
+		return () => {
+			if (socket) socket.disconnect();
+			socket = null;
+			setNft(null);
+		};
 	}, []);
 
 	return (
-		<>
-			<br />
-			<Title level={1}>NFT Info</Title>
-			{!matches ? (
-				<div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}>{nft}</div>
+		<section className="padded-content">
+			{!nft ? (
+				<Skeleton avatar={{ shape: 'square', size: 300 }} paragraph={{ rows: 4 }} active />
 			) : (
-				<div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'column' }}>{nft}</div>
+				<>
+					<Title level={1}>{nft.title}</Title>
+					<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+						<Col xs={24} sm={12}>
+							<div>
+								<Image alt="nft" src={nft.url} />
+							</div>
+						</Col>
+						<Col xs={24} sm={12}>
+							<p>
+								{t('auction.owner')}:{' '}
+								<Link to={'/profile/' + nft.owner._id}>
+									<UserPic user={nft.owner} />
+								</Link>
+								<Link to={'/profile/' + nft.owner._id}>{nft.owner.nickname}</Link>{' '}
+							</p>
+							<p>
+								{t('auction.author')}:
+								<Link to={'/profile/' + nft.author._id}>
+									<UserPic user={nft.author} />
+								</Link>
+								<Link to={'/profile/' + nft.author._id}>{nft.author.nickname}</Link>
+							</p>
+							<p>{nft.description}</p>
+							<p> Tags: {nft.tags.join(', ')}</p>
+
+							{nft.auction !== undefined && <AuctionBetForm auction={nft.auction} />}
+						</Col>
+						{nft.auction && (
+							<Col xs={24}>
+								<Title level={3}>Bets</Title>
+								<BetsList auctionID={nft.auction._id} />
+							</Col>
+						)}
+					</Row>
+				</>
 			)}
-		</>
+		</section>
 	);
 };
 

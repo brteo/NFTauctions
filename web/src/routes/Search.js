@@ -16,13 +16,13 @@ const Search = props => {
 			{' '}
 			{query ? (
 				<>
-					<Title level={2}>Users</Title>
+					<Title level={2}>{t('common.users')}</Title>
 					<Users filter={query} />
-					<Title level={2}>Nfts</Title>
+					<Title level={2}>{t('common.nfts')}</Title>
 					<Nfts filter={query} />
 				</>
 			) : (
-				<>No search</>
+				<div className="no-results">{t('common.no_results')}</div>
 			)}
 		</section>
 	);

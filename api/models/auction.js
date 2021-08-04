@@ -67,6 +67,6 @@ schema.index(
 );
 
 schema.plugin(softDelete);
-schema.plugin(dbFields, { public: ['_id', 'description', 'basePrice', 'deadline', 'nft', 'lastBets'] });
+schema.plugin(dbFields, { public: ['_id', 'description', 'basePrice', 'price', 'deadline', 'nft', 'lastBets'] });
 
 module.exports = mongoose.models.Auction || mongoose.model('Auction', schema);

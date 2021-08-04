@@ -2,7 +2,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Layout, Button, Modal, Row, Col, Input } from 'antd';
+import { Layout, Button, Modal, Row, Col } from 'antd';
 
 import AppContext from '../helpers/AppContext';
 import APICheck from './extra/APICheck';

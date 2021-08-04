@@ -20,6 +20,7 @@ MongoDB at localhost:27017
 - [email-templates](https://www.npmjs.com/package/email-templates)
 - [sprintf-js](https://www.npmjs.com/package/sprintf-js)
 - [aws-sdk](https://www.npmjs.com/package/aws-sdk)
+- [socket.io](https://socket.io/)
 
 DEV
 

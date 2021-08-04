@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import moment from 'moment';
-// import { useTranslation } from 'react-i18next';
 
 const Countdown = props => {
-	// const { t } = useTranslation();
-
 	const calculateTimeLeft = () => {
 		const eventTime = new Date(props.eventTime).getTime() / 1000;
 		const currentTime = Math.floor(Date.now() / 1000).toString();
@@ -30,7 +27,6 @@ const Countdown = props => {
 
 		return () => {
 			if (timer) clearTimeout(timer);
-			// setTimeLeft(null);
 		};
 	});
 

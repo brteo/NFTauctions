@@ -4,7 +4,10 @@
 		"title": "Titolo",
 		"back": "Indietro",
 		"save": "salva",
-		"no_results":"Nessun risultato trovato"
+		"no_results":"Nessun risultato trovato",
+		"users": "Utenti",
+		"nft": "Nft",
+		"nfts": "Nfts"
 	},
 	"login": {
 		"btn": "accedi",
