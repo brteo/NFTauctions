@@ -35,7 +35,7 @@ exports.add = (req, res, next) => {
 
 /* Update tag by id */
 exports.update = (req, res, next) => {
-	Tag.findById(req.params.id, (err, tag) => {
+	Tag.findById(req.params.id, async (err, tag) => {
 		if (!tag) return next(NotFound());
 		if (err) return next(ServerError());
 
@@ -43,33 +43,15 @@ exports.update = (req, res, next) => {
 		const newName = req.body.name;
 
 		if (originalName !== newName) {
-			return Nft.find({ 'tags.name': originalName }, (_err, nfts) => {
-				if (nfts.length !== 0) {
-					nfts.forEach(a => {
-						Nft.updateOne(
-							{ 'tags.name': originalName },
-							{ $set: { 'tags.$.name': newName } },
-							(e, _nft) => e && next(ServerError())
-						);
-					});
-				}
+			await Nft.updateMany({ tags: originalName }, { $set: { 'tags.$': newName } }, e => e && next(ServerError()));
 
-				return Tag.findByIdAndUpdate(req.params.id, req.body, { new: true }, (e, _tag) => {
-					if (!_tag) return next(NotFound());
-					if (e) return next(ServerError());
-
-					return next(SendData(_tag.response()));
-				});
+			tag.name = newName;
+			return tag.save((err2, doc) => {
+				if (err2) return next(err2);
+				return next(SendData(tag, 200));
 			});
 		}
 		return next(NotAcceptable());
-	});
-
-	Tag.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, tag) => {
-		if (!tag) return next(NotFound());
-		if (err) return next(ServerError());
-
-		return next(SendData(tag.response()));
 	});
 };
 

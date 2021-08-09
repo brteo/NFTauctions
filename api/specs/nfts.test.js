@@ -34,7 +34,8 @@ let admin;
 let adminToken;
 let user1;
 let user2;
-let userToken;
+let user1Token;
+let user2Token;
 let nft;
 let soldNft;
 
@@ -64,7 +65,7 @@ beforeEach(async () => {
 		role: 'user',
 		active: 1
 	}).save();
-	userToken = genereteAuthToken(user1).token;
+	user1Token = genereteAuthToken(user1).token;
 
 	user2 = await new User({
 		email: 'user2@meblabs.com',
@@ -76,7 +77,7 @@ beforeEach(async () => {
 		role: 'user',
 		active: 1
 	}).save();
-	userToken = genereteAuthToken(user2).token;
+	user2Token = genereteAuthToken(user2).token;
 
 	const cat1 = await new Category({
 		_id: ObjectId('60f6c5c1897dd8f84a08c36a'),
@@ -198,9 +199,18 @@ describe('Role: admin', () => {
 				.send(newNft)
 				.expect(201)
 				.then(res => {
-					const { category, tags } = res.body;
-					const { title, description, url } = newNft;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
+					const { title, description, tags, url } = newNft;
+
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							title,
+							description,
+							tags,
+							url,
+							author: admin._id.toString(),
+							owner: admin._id.toString()
+						})
+					);
 					expect(eos.transact.mock.calls.length).toBe(1);
 				}));
 
@@ -340,7 +350,7 @@ describe('Role: user', () => {
 		test('Get all nfts should be Permitted', done => {
 			agent
 				.get('/nfts')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.length).toBe(2);
@@ -351,7 +361,7 @@ describe('Role: user', () => {
 		test('Get a nftId should be done', done => {
 			agent
 				.get('/nfts/' + nft.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ title: 'Nft 5 title' }));
@@ -369,13 +379,22 @@ describe('Role: user', () => {
 		test('Add new nft should be Permitted', done => {
 			agent
 				.post('/nfts')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.send(newNft)
 				.expect(201)
 				.then(res => {
-					const { category, tags } = res.body;
-					const { title, description, url } = newNft;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
+					const { title, description, tags, url } = newNft;
+
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							title,
+							description,
+							tags,
+							url,
+							author: user1._id.toString(),
+							owner: user1._id.toString()
+						})
+					);
 					expect(eos.transact.mock.calls.length).toBe(1);
 					done();
 				});
@@ -387,19 +406,19 @@ describe('Role: user', () => {
 			let id;
 			await agent
 				.post('/nfts')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.send(newNft)
 				.expect(201)
 				.then(res => {
-					const { _id, category, tags } = res.body;
+					const { _id } = res.body;
 					id = _id;
 					const { title, description, url } = newNft;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
+					expect(res.body).toEqual(expect.objectContaining({ title, description, url }));
 				});
 
 			return agent
 				.patch('/nfts/' + id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.send({ title: 'Title changed' })
 				.expect(200)
 				.then(res => {
@@ -407,10 +426,22 @@ describe('Role: user', () => {
 				});
 		});
 
-		test('Update nfts of others users should be Forbidden', done => {
+		test('Update nfts created by others users should be Forbidden', done => {
 			agent
 				.patch('/nfts/' + nft.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user2Token}`)
+				.send({ title: 'Title changed' })
+				.expect(403)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
+					done();
+				});
+		});
+
+		test('Update sold nfts should be Forbidden', done => {
+			agent
+				.patch('/nfts/' + soldNft.id)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.send({ title: 'Title changed' })
 				.expect(403)
 				.then(res => {
@@ -425,29 +456,40 @@ describe('Role: user', () => {
 			let id;
 			await agent
 				.post('/nfts')
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.send(newNft)
 				.expect(201)
 				.then(res => {
-					const { _id, category, tags } = res.body;
+					const { _id } = res.body;
 					id = _id;
 					const { title, description, url } = newNft;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, category, tags, url }));
+					expect(res.body).toEqual(expect.objectContaining({ title, description, url }));
 				});
 
 			return agent
 				.delete('/nfts/' + id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.expect(200)
 				.then(res => {
 					expect(res.body.message).toBe('Nft deleted sucessfully!');
 				});
 		});
 
-		test('Delete nfts of others users should be Forbidden', done => {
+		test('Delete nfts created by others users should be Forbidden', done => {
 			agent
 				.delete('/nfts/' + nft.id)
-				.set('Cookie', `TvgAccessToken=${userToken}`)
+				.set('Cookie', `TvgAccessToken=${user2Token}`)
+				.expect(403)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));
+					done();
+				});
+		});
+
+		test('Delete sold nfts should be Forbidden', done => {
+			agent
+				.delete('/nfts/' + soldNft.id)
+				.set('Cookie', `TvgAccessToken=${user1Token}`)
 				.expect(403)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 403 }));

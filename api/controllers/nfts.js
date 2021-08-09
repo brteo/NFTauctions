@@ -161,7 +161,7 @@ exports.create = async (req, res, next) => {
 		}
 		*/
 
-		return next(SendData(nft.response(), 201));
+		return next(SendData(nft, 201));
 	});
 };
 
@@ -173,6 +173,7 @@ exports.update = (req, res, next) => {
 	Nft.findById(req.params.id, (err, nft) => {
 		if (err) return next(ServerError());
 		if (!nft) return next(NotFound());
+		if (String(nft.owner) !== String(nft.author)) return next(Forbidden());
 		if (_type !== 'any' && String(nft.author) !== String(author)) return next(Forbidden());
 
 		return Nft.findByIdAndUpdate(req.params.id, req.body, { new: true }, (_err, _nft) => {

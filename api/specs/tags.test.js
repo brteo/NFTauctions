@@ -23,6 +23,7 @@ let admin;
 let adminToken;
 let user;
 let userToken;
+let nft;
 let tag;
 let tagOfNft;
 
@@ -69,7 +70,7 @@ beforeEach(async () => {
 		}
 	}).save();
 
-	await new Nft({
+	nft = await new Nft({
 		_id: 1000005,
 		title: 'Nft title',
 		description: 'Nft description',
@@ -200,7 +201,7 @@ describe('Role: admin', () => {
 
 		test('Update should be done in every nft that contains tag', async () => {
 			await agent
-				.put('/tags/' + tag.id)
+				.put('/tags/' + tagOfNft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'tag changed' })
 				.expect(200)
@@ -209,12 +210,11 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.get('/nfts')
+				.get('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.expect(200)
 				.then(res => {
-					const { tags } = res.body[0];
-					expect(res.body[0]).toEqual(expect.objectContaining({ tags }));
+					expect(res.body).toEqual(expect.objectContaining({ tags: ['tag changed'] }));
 				});
 		});
 
