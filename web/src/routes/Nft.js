@@ -44,7 +44,7 @@ const Nft = props => {
 			socket = null;
 			setNft(null);
 		};
-	}, []);
+	}, [nftID]);
 
 	return (
 		<section className="padded-content">
