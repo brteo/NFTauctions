@@ -24,7 +24,7 @@ module.exports = {
 	nftId: {
 		type: 'object',
 		properties: {
-			id: { type: 'string' } //  format: 'int32'
+			id: { type: 'string', pattern: '^[0-9]+' }
 		}
 	}
 };

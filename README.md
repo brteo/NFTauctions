@@ -53,6 +53,22 @@ Stack MERN with Docker Compose:
    npm run seed
    ```
 
+## Seed reset
+
+To reset seed data
+
+1. Seed Mongo DB in api folder
+
+   ```sh
+   npm run seed
+   ```
+
+2. Launch reset in the "blockchain" folder
+
+   ```sh
+   ./nodeos.sh reset
+   ```
+
 ## VScode
 
 Open the workspace in the folder roots

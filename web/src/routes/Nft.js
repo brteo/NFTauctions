@@ -16,9 +16,10 @@ const Nft = props => {
 	const { id: nftID } = props.match.params;
 	const { t } = useTranslation();
 	const [nft, setNft] = useState(null);
-	let socket;
 
 	useEffect(() => {
+		let socket;
+
 		Api.get('/nfts/' + nftID)
 			.then(res => {
 				setNft(res.data);

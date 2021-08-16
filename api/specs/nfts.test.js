@@ -166,6 +166,17 @@ describe('Role: admin', () => {
 				});
 		});
 
+		test('Get invalid NftId should be ValidationError', done => {
+			agent
+				.get('/nfts/abc0213')
+				.set('Cookie', `TvgAccessToken=${adminToken}`)
+				.expect(400)
+				.then(res => {
+					expect(res.body).toEqual(expect.objectContaining({ error: 200, data: '/id' }));
+					done();
+				});
+		});
+
 		test('Get deleted nft should be NotFound', async () => {
 			await agent
 				.delete('/nfts/' + nft.id)

@@ -5,12 +5,13 @@ import io from 'socket.io-client';
 
 import Api from '../helpers/api';
 
-const UserCard = props => {
+const BetsList = props => {
 	const { auctionID } = props;
 	const [bets, setBets] = useState(null);
-	let socket;
 
 	useEffect(() => {
+		let socket;
+
 		Api.get('/auctions/' + auctionID + '/bets')
 			.then(res => {
 				setBets(res.data);
@@ -44,4 +45,4 @@ const UserCard = props => {
 	));
 };
 
-export default UserCard;
+export default BetsList;

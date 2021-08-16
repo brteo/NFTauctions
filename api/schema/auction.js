@@ -4,7 +4,7 @@ module.exports = {
 		type: 'object',
 		properties: {
 			description: { type: 'string' },
-			basePrice: { type: 'integer' },
+			basePrice: { type: 'number', multipleOf: 0.01 },
 			deadline: {
 				type: 'string',
 				format: 'date-time'
