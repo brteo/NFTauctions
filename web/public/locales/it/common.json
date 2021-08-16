@@ -7,10 +7,11 @@
 		"no_results":"Nessun risultato trovato",
 		"users": "Utenti",
 		"nft": "Nft",
-		"nfts": "Nfts"
+		"nfts": "Nfts",
+		"create": "Crea"
 	},
 	"login": {
-		"btn": "accedi",
+		"btn": "Accedi",
 		"title": "Accedi a TradingVG",
 		"forgot password": "Hai dimenticato la password?",
 		"continue": "Continua",
@@ -25,6 +26,7 @@
 		"nickname_tip": "Sei un artista? Digita il tuo nome d'arte, altrimenti indica un soprannome che verrà mostrato nel tuo profilo"
 	},
 	"profile": {
+		"hi": "Ciao",
 		"bio_placeholder":"la tua biografia",
 		"bio_tip":"modifica bio",
 		"pic_tip":"cambia pic",

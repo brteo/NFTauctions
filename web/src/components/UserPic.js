@@ -4,6 +4,7 @@ import React, { useContext } from 'react';
 import { Avatar, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
+
 import AppContext from '../helpers/AppContext';
 
 const UserPic = props => {

@@ -1,40 +1,49 @@
 /* eslint-disable no-underscore-dangle */
-import React, { useState, useContext } from 'react';
+/* eslint-disable no-nested-ternary */
+import React, { useState, useEffect, useContext } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Layout, Button, Modal, Row, Col } from 'antd';
+import { Layout, Button, Modal, Row, Col, Space, Select, Tooltip } from 'antd';
+import { PoweroffOutlined, MenuOutlined } from '@ant-design/icons';
 
 import AppContext from '../helpers/AppContext';
-import APICheck from './extra/APICheck';
 import Login from './Login';
 
 import logo from '../img/logo.svg';
+import itFlag from '../img/flags/it.png';
+import gbFlag from '../img/flags/gb.png';
 
 import GlobalSearch from './controls/GlobalSearch';
+import MobileDrawer from './MobileDrawer';
 import UserPic from './UserPic';
 
 const { Header } = Layout;
 
 const HeaderComponent = props => {
 	const { t, i18n } = useTranslation();
+	const { logged, handleLogout, isMobile } = useContext(AppContext);
 
-	const { logged, handleLogout } = useContext(AppContext);
+	const [showMobileDrawer, setShowMobileDrawer] = useState(false);
 	const [showLogin, setShowLogin] = useState(false);
+	const [goToCreate, setGoToCreate] = useState(false);
+
+	const history = useHistory();
+
+	useEffect(() => {
+		history.listen(() => {
+			setShowMobileDrawer(false);
+		});
+	}, []);
 
 	const changeLanguage = lang => i18n.changeLanguage(lang);
 
-	const langButtons = (
-		<>
-			<Button type="link" onClick={() => changeLanguage('it')}>
-				IT
-			</Button>
-			<Button type="link" onClick={() => changeLanguage('en')}>
-				EN
-			</Button>
-		</>
-	);
+	const toggleLogin = isLogged => {
+		if (isLogged && goToCreate) {
+			setGoToCreate(false);
+			setShowMobileDrawer(false);
+			history.push('/create');
+		}
 
-	const toggleLogin = () => {
 		if (navigator.cookieEnabled) {
 			setShowLogin(!showLogin);
 		} else {
@@ -45,83 +54,97 @@ const HeaderComponent = props => {
 		}
 	};
 
-	const history = useHistory();
-
-	const onSearchSelect = (value, option) =>
-		option.type === 'nft' ? history.push('/nft/' + option.id) : history.push('/profile/' + option.id);
-	const parseSearchResults = results => {
-		const options = [];
-
-		if (results.users.length > 0) {
-			const users = { label: 'Users', options: [] };
-			results.users.forEach(user => {
-				users.options.push({
-					type: 'user',
-					id: user._id,
-					value: 'user' + user._id,
-					label: (
-						<>
-							<UserPic user={user} size={40} /> <span className="userNick">{user.nickname}</span>
-						</>
-					)
-				});
-			});
-
-			options.push(users);
+	const create = () => {
+		if (!logged) {
+			setGoToCreate(true);
+			toggleLogin();
+		} else {
+			setShowMobileDrawer(false);
+			history.push('/create');
 		}
-
-		if (results.nfts.length > 0) {
-			const nfts = { label: 'Nfts', options: [] };
-			results.nfts.forEach(nft => {
-				nfts.options.push({
-					type: 'nft',
-					id: nft._id,
-					value: 'nft' + nft._id,
-					label: (
-						<>
-							<img alt={nft.description} src={nft.url} className="nftImage" />{' '}
-							<span className="nftTitle">{nft.title}</span>
-						</>
-					)
-				});
-			});
-
-			options.push(nfts);
-		}
-
-		return options;
 	};
+
+	const buttons = mobile => (
+		<>
+			<Button type="primary" onClick={() => create()}>
+				{t('common.create')}
+			</Button>
+			{logged ? (
+				!mobile ? (
+					<Space>
+						<UserPic user={logged} link />
+						<Tooltip title={t('login.logout')} placement="bottom">
+							<Button type="primary" shape="circle" icon={<PoweroffOutlined />} onClick={handleLogout} />
+						</Tooltip>
+					</Space>
+				) : (
+					<div className="mobile-drawer-user">
+						<Space direction="vertical">
+							<UserPic user={logged} link />
+							<span>
+								{t('profile.hi')},
+								<br />
+								<Link to={'/profile/' + logged._id}>{logged.nickname}</Link>
+							</span>
+							<Button type="secondary" onClick={handleLogout}>
+								{t('login.logout')}
+							</Button>
+						</Space>
+					</div>
+				)
+			) : (
+				<Button type="primary" onClick={toggleLogin}>
+					{t('login.btn')}
+				</Button>
+			)}
+			<Select type="text" defaultValue={i18n.language} onChange={changeLanguage}>
+				<Select.Option value="it">
+					<img height="20" src={itFlag} alt="IT" />
+				</Select.Option>
+				<Select.Option value="en">
+					<img height="20" src={gbFlag} alt="EN" />
+				</Select.Option>
+			</Select>
+		</>
+	);
 
 	return (
 		<>
 			<Header className="topbar">
-				<Row wrap={false} gutter={16} align="middle">
-					<Col flex="none">
+				{isMobile ? (
+					<div className="mobile-topbar">
 						<Link to="/">
 							<img src={logo} alt="Trading Virtual Goods" id="logo" />
 						</Link>
-					</Col>
-					<Col flex="auto">
-						<GlobalSearch resultParser={parseSearchResults} onSelect={onSearchSelect} />
-					</Col>
-					<Col flex="none">
-						{process.env.NODE_ENV === 'development' && <APICheck />}
-						{logged ? (
-							<>
-								<Link to={'/profile/' + logged._id}>{logged.nickname}</Link>
-								<Button type="primary" onClick={() => handleLogout()}>
-									{t('login.logout')}
-								</Button>
-							</>
-						) : (
-							<Button type="primary" onClick={() => toggleLogin()}>
-								{t('login.btn')}
-							</Button>
-						)}
-						{langButtons}
-					</Col>
-				</Row>
+						<Space>
+							<UserPic user={logged} link />
+							<Button type="primary" shape="circle" icon={<MenuOutlined />} onClick={() => setShowMobileDrawer(true)} />
+						</Space>
+					</div>
+				) : (
+					<Row wrap={false} gutter={16} align="middle">
+						<Col flex="none">
+							<Link to="/">
+								<img src={logo} alt="Trading Virtual Goods" id="logo" />
+							</Link>
+						</Col>
+						<Col flex="auto">
+							<GlobalSearch />
+						</Col>
+						<Col flex="none">
+							<Space size={16}>{buttons(false)}</Space>
+						</Col>
+					</Row>
+				)}
 			</Header>
+			{isMobile && (
+				<MobileDrawer show={showMobileDrawer} close={() => setShowMobileDrawer(false)}>
+					<div className="mobile-drawer-box">
+						<GlobalSearch />
+						{buttons(true)}
+					</div>
+				</MobileDrawer>
+			)}
 			<Login show={showLogin} handleClose={toggleLogin} />
 		</>
 	);

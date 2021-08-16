@@ -41,8 +41,11 @@
 
 	.ant-select-auto-complete{width:100%;}
 
-	#logo{height:46px;}
+	.mobile-topbar{display: flex;justify-content: space-between;align-items:center;}
 
+	#logo{height:50px;}
+
+	
 	@media screen and (min-width: 996px) {
 		padding-left:40px;
 		padding-right:40px;
@@ -53,10 +56,32 @@
 	}
 }
 
+.mobile-drawer-box{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	> *{margin-bottom: 32px;}
+	> *:last-child{margin-top:32px;margin-bottom: 0;align-self: center;}
+	@media screen and (orientation: landscape) {
+		> *{margin-bottom: 16px;}
+		> *:last-child{margin-top:0;}
+	}
+	
+	.mobile-drawer-user{
+		text-align: center;
+
+		.ant-avatar{width: 100px;height: 100px;}
+		@media screen and (orientation: landscape) {
+			.ant-avatar{width: 50px;height: 50px;}
+		}
+	}
+}
+
+.mobile-drawer .ant-drawer-body{display: flex;flex-direction: column;justify-content: center;}
+
 .main-content{
 	padding:64px 20px;
-	min-height: calc(100vh ~"-" 114px);
-
 	.padded-content{padding-top:20px;}
 	
 	@media screen and (min-width: 996px) {
@@ -68,10 +93,15 @@
 }
 
 .footer{
-	height: 50px;
+	padding: 40px 0;
 	text-align: center;
 	font-size:0.8em;
 	color:#999;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	.api-check{margin-bottom: 10px;}
 }
 
 /*FORM*/
@@ -86,13 +116,16 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-transition: color 9999s ease-out, background-color 9999s ease-out;
-    -webkit-transition-delay: 9999s;
+    transition: color 9999s ease-out, background-color 9999s ease-out;
+    transition-delay: 9999s;
 }
 
 .ant-input-affix-wrapper-readonly{
 	background: @border-color-base;
 }
+
+.ant-btn{font-weight: 700;}
+.ant-btn.ant-btn-link{font-weight: 400;}
 
 /*COMPONENTS*/
 
@@ -127,7 +160,7 @@ input:-webkit-autofill:active {
 			line-height:250px;
 			vertical-align: middle;
 
-			img{display:inline-block;max-width: 100%;max-height: 250px;}
+			img{display:inline-block;max-width: 100%;max-height: 250px;border-radius:0}
 		}
 
 		.ant-card-body{padding-top:13px;padding-bottom:15px;}

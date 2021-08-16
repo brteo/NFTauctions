@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect } from 'react';
 import useLocalStorage from '../hooks/useLocalStorage';
 import Api from './api';
 
@@ -36,8 +36,20 @@ Api.interceptors.response.use(
 /* PROVIDER */
 export const AppProvider = props => {
 	const [logged, setLogged] = useLocalStorage('user', null);
+	const [isMobile, setIsMobile] = useState(false);
 
 	const handleLogout = () => Api.get('/auth/logout').then(setLogged(null));
+
+	useLayoutEffect(() => {
+		const updateSize = () => {
+			setIsMobile(window.innerWidth < 768);
+		};
+
+		window.addEventListener('resize', updateSize);
+		updateSize();
+
+		return () => window.removeEventListener('resize', updateSize);
+	}, []);
 
 	useEffect(() => {
 		if (!logged) return;
@@ -51,5 +63,7 @@ export const AppProvider = props => {
 			});
 	}, []);
 
-	return <AppContext.Provider value={{ logged, setLogged, handleLogout }}>{props.children}</AppContext.Provider>;
+	return (
+		<AppContext.Provider value={{ logged, setLogged, isMobile, handleLogout }}>{props.children}</AppContext.Provider>
+	);
 };

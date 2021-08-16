@@ -50,7 +50,7 @@ const Login = props => {
 			.then(res => {
 				setLogged(res.data);
 				i18n.changeLanguage(res.data.lang);
-				handleClose();
+				handleClose(true);
 				handleReset();
 			})
 			.catch(err => {
@@ -65,7 +65,7 @@ const Login = props => {
 			.then(res => {
 				setLogged(res.data);
 				i18n.changeLanguage(res.data.lang);
-				handleClose();
+				handleClose(true);
 				handleReset();
 			})
 			.catch(err => {
@@ -95,7 +95,7 @@ const Login = props => {
 	const validateMessages = { required: t('core:errors.201') };
 
 	return (
-		<Modal visible={show} title={t('login.title')} onCancel={() => handleClose()} footer={footerBtn}>
+		<Modal visible={show} title={t('login.title')} onCancel={() => handleClose(false)} footer={footerBtn}>
 			<Form
 				id="loginForm"
 				form={form}

@@ -4,6 +4,7 @@ import { Card, Row, Col, Typography, Button, Avatar, Tooltip, Skeleton } from 'a
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FieldTimeOutlined } from '@ant-design/icons';
+
 import Countdown from './CountdownTimer';
 import UserPic from './UserPic';
 
@@ -32,7 +33,7 @@ const NftCard = props => {
 	}
 
 	return (
-		<Col xs={12} sm={8} md={6} lg={6} xl={6} xxl={4} className="nftCard">
+		<Col xs={24} sm={12} md={8} lg={8} xl={6} xxl={4} className="nftCard">
 			{nft ? (
 				<Card
 					title={

@@ -25,9 +25,11 @@ const APICheck = props => {
 	const color = check === 1 ? 'success' : check === 0 ? 'processing' : 'error';
 
 	return (
-		<Tag icon={icon} color={color}>
-			{message}
-		</Tag>
+		<div className="api-check">
+			<Tag icon={icon} color={color}>
+				{message}
+			</Tag>
+		</div>
 	);
 };
 

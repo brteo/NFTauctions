@@ -7,7 +7,8 @@
 		"no_results":"No result found",
 		"users": "Users",
 		"nft": "Nft",
-		"nfts": "Nfts"
+		"nfts": "Nfts",
+		"create": "Create"
 	},	
 	"login": {
 		"btn": "Sign In",
@@ -25,6 +26,7 @@
 		"nickname_tip": "Are you an artist? type your artname, otherwise choose a nickname which will be showed on your profile"
 	},
 	"profile": {
+		"hi": "Hi",
 		"bio_placeholder":"your bio",
 		"bio_tip":"edit bio",
 		"pic_tip":"change pic",

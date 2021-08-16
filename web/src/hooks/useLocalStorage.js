@@ -19,6 +19,7 @@ const useLocalStorage = (key, initValue) => {
 			console.log('useLocalStorage error: ', error);
 		}
 	};
+
 	return [value, setStoredValue];
 };
 
