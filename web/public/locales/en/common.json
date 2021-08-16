@@ -41,11 +41,15 @@
 		"owner": "Owner"
 	},
 	"auction": {
+		"title":"Auction",
 		"no":"Not for sale",
 		"basePrice": "Start price",
-		"price": "Price",
+		"price": "Highest price",
+		"dayLabel":"d",
 		"deadline": "The auction expires in",
 		"bet": "Bet",
+		"bets": "Bids",
+		"noBets": "No Bids... be the first!",
 		"owner": "Owner",
 		"category": "Category",
 		"author": "Author"

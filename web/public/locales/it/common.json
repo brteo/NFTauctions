@@ -41,11 +41,15 @@
 		"owner": "Proprietario"
 	},
 	"auction": {
+		"title":"Asta",
 		"no":"Non in vendita",
 		"basePrice": "Prezzo di partenza",
-		"price": "Prezzo",
+		"price": "Prezzo più alto",
+		"dayLabel":"g",
 		"deadline": "L'asta scade tra",
 		"bet": "Punta",
+		"bets": "Puntate",
+		"noBets": "Nessuna puntanta... puoi essere il primo!",
 		"owner": "Proprietario",
 		"category": "Categoria",
 		"author": "Autore"

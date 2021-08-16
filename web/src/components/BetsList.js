@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Skeleton } from 'antd';
 import io from 'socket.io-client';
 
@@ -8,6 +9,7 @@ import Api from '../helpers/api';
 const BetsList = props => {
 	const { auctionID } = props;
 	const [bets, setBets] = useState(null);
+	const { t } = useTranslation();
 
 	useEffect(() => {
 		let socket;
@@ -35,7 +37,11 @@ const BetsList = props => {
 	}
 
 	if (!bets.length) {
-		return <p>no bets</p>;
+		return (
+			<div className="no-results">
+				<p>{t('auction.noBets')}</p>
+			</div>
+		);
 	}
 
 	return bets.map(bet => (

@@ -35,7 +35,7 @@ const Routes = props => {
 				</Content>
 				<Footer className="footer">
 					{process.env.NODE_ENV === 'development' && <APICheck />}
-					{new Date().getFullYear()} &copy; Trading Virtual Goods - All rights reserved
+					{new Date().getFullYear()}&copy; Trading Virtual Goods - All rights reserved
 				</Footer>
 			</Layout>
 		</BrowserRouter>

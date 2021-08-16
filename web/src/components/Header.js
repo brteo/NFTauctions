@@ -117,7 +117,7 @@ const HeaderComponent = props => {
 							<img src={logo} alt="Trading Virtual Goods" id="logo" />
 						</Link>
 						<Space>
-							<UserPic user={logged} link />
+							{logged && <UserPic user={logged} link />}
 							<Button type="primary" shape="circle" icon={<MenuOutlined />} onClick={() => setShowMobileDrawer(true)} />
 						</Space>
 					</div>

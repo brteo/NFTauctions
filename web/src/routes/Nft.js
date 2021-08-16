@@ -2,15 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography, Image, Row, Col, Skeleton } from 'antd';
+import { Image, Row, Col, Skeleton, Space, Tag } from 'antd';
+import { NotificationOutlined, OrderedListOutlined } from '@ant-design/icons';
 import io from 'socket.io-client';
 
 import Api from '../helpers/api';
 import UserPic from '../components/UserPic';
 import AuctionBetForm from '../components/AcutionBetForm';
 import BetsList from '../components/BetsList';
-
-const { Title } = Typography;
 
 const Nft = props => {
 	const { id: nftID } = props.match.params;
@@ -47,44 +46,72 @@ const Nft = props => {
 	}, [nftID]);
 
 	return (
-		<section className="padded-content">
+		<section className="padded-content nft-page">
 			{!nft ? (
 				<Skeleton avatar={{ shape: 'square', size: 300 }} paragraph={{ rows: 4 }} active />
 			) : (
 				<>
-					<Title level={1}>{nft.title}</Title>
-					<Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-						<Col xs={24} sm={12}>
-							<div>
+					<Row gutter={{ xs: 16, lg: 32 }}>
+						<Col xs={24} lg={12} xl={15}>
+							<div className="nft-image-box">
 								<Image alt="nft" src={nft.url} />
 							</div>
 						</Col>
-						<Col xs={24} sm={12}>
-							<p>
-								{t('auction.owner')}:{' '}
-								<Link to={'/profile/' + nft.owner._id}>
-									<UserPic user={nft.owner} />
-								</Link>
-								<Link to={'/profile/' + nft.owner._id}>{nft.owner.nickname}</Link>{' '}
-							</p>
-							<p>
-								{t('auction.author')}:
-								<Link to={'/profile/' + nft.author._id}>
-									<UserPic user={nft.author} />
-								</Link>
-								<Link to={'/profile/' + nft.author._id}>{nft.author.nickname}</Link>
-							</p>
-							<p>{nft.description}</p>
-							<p> Tags: {nft.tags.join(', ')}</p>
-
-							{nft.auction !== undefined && <AuctionBetForm auction={nft.auction} />}
+						<Col xs={24} lg={12} xl={9}>
+							<div className="nft-right-box">
+								<div className="nft-info-box">
+									<Space direction="vertical">
+										<h1>{nft.title}</h1>
+										<div>
+											{nft.tags.map(tag => (
+												<Tag key={tag}>{tag}</Tag>
+											))}
+										</div>
+										<p>{nft.description}</p>
+										<Row>
+											<Col xs={12}>
+												<div className="nft-label">{t('auction.owner')}</div>
+												<Space>
+													<UserPic user={nft.owner} link />
+													<Link to={'/profile/' + nft.owner._id}>{nft.owner.nickname}</Link>
+												</Space>
+											</Col>
+											<Col xs={12}>
+												<div className="nft-label">{t('auction.author')}</div>
+												<Space>
+													<UserPic user={nft.author} link />
+													<Link to={'/profile/' + nft.author._id}>{nft.author.nickname}</Link>
+												</Space>
+											</Col>
+										</Row>
+									</Space>
+								</div>
+								{nft.auction && (
+									<>
+										<div className="nft-bet-box">
+											<AuctionBetForm auction={nft.auction} />
+										</div>
+										<div className="nft-auction-box">
+											<Space direction="vertical">
+												<Space style={{ width: '100%', justifyContent: 'space-between' }}>
+													<h2>
+														<NotificationOutlined className="gray-text" /> {t('auction.title')}
+													</h2>
+													<Tag>
+														{t('auction.basePrice')} &raquo; {nft.auction.basePrice} ETH
+													</Tag>
+												</Space>
+												<p>{nft.auction.description}</p>
+												<h2>
+													<OrderedListOutlined className="gray-text" /> {t('auction.bets')}
+												</h2>
+												<BetsList auctionID={nft.auction._id} />
+											</Space>
+										</div>
+									</>
+								)}
+							</div>
 						</Col>
-						{nft.auction && (
-							<Col xs={24}>
-								<Title level={3}>Bets</Title>
-								<BetsList auctionID={nft.auction._id} />
-							</Col>
-						)}
 					</Row>
 				</>
 			)}
