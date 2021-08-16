@@ -69,6 +69,9 @@ To reset seed data
    ./nodeos.sh reset
    ```
 
+`Important`
+If you had logged in with user in FrontEnd and run seed you'll get a authReset error... run again seed
+
 ## VScode
 
 Open the workspace in the folder roots

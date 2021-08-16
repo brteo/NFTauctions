@@ -6,6 +6,8 @@
 .align-left{text-align:left;}
 .align-right{text-align:right;}
 
+.bg-cover{background-repeat: no-repeat;background-position: center center;background-size: cover;}
+
 /*FULLPAGE*/
 .fullpage {
 	width: 100%;
@@ -84,8 +86,12 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    -webkit-transition: "color 9999s ease-out, background-color 9999s ease-out";
+    -webkit-transition: color 9999s ease-out, background-color 9999s ease-out;
     -webkit-transition-delay: 9999s;
+}
+
+.ant-input-affix-wrapper-readonly{
+	background: @border-color-base;
 }
 
 /*COMPONENTS*/
@@ -96,7 +102,6 @@ input:-webkit-autofill:active {
 .userHeader {
 	height:@userHeader-height;
 	background-color:@userHeader-background;
-	background-size:cover;
 	border-bottom-left-radius: @userHeader-radius;
 	border-bottom-right-radius: @userHeader-radius;
 }

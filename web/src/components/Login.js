@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Form, Input, Button, Modal, Divider } from 'antd';
 import { UserOutlined, LockOutlined, InfoCircleOutlined } from '@ant-design/icons';
@@ -13,6 +13,8 @@ const Login = props => {
 	const { setLogged } = useContext(AppContext);
 
 	const MODE = { INIT: t('login.continue'), LOGIN: t('login.login'), REGISTER: t('login.register') };
+
+	const passwordRef = useRef();
 
 	const [loginMode, setLoginMode] = useState(MODE.INIT);
 	const [pwdError, setPwdError] = useState(false);
@@ -30,11 +32,15 @@ const Login = props => {
 
 	const handleCheckEmail = email =>
 		Api.get(`/auth/email/${email}`)
-			.then(res => setLoginMode(MODE.LOGIN))
+			.then(res => {
+				setLoginMode(MODE.LOGIN);
+				passwordRef.current.focus();
+			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
 				if (errorCode === 404) {
-					return setLoginMode(MODE.REGISTER);
+					setLoginMode(MODE.REGISTER);
+					return passwordRef.current.focus();
 				}
 				return err.globalHandler && err.globalHandler();
 			});
@@ -130,7 +136,7 @@ const Login = props => {
 							}
 						]}
 					>
-						<Input.Password prefix={<LockOutlined />} placeholder={t('core:fields.password')} />
+						<Input.Password ref={passwordRef} prefix={<LockOutlined />} placeholder={t('core:fields.password')} />
 					</Form.Item>
 				)}
 

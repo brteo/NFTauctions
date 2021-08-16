@@ -124,24 +124,24 @@ const ImageUploader = props => {
 			previewCovers.push(
 				<div
 					key="cover3"
-					className="imageUploader-cover"
-					style={{ backgroundImage: "url('" + initImage + "')", backgroundSize: 'cover' }}
+					className="imageUploader-cover bg-cover"
+					style={{ backgroundImage: "url('" + initImage + "')" }}
 				/>
 			);
 		if (preview)
 			previewCovers.push(
 				<div
 					key="cover2"
-					className="imageUploader-cover"
-					style={{ backgroundImage: "url('" + preview + "')", backgroundSize: 'cover' }}
+					className="imageUploader-cover bg-cover"
+					style={{ backgroundImage: "url('" + preview + "')" }}
 				/>
 			);
 		if (uploaded)
 			previewCovers.push(
 				<div
 					key="cover1"
-					className="imageUploader-cover"
-					style={{ backgroundImage: "url('" + uploaded + "')", backgroundSize: 'cover' }}
+					className="imageUploader-cover bg-cover"
+					style={{ backgroundImage: "url('" + uploaded + "')" }}
 				/>
 			);
 	}

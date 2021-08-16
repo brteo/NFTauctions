@@ -6,7 +6,10 @@ const UserHeader = props => {
 
 	// alt="User profile header image"
 	return (
-		<div className="userHeader" style={user && user.header ? { backgroundImage: 'url(' + user.header + ')' } : {}}>
+		<div
+			className="userHeader bg-cover"
+			style={user && user.header ? { backgroundImage: 'url(' + user.header + ')' } : {}}
+		>
 			{props.children}
 		</div>
 	);
