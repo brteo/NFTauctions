@@ -1,6 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Form, Input, Button, Modal, Divider } from 'antd';
+import { Form, Input, Button, Modal, Divider, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined, InfoCircleOutlined } from '@ant-design/icons';
 
 import Api from '../helpers/api';
@@ -50,8 +51,8 @@ const Login = props => {
 			.then(res => {
 				setLogged(res.data);
 				i18n.changeLanguage(res.data.lang);
-				handleClose(true);
 				handleReset();
+				handleClose(true);
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -65,8 +66,8 @@ const Login = props => {
 			.then(res => {
 				setLogged(res.data);
 				i18n.changeLanguage(res.data.lang);
-				handleClose(true);
 				handleReset();
+				handleClose(true);
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -93,6 +94,17 @@ const Login = props => {
 	);
 
 	const validateMessages = { required: t('core:errors.201') };
+
+	const privacyLink = () => {
+		const str = t('login.privacy_check').split('%s');
+		return (
+			<>
+				{str[0]}
+				<Link to="/#">{t('login.privacy')}</Link>
+				{str[1]}
+			</>
+		);
+	};
 
 	return (
 		<Modal visible={show} title={t('login.title')} onCancel={() => handleClose(false)} footer={footerBtn}>
@@ -174,14 +186,24 @@ const Login = props => {
 						>
 							<Input placeholder={t('login.account_placeholder')} maxLength="12" />
 						</Form.Item>
+						<Divider />
+						<Form.Item
+							name="check"
+							valuePropName="checked"
+							rules={[
+								{
+									required: true
+								}
+							]}
+						>
+							<Checkbox>{privacyLink()}</Checkbox>
+						</Form.Item>
 					</>
 				)}
 
 				{loginMode === MODE.LOGIN && (
 					<div className="align-center">
-						<Button type="link" id="forgotPassword">
-							{t('login.forgot password')}
-						</Button>
+						<Link to="/#">{t('login.forgot password')}</Link>
 					</div>
 				)}
 			</Form>

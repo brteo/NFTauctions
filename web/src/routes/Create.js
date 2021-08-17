@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
@@ -18,6 +18,7 @@ import {
 import { InboxOutlined } from '@ant-design/icons';
 import moment from 'moment';
 
+import AppContext from '../helpers/AppContext';
 import Api from '../helpers/api';
 import ImageUploader from '../components/controls/ImageUploader';
 
@@ -25,6 +26,7 @@ const { Title } = Typography;
 
 const Create = props => {
 	const { t, i18n } = useTranslation();
+	const { logged } = useContext(AppContext);
 
 	const [form] = Form.useForm();
 	const history = useHistory();
@@ -35,6 +37,10 @@ const Create = props => {
 	const [tags, setTags] = useState(null);
 
 	const { language } = i18n;
+
+	if (!logged) {
+		return window.location.replace(window.location.origin);
+	}
 
 	useEffect(() => {
 		Api.get(`categories`)

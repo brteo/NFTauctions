@@ -23,7 +23,9 @@
 		"account_tip": "Scegli il tuo nome account per la blockchain EOS. Sono validi nomi di 12 caratteri e composti da lettere + numeri da 1 a 5", 
 		"nickname": "Nickname o nome d'arte",
 		"nickname_placeholder": "mio soprannome",
-		"nickname_tip": "Sei un artista? Digita il tuo nome d'arte, altrimenti indica un soprannome che verrà mostrato nel tuo profilo"
+		"nickname_tip": "Sei un artista? Digita il tuo nome d'arte, altrimenti indica un soprannome che verrà mostrato nel tuo profilo",
+		"privacy_check": "Ho letto ed accetto la %s",
+		"privacy": "Privacy Policy"
 	},
 	"profile": {
 		"hi": "Ciao",

@@ -23,7 +23,9 @@
 		"account_tip": "Choose a new EOS blockchain account name. A valid name should be 12 characters length composed by letters + numbers from 1 to 5", 
 		"nickname": "Nickname or artname",
 		"nickname_placeholder": "my nick",
-		"nickname_tip": "Are you an artist? type your artname, otherwise choose a nickname which will be showed on your profile"
+		"nickname_tip": "Are you an artist? type your artname, otherwise choose a nickname which will be showed on your profile",
+		"privacy_check": "I read and accept %s",
+		"privacy": "Privacy Policy"
 	},
 	"profile": {
 		"hi": "Hi",
