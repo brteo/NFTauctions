@@ -43,7 +43,7 @@ const Profile = props => {
 
 	function bioChange({ target: { value } }) {}
 	function edit(data) {
-		Api.put('/profile/' + match.params.id, data)
+		Api.patch('/profile/' + match.params.id, data)
 			.then(res => {
 				setUser(prevState => ({ ...prevState, ...res.data }));
 				setLogged(prevState => ({ ...prevState, ...res.data }));

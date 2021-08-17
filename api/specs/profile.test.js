@@ -1,9 +1,14 @@
 const supertest = require('supertest');
-
 const app = require('../app');
 const db = require('../db/connect-test');
 const User = require('../models/user');
 const { genereteAuthToken } = require('../helpers/auth');
+const { moveTmpFile } = require('../helpers/s3');
+
+jest.mock('../helpers/s3');
+moveTmpFile.mockResolvedValue();
+
+const { AWS_S3_ENDPOINT_PUBLIC, AWS_S3_BUCKET_DATA } = process.env;
 
 const agent = supertest.agent(app);
 
@@ -134,22 +139,28 @@ describe('Role: user', () => {
 		});
 	});
 
-	describe('PUT /profile', () => {
+	describe('PATCH /profile', () => {
 		test('His own profile should be changed', done => {
 			agent
-				.put('/profile/' + user.id)
+				.patch('/profile/' + user.id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)
-				.send({ bio: 'edit' })
+				.send({ bio: 'edit', pic: 'pic.jpg', header: 'header.jpg' })
 				.expect(200)
 				.then(res => {
-					expect(res.body).toEqual(expect.objectContaining({ bio: 'edit' }));
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							bio: 'edit',
+							pic: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/pic.jpg',
+							header: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/header.jpg'
+						})
+					);
 					done();
 				});
 		});
 
 		test('Any other user should be Forbidden', done => {
 			agent
-				.put('/profile/' + user2.id)
+				.patch('/profile/' + user2.id)
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ bio: 'edit' })
 				.expect(403)
@@ -161,7 +172,7 @@ describe('Role: user', () => {
 
 		test('Update wrong userId should be ValidationError', done => {
 			agent
-				.put('/profile/1234')
+				.patch('/profile/1234')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ name: 'edit' })
 				.expect(400)
@@ -173,7 +184,7 @@ describe('Role: user', () => {
 
 		test('Update inexistent userId should be Forbidden', done => {
 			agent
-				.put('/profile/507f1f77bcf86cd799439011')
+				.patch('/profile/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${userToken}`)
 				.send({ name: 'edit' })
 				.expect(403)

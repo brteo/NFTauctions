@@ -112,10 +112,10 @@ describe('Role: admin', () => {
 		});
 	});
 
-	describe('PUT /users', () => {
+	describe('PATCH /users', () => {
 		test('His data should be changed', done => {
 			agent
-				.put('/users/' + admin.id)
+				.patch('/users/' + admin.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ nickname: 'edit' })
 				.expect(200)
@@ -127,7 +127,7 @@ describe('Role: admin', () => {
 
 		test('Any users should be changed', done => {
 			agent
-				.put('/users/' + user.id)
+				.patch('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ nickname: 'edit' })
 				.expect(200)
@@ -139,7 +139,7 @@ describe('Role: admin', () => {
 
 		test('Update wrong userId should be ValidationError', done => {
 			agent
-				.put('/users/1234')
+				.patch('/users/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(400)
@@ -151,7 +151,7 @@ describe('Role: admin', () => {
 
 		test('Update inexistent userId should be NotFound', done => {
 			agent
-				.put('/users/507f1f77bcf86cd799439011')
+				.patch('/users/507f1f77bcf86cd799439011')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)
@@ -172,7 +172,7 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.put('/users/' + user.id)
+				.patch('/users/' + user.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ name: 'edit' })
 				.expect(404)
@@ -183,7 +183,7 @@ describe('Role: admin', () => {
 
 		test('Update with invalid email should be ValidationError', done => {
 			agent
-				.put('/users/1234')
+				.patch('/users/1234')
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ email: 'wrong' })
 				.expect(400)

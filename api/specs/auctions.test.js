@@ -269,9 +269,9 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.put('/auctions/' + auction.id)
+				.patch('/auctions/' + auction.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
-				.send({ title: 'Title changed' })
+				.send({ description: 'Title changed' })
 				.expect(404)
 				.then(res => {
 					expect(res.body).toEqual(expect.objectContaining({ error: 404 }));

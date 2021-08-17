@@ -12,7 +12,7 @@ router.route('/filter/:filter').get(controller.filter);
 router
 	.route('/:id')
 	.get(validator({ params: 'objectId' }), controller.getById)
-	.put(validator({ body: 'user', params: 'objectId' }), isAuth, rbac('profile', 'update:own'), controller.update);
+	.patch(validator({ body: 'user', params: 'objectId' }), isAuth, rbac('profile', 'update:own'), controller.update);
 
 router.route('/:id/owned').get(validator({ params: 'objectId' }), controller.getOwned);
 

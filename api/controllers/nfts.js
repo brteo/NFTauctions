@@ -7,7 +7,7 @@ const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../
 const { eos, addKey } = require('../helpers/eosjs');
 const { moveTmpFile } = require('../helpers/s3');
 
-const { AWS_S3_BUCKET_DATA, AWS_S3_ENDPOINT_PUBLIC } = process.env;
+const { AWS_S3_ENDPOINT_PUBLIC, AWS_S3_BUCKET_DATA } = process.env;
 
 /* Get all nfts */
 exports.get = (req, res, next) => {

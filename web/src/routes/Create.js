@@ -80,7 +80,7 @@ const Create = props => {
 			newAuction = {
 				description: data.auctionDescription,
 				basePrice: data.auctionPrice,
-				deadline: data.auctionDeadline.format('YYYY-MM-DD HH:mm:ss')
+				deadline: data.auctionDeadline.format('YYYY-MM-DD HH:mm') + ':00'
 			};
 		}
 
@@ -93,12 +93,18 @@ const Create = props => {
 
 					Api.post(`/auctions`, newAuction)
 						.then(() => handleSubmitComplete(nftId))
-						.catch(err => err.globalHandler && err.globalHandler());
+						.catch(err => {
+							setSend(false);
+							return err.globalHandler && err.globalHandler();
+						});
 				} else {
 					handleSubmitComplete(nftId);
 				}
 			})
-			.catch(err => err.globalHandler && err.globalHandler());
+			.catch(err => {
+				setSend(false);
+				return err.globalHandler && err.globalHandler();
+			});
 	};
 
 	const validateMessages = { required: t('core:errors.201') };

@@ -8,10 +8,14 @@ const Nft = require('../models/nft');
 const Category = require('../models/category');
 const Tag = require('../models/tag');
 const { eos } = require('../helpers/eosjs');
+const { moveTmpFile } = require('../helpers/s3');
+const { genereteAuthToken } = require('../helpers/auth');
 
 jest.mock('../helpers/eosjs');
+jest.mock('../helpers/s3');
+moveTmpFile.mockResolvedValue();
 
-const { genereteAuthToken } = require('../helpers/auth');
+const { AWS_S3_ENDPOINT_PUBLIC, AWS_S3_BUCKET_DATA } = process.env;
 
 const { ObjectId } = mongoose.Types;
 const agent = supertest.agent(app);
@@ -23,7 +27,7 @@ const newNft = {
 		id: '60f6c6ab59fc210d3ba2c165'
 	},
 	tags: ['newTag'],
-	url: 'path/to/image'
+	url: 'img.jpg'
 };
 
 const wrongSchemaNft = {
@@ -106,7 +110,7 @@ beforeEach(async () => {
 			name: cat1.name
 		},
 		tags: ['tag'],
-		url: 'path/to/image',
+		url: 'img.jpg',
 		author: user1.id,
 		owner: user1.id
 	}).save();
@@ -120,7 +124,7 @@ beforeEach(async () => {
 			name: cat1.name
 		},
 		tags: ['tag'],
-		url: 'path/to/image',
+		url: 'img.jpg',
 		author: user1.id,
 		owner: user2.id
 	}).save();
@@ -217,7 +221,7 @@ describe('Role: admin', () => {
 							title,
 							description,
 							tags,
-							url,
+							url: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + url,
 							author: admin._id.toString(),
 							owner: admin._id.toString()
 						})
@@ -302,7 +306,7 @@ describe('Role: admin', () => {
 				});
 
 			return agent
-				.put('/nfts/' + nft.id)
+				.patch('/nfts/' + nft.id)
 				.set('Cookie', `TvgAccessToken=${adminToken}`)
 				.send({ title: 'Title changed' })
 				.expect(404)
@@ -401,7 +405,7 @@ describe('Role: user', () => {
 							title,
 							description,
 							tags,
-							url,
+							url: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + url,
 							author: user1._id.toString(),
 							owner: user1._id.toString()
 						})
@@ -424,7 +428,13 @@ describe('Role: user', () => {
 					const { _id } = res.body;
 					id = _id;
 					const { title, description, url } = newNft;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, url }));
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							title,
+							description,
+							url: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + url
+						})
+					);
 				});
 
 			return agent
@@ -474,7 +484,13 @@ describe('Role: user', () => {
 					const { _id } = res.body;
 					id = _id;
 					const { title, description, url } = newNft;
-					expect(res.body).toEqual(expect.objectContaining({ title, description, url }));
+					expect(res.body).toEqual(
+						expect.objectContaining({
+							title,
+							description,
+							url: AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + url
+						})
+					);
 				});
 
 			return agent

@@ -3,7 +3,7 @@ const Nft = require('../models/nft');
 const { SendData, ServerError, Forbidden, NotFound } = require('../helpers/response');
 const { moveTmpFile } = require('../helpers/s3');
 
-const { AWS_S3_BUCKET_DATA, AWS_S3_ENDPOINT_PUBLIC } = process.env;
+const { AWS_S3_ENDPOINT_PUBLIC, AWS_S3_BUCKET_DATA } = process.env;
 
 exports.get = (req, res, next) => {
 	User.find({}, (err, users) => {

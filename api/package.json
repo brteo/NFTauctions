@@ -2,7 +2,7 @@
   "name": "api",
   "version": "0.1.0",
   "author": "Brocca/Mancini/Achilli",
-  "description": "RESTapi NTFauctions with MongoDB",
+  "description": "RESTapi NFTauctions with MongoDB",
   "private": true,
   "license": "UNLICENSED",
   "main": "index.js",

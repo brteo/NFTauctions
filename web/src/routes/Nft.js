@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Typography, Image, Row, Col, Skeleton, Space, Tag, Empty } from 'antd';
-import { NotificationOutlined, OrderedListOutlined } from '@ant-design/icons';
+import { NotificationOutlined, OrderedListOutlined, TagOutlined } from '@ant-design/icons';
 import io from 'socket.io-client';
 
 import Api from '../helpers/api';
@@ -14,8 +14,10 @@ const { Title } = Typography;
 
 const Nft = props => {
 	const { id: nftID } = props.match.params;
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const [nft, setNft] = useState(null);
+
+	const { language } = i18n;
 
 	useEffect(() => {
 		let socket;
@@ -64,11 +66,14 @@ const Nft = props => {
 									<Space direction="vertical">
 										<Title level={1}>{nft.title}</Title>
 										<div>
+											<Tag icon={<TagOutlined />} className="tag-category">
+												{nft.category.name[language]}
+											</Tag>
 											{nft.tags.map(tag => (
 												<Tag key={tag}>{tag}</Tag>
 											))}
 										</div>
-										<p>{nft.description}</p>
+										<p className="pre-line">{nft.description}</p>
 										<Row>
 											<Col xs={12}>
 												<div className="nft-label">{t('auction.owner')}</div>
@@ -102,7 +107,7 @@ const Nft = props => {
 														{t('auction.basePrice')} &raquo; {nft.auction.basePrice} ETH
 													</Tag>
 												</Space>
-												<p>{nft.auction.description}</p>
+												<p className="pre-line">{nft.auction.description}</p>
 												<Title level={2}>
 													<OrderedListOutlined className="gray-text" /> {t('auction.bets')}
 												</Title>
