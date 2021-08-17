@@ -14,12 +14,12 @@ const AuctionBetForm = props => {
 	const { setShowLogin } = useContext(AppContext);
 
 	const [form] = Form.useForm();
-	const [minValue, setMinValue] = useState(auction.price + 0.01);
+	const [minValue, setMinValue] = useState((auction.price + 0.01).toFixed(2));
 
 	const betSubmit = ({ price }) => {
 		Api.put('/auctions/' + auction._id + '/bets', { price })
 			.then(res => {
-				setMinValue(res.data.price + 0.01);
+				setMinValue((res.data.price + 0.01).toFixed(2));
 				form.resetFields();
 			})
 			.catch(err => {

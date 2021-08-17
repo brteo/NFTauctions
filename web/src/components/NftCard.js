@@ -1,6 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import React from 'react';
-import { Card, Row, Col, Typography, Button, Avatar, Tooltip, Skeleton } from 'antd';
+import { Card, Row, Col, Typography, Avatar, Tooltip, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FieldTimeOutlined } from '@ant-design/icons';
