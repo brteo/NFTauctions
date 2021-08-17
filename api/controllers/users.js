@@ -35,3 +35,9 @@ exports.delete = (req, res, next) => {
 		return next(SendData({ message: 'User deleted sucessfully!' }));
 	});
 };
+
+exports.getPic = (req, res, next) =>
+	User.findById(req.params.id, (err, user) => {
+		if (err || !user || !user.pic) return next(NotFound());
+		return next(SendData(user.pic));
+	});

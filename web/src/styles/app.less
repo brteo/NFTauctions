@@ -3,7 +3,10 @@
 
 /*HELPERS*/
 @gray-color:#777777;
+@dark-gray-color:#444444;
+
 .gray-text{color:@gray-color;}
+.dark-gray-text{color:@dark-gray-color;}
 
 .align-center{text-align:center;}
 .align-left{text-align:left;}
@@ -149,7 +152,7 @@ input:-webkit-autofill:active {
 
 .nftCard{
 	.ant-card{
-		border-radius: 10px;
+		border-radius: 8px;
 		text-align: left;
 
 		.ant-card-head{
@@ -166,10 +169,13 @@ input:-webkit-autofill:active {
 		}
 
 		.ant-card-body{padding-top:13px;padding-bottom:15px;}
-		.ant-card-body .ant-col:last-child{text-align: right;}
+		
+		p{font-size:0.8em;margin-bottom:0;line-height: 1.2;color:@gray-color;}
+		.price-label{font-size:1.3em;}
+		.countdown{font-size:1.3em;}
 	}
 
-	.not-for-sale{ height:44px;color:@gray-color;}
+	.not-for-sale{line-height:44px;height:44px;color:@gray-color;text-align: center;}
 
 	.ant-skeleton-title {
     margin-top: 4px;
@@ -188,8 +194,6 @@ input:-webkit-autofill:active {
 	}
 	.ant-skeleton-paragraph{display: none;}
 }
-
-.no-results{margin-bottom:15px;font-size:1.2em;color:@gray-color;}
 
 .ant-select-item-group{font-size:16px;font-weight: bold;}
 .ant-select-item-option-content {
@@ -279,7 +283,7 @@ Image Uploader
 				.progress-done{display: none;}
 			}	
 		}
-		.imageUploader-overlay{right:20px;bottom:20px;font-size:20px;background: #FFF;color:#444;border-radius: 50%;width: 30px;height:30px;line-height:30px;}
+		.imageUploader-overlay{right:20px;bottom:20px;font-size:20px;background: #FFF;color:@dark-gray-color;border-radius: 50%;width: 30px;height:30px;line-height:30px;}
 	}
 	.userPic-uploader.ant-upload.ant-upload-drag.imageUploader{
 		display:inline-block;
@@ -293,7 +297,7 @@ Image Uploader
 			
 			height: 100%;
 			width: 100%;
-			background:#444;
+			background:@dark-gray-color;
 			border-radius: 50%;
 			box-shadow: 0 0 15px #000;
 			
@@ -304,7 +308,7 @@ Image Uploader
 			}
 			.imageUploader-info{font-size:55px;color:#FFF;}
 		}
-		.imageUploader-overlay{right:0px;bottom:0px;font-size:20px;background: #FFF;color:#444;border-radius: 50%;width: 30px;height:30px;line-height:30px;}
+		.imageUploader-overlay{right:0px;bottom:0px;font-size:20px;background: #FFF;color:@dark-gray-color;border-radius: 50%;width: 30px;height:30px;line-height:30px;}
 		
 	}
 	.profileSkeleton {
@@ -376,9 +380,8 @@ Image Uploader
 
 		.nft-info-box{margin-bottom:32px;}
 
-		.nft-auction-box{flex:auto;}
-
-		.no-results{color:@gray-color;padding:20px 0;text-align: center;}
+		.nft-auction-box{margin-bottom: 8px;}
+		.nft-bets-list-box{flex:auto;overflow: auto;}
 
 		.nft-bet-box{
 			position:fixed;
@@ -415,6 +418,13 @@ Image Uploader
 	}	
 }
 
+.ant-list-item.bet-tpl{	
+	.time-label{color:@gray-color;font-size: 0.8em;}
+	.price-label{
+		font-size:1.4em;
+	}
+}
+
 .price-label{
 	font-size:2em;
 	.currency{font-size: 0.5em;color:@gray-color;}
@@ -425,4 +435,22 @@ Image Uploader
 
  .countdown-label{font-size: 0.5em;color:@gray-color;}
  .countdown-points{color:@gray-color;}
+}
+
+/*SCROLLBAR*/
+::-webkit-scrollbar{
+	width: 8px;
+	height: 8px;
+}
+::-webkit-scrollbar-thumb{
+	background: #444444;
+	border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover{
+	background: #FFCB00;
+}
+::-webkit-scrollbar-track{
+	background: #1F1F1F;
+	border-radius: 0px;
+	box-shadow: inset 0px 0px 0px 0px #1F1F1F;
 }

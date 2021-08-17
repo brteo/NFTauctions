@@ -14,4 +14,6 @@ router
 	.put(validator({ body: 'user', params: 'objectId' }), isAuth, rbac('users', 'update'), controller.update)
 	.delete(validator({ params: 'objectId' }), isAuth, rbac('users', 'delete'), controller.delete);
 
+router.route('/:id/pic').get(validator({ params: 'objectId' }), controller.getPic);
+
 module.exports = router;

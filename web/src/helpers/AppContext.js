@@ -37,6 +37,7 @@ Api.interceptors.response.use(
 export const AppProvider = props => {
 	const [logged, setLogged] = useLocalStorage('user', null);
 	const [isMobile, setIsMobile] = useState(false);
+	const [showLogin, setShowLogin] = useState(false);
 
 	const handleLogout = () => Api.get('/auth/logout').then(setLogged(null));
 
@@ -64,6 +65,8 @@ export const AppProvider = props => {
 	}, []);
 
 	return (
-		<AppContext.Provider value={{ logged, setLogged, isMobile, handleLogout }}>{props.children}</AppContext.Provider>
+		<AppContext.Provider value={{ logged, setLogged, isMobile, handleLogout, showLogin, setShowLogin }}>
+			{props.children}
+		</AppContext.Provider>
 	);
 };

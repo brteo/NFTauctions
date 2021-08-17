@@ -269,3 +269,35 @@ describe('Role: admin', () => {
 		});
 	});
 });
+
+describe('GET /users/[ID]/pic', () => {
+	test('Get pic from user id should be redirect to image', done => {
+		agent
+			.get('/users/' + user.id + '/pic')
+			.expect(200)
+			.then(res => {
+				expect(res.body).toEqual(user.pic);
+				done();
+			});
+	});
+
+	test('Get pic from invalid user id should be NotFound', done => {
+		agent
+			.get('/users/507f1f77bcf86cd799439011/pic')
+			.expect(404)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+				done();
+			});
+	});
+
+	test('Get pic from user whitout pic be NotFound', done => {
+		agent
+			.get('/users/' + admin.id + '/pic')
+			.expect(404)
+			.then(res => {
+				expect(res.body).toEqual(expect.objectContaining({ error: 404 }));
+				done();
+			});
+	});
+});

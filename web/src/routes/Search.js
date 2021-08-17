@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Typography } from 'antd';
+import { Typography, Empty } from 'antd';
 import Nfts from '../components/Nfts';
 import Users from '../components/Users';
 
@@ -13,7 +13,6 @@ const Search = props => {
 
 	return (
 		<section className="padded-content">
-			{' '}
 			{query ? (
 				<>
 					<Title level={2}>{t('common.users')}</Title>
@@ -22,7 +21,7 @@ const Search = props => {
 					<Nfts filter={query} />
 				</>
 			) : (
-				<div className="no-results">{t('common.no_results')}</div>
+				<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('common.no_results')} />
 			)}
 		</section>
 	);

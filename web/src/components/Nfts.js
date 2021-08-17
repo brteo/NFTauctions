@@ -1,7 +1,7 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Col } from 'antd';
+import { Row, Col, Empty } from 'antd';
 import Api from '../helpers/api';
 import NftCard from './NftCard';
 
@@ -47,8 +47,8 @@ const Nfts = props => {
 						nftsComponents.length ? (
 							nftsComponents
 						) : (
-							<Col xs={12} sm={8} md={6} lg={6} xl={6} xxl={4} className="no-results">
-								{t('common.no_results')}
+							<Col xs={24}>
+								<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('common.no_results')} />
 							</Col>
 						)
 					);
@@ -65,7 +65,10 @@ const Nfts = props => {
 
 	const skeleton = (
 		<>
-			<NftCard /> <NftCard />
+			<NftCard />
+			<NftCard />
+			<NftCard />
+			<NftCard />
 		</>
 	);
 

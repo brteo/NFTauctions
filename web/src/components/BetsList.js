@@ -1,10 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Skeleton } from 'antd';
+import { Skeleton, List, Empty } from 'antd';
 import io from 'socket.io-client';
 
 import Api from '../helpers/api';
+import Bet from './Bet';
 
 const BetsList = props => {
 	const { auctionID } = props;
@@ -33,22 +34,19 @@ const BetsList = props => {
 	}, []);
 
 	if (!bets) {
-		return <Skeleton active />;
+		return <Skeleton active avatar paragraph={0} />;
 	}
 
-	if (!bets.length) {
-		return (
-			<div className="no-results">
-				<p>{t('auction.noBets')}</p>
-			</div>
-		);
-	}
-
-	return bets.map(bet => (
-		<p key={bet._id}>
-			{bet.price} - {bet.user.nickname}
-		</p>
-	));
+	return (
+		<List
+			itemLayout="horizontal"
+			locale={{
+				emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('auction.noBets')} />
+			}}
+			dataSource={bets}
+			renderItem={item => <Bet bet={item} />}
+		/>
+	);
 };
 
 export default BetsList;

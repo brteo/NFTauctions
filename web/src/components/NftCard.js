@@ -19,12 +19,19 @@ const NftCard = props => {
 	if (nft && nft.auction) {
 		auction = (
 			<Row align="middle">
-				<Col span={12}>
-					{nft.auction.price} ETH <br />
-					<FieldTimeOutlined /> <Countdown eventTime={nft.auction.deadline} />
+				<Col xs={12}>
+					<p>{t('auction.price')}</p>
+					<div className="price-label">
+						{nft.auction.price} <span className="currency">ETH</span>
+					</div>
 				</Col>
-				<Col span={12}>
-					<Button type="primary">{t('auction.bet')}</Button>
+				<Col xs={12}>
+					<p>
+						<FieldTimeOutlined /> {t('auction.deadline')}
+					</p>
+					<div>
+						<Countdown eventTime={nft.auction.deadline} />
+					</div>
 				</Col>
 			</Row>
 		);
@@ -33,7 +40,7 @@ const NftCard = props => {
 	}
 
 	return (
-		<Col xs={24} sm={12} md={8} lg={8} xl={6} xxl={4} className="nftCard">
+		<Col xs={24} sm={12} md={12} lg={8} xl={6} className="nftCard">
 			{nft ? (
 				<Card
 					title={

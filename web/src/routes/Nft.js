@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Image, Row, Col, Skeleton, Space, Tag } from 'antd';
+import { Image, Row, Col, Skeleton, Space, Tag, Empty } from 'antd';
 import { NotificationOutlined, OrderedListOutlined } from '@ant-design/icons';
 import io from 'socket.io-client';
 
@@ -86,7 +86,7 @@ const Nft = props => {
 										</Row>
 									</Space>
 								</div>
-								{nft.auction && (
+								{nft.auction ? (
 									<>
 										<div className="nft-bet-box">
 											<AuctionBetForm auction={nft.auction} />
@@ -105,10 +105,14 @@ const Nft = props => {
 												<h2>
 													<OrderedListOutlined className="gray-text" /> {t('auction.bets')}
 												</h2>
-												<BetsList auctionID={nft.auction._id} />
 											</Space>
 										</div>
+										<div className="nft-bets-list-box">
+											<BetsList auctionID={nft.auction._id} />
+										</div>
 									</>
+								) : (
+									<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('auction.no')} />
 								)}
 							</div>
 						</Col>

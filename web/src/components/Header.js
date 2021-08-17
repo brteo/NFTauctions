@@ -21,10 +21,9 @@ const { Header } = Layout;
 
 const HeaderComponent = props => {
 	const { t, i18n } = useTranslation();
-	const { logged, handleLogout, isMobile } = useContext(AppContext);
+	const { logged, handleLogout, isMobile, showLogin, setShowLogin } = useContext(AppContext);
 
 	const [showMobileDrawer, setShowMobileDrawer] = useState(false);
-	const [showLogin, setShowLogin] = useState(false);
 	const [goToCreate, setGoToCreate] = useState(false);
 
 	const history = useHistory();
@@ -93,7 +92,7 @@ const HeaderComponent = props => {
 					</div>
 				)
 			) : (
-				<Button type="primary" onClick={toggleLogin}>
+				<Button type="primary" onClick={() => toggleLogin(false)}>
 					{t('login.btn')}
 				</Button>
 			)}

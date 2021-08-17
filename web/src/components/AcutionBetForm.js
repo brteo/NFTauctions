@@ -1,27 +1,42 @@
 /* eslint-disable no-underscore-dangle */
-import React from 'react';
+import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, InputNumber, Row, Col } from 'antd';
 import { FieldTimeOutlined } from '@ant-design/icons';
 
 import Api from '../helpers/api';
+import AppContext from '../helpers/AppContext';
 import Countdown from './CountdownTimer';
 
 const AuctionBetForm = props => {
 	const { auction } = props;
 	const { t } = useTranslation();
+	const { setShowLogin } = useContext(AppContext);
+
+	const [form] = Form.useForm();
+	const [minValue, setMinValue] = useState(auction.price + 0.01);
 
 	const betSubmit = ({ price }) => {
 		Api.put('/auctions/' + auction._id + '/bets', { price })
-			.then(res => console.log(res.data))
-			.catch(err => err.globalHandler && err.globalHandler());
-	};
+			.then(res => {
+				setMinValue(res.data.price + 0.01);
+				form.resetFields();
+			})
+			.catch(err => {
+				const statusCode = err.response ? err.response.status : null;
+				const errorCode = err.response && err.response.data ? err.response.data.error : null;
 
-	const minValue = auction.price + 0.01;
+				if (statusCode === 401 && errorCode === 401) {
+					return setShowLogin(true);
+				}
+				return err.globalHandler && err.globalHandler();
+			});
+	};
 
 	return (
 		<Form
 			id="betForm"
+			form={form}
 			layout="vertical"
 			onFinish={betSubmit}
 			initialValues={{
