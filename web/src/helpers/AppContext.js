@@ -20,7 +20,7 @@ Api.interceptors.response.use(
 			}
 			// if Refresh token is not valid logout and refresh page because here we can not change App Context
 			if (
-				(errorCode === 310 || errorCode === 306 || errorCode === 401) &&
+				(errorCode === 305 || errorCode === 306 || errorCode === 307) &&
 				JSON.parse(window.localStorage.getItem('user'))
 			) {
 				window.localStorage.setItem('user', null);

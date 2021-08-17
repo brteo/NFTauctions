@@ -53,5 +53,24 @@
 		"owner": "Owner",
 		"category": "Category",
 		"author": "Author"
+	},
+	"create": {
+		"title": "Crea il tuo NFT",
+		"info":"NFT detail",
+		"auction":"Put on marketplace",
+		"optional":"Optional",
+		"auction_text":"Enter price to allow users instantly purchase your NFT",
+		"fields": {
+			"title": "Title",
+			"image": "Upload image",
+			"description": "Description",
+			"category": "Category",
+			"tags": "Tags",
+			"price":"Base price",
+			"deadline":"Deadline"
+		},
+		"confirm":"Confirm",
+		"check":"I declare that I own the rights to the information uploaded and that I do not violate any copyright",
+		"btn":"Create"
 	}
 }

@@ -9,6 +9,7 @@
 		"212": "Cannot upload the file",
 		"213": "The file size must be less then %s MB!",
 		"215": "Bet price not valid",
+		"216": "Deadline must be after today",
 		"300": "Wrong email",
 		"301": "Wrong password",
 		"302": "Inactive account",
@@ -31,8 +32,7 @@
 	"fields": {
 		"email": "email",
 		"password": "password",
-		"name": "name",
-		"lastname": "lastname"
+		"datetime": "YYYY-MM-DD HH:mm"
 	},
 	"imageUploader": {
 		"crop": "Crop image",

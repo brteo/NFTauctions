@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useState, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Form, InputNumber, Row, Col } from 'antd';

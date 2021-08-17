@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import { Card, Row, Col, Typography, Avatar, Tooltip, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';

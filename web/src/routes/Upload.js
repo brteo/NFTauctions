@@ -14,8 +14,6 @@ const UploadPage = props => {
 
 	const onUpload = file => console.log(file);
 
-	// const noCropChange = file => console.log(file);
-
 	const yesCropChange = file => console.log(file);
 
 	return (

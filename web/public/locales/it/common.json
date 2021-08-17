@@ -53,5 +53,24 @@
 		"owner": "Proprietario",
 		"category": "Categoria",
 		"author": "Autore"
+	},
+	"create": {
+		"title": "Crea il tuo NFT",
+		"info":"Dettagli NFT ",
+		"auction":"Vendi nel marketplace",
+		"optional":"Opzionale",
+		"auction_text":"Inserisci un prezzo ed una scadenza e permetti agli utenti di acquistare il tuo NFT",
+		"fields": {
+			"title": "Titolo",
+			"image": "Carica immagine",
+			"description": "Descrizione",
+			"category": "Categoria",
+			"tags": "Tags",
+			"price":"Prezzo di partenza",
+			"deadline":"Data di scadenza"
+		},
+		"confirm":"Conferma",
+		"check":"Dichiaro di possedere i diritti delle informazioni caricate e di non violare nessun copyright",
+		"btn":"Crea"
 	}
 }

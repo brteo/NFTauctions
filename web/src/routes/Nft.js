@@ -1,8 +1,7 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Image, Row, Col, Skeleton, Space, Tag, Empty } from 'antd';
+import { Typography, Image, Row, Col, Skeleton, Space, Tag, Empty } from 'antd';
 import { NotificationOutlined, OrderedListOutlined } from '@ant-design/icons';
 import io from 'socket.io-client';
 
@@ -10,6 +9,8 @@ import Api from '../helpers/api';
 import UserPic from '../components/UserPic';
 import AuctionBetForm from '../components/AcutionBetForm';
 import BetsList from '../components/BetsList';
+
+const { Title } = Typography;
 
 const Nft = props => {
 	const { id: nftID } = props.match.params;
@@ -52,16 +53,16 @@ const Nft = props => {
 			) : (
 				<>
 					<Row gutter={{ xs: 16, lg: 32 }}>
-						<Col xs={24} lg={12} xl={15}>
+						<Col xs={24} lg={14} xl={15}>
 							<div className="nft-image-box">
 								<Image alt="nft" src={nft.url} />
 							</div>
 						</Col>
-						<Col xs={24} lg={12} xl={9}>
+						<Col xs={24} lg={10} xl={9}>
 							<div className="nft-right-box">
 								<div className="nft-info-box">
 									<Space direction="vertical">
-										<h1>{nft.title}</h1>
+										<Title level={1}>{nft.title}</Title>
 										<div>
 											{nft.tags.map(tag => (
 												<Tag key={tag}>{tag}</Tag>
@@ -94,17 +95,17 @@ const Nft = props => {
 										<div className="nft-auction-box">
 											<Space direction="vertical">
 												<Space style={{ width: '100%', justifyContent: 'space-between' }}>
-													<h2>
+													<Title level={2}>
 														<NotificationOutlined className="gray-text" /> {t('auction.title')}
-													</h2>
+													</Title>
 													<Tag>
 														{t('auction.basePrice')} &raquo; {nft.auction.basePrice} ETH
 													</Tag>
 												</Space>
 												<p>{nft.auction.description}</p>
-												<h2>
+												<Title level={2}>
 													<OrderedListOutlined className="gray-text" /> {t('auction.bets')}
-												</h2>
+												</Title>
 											</Space>
 										</div>
 										<div className="nft-bets-list-box">

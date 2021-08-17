@@ -34,6 +34,7 @@ module.exports = {
 		'react/prop-types': ['off'],
 		'no-unused-vars': ['warn', { vars: 'all', args: 'none', ignoreRestSiblings: true }],
 		'prefer-template': ['off'], // string templates
+		'no-underscore-dangle': ['off'],
 		'no-console': ['off']
 	}
 };

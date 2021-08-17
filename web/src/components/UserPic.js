@@ -1,5 +1,4 @@
 /* eslint-disable react/jsx-props-no-spreading */
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect, useState, useContext } from 'react';
 import { Avatar, Skeleton } from 'antd';
 import { Link } from 'react-router-dom';

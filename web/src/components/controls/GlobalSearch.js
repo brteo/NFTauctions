@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { Input, AutoComplete } from 'antd';

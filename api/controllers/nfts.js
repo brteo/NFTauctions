@@ -5,6 +5,9 @@ const Category = require('../models/category');
 
 const { ServerError, NotFound, SendData, Forbidden, CustomError } = require('../helpers/response');
 const { eos, addKey } = require('../helpers/eosjs');
+const { moveTmpFile } = require('../helpers/s3');
+
+const { AWS_S3_BUCKET_DATA, AWS_S3_ENDPOINT_PUBLIC } = process.env;
 
 /* Get all nfts */
 exports.get = (req, res, next) => {
@@ -102,6 +105,16 @@ exports.create = async (req, res, next) => {
 		nft.category.name = category.name;
 	} catch (err) {
 		return next(ServerError(err));
+	}
+
+	if (nft.url) {
+		try {
+			await moveTmpFile(nft.url, nft.url);
+		} catch (err) {
+			return next(ServerError(err));
+		}
+
+		nft.url = AWS_S3_ENDPOINT_PUBLIC + '/' + AWS_S3_BUCKET_DATA + '/' + nft.url;
 	}
 
 	try {
