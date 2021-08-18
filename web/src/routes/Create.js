@@ -17,12 +17,14 @@ import {
 } from 'antd';
 import { InboxOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { sprintf } from 'sprintf-js';
 
 import AppContext from '../helpers/AppContext';
 import Api from '../helpers/api';
 import ImageUploader from '../components/controls/ImageUploader';
 
 const { Title } = Typography;
+const { REACT_APP_CURRENCY } = process.env;
 
 const Create = props => {
 	const { t, i18n } = useTranslation();
@@ -33,6 +35,7 @@ const Create = props => {
 
 	const [send, setSend] = useState(false);
 	const [deadlineError, setDeadlineError] = useState(false);
+	const [privacyError, setPrivacyError] = useState(false);
 	const [categories, setCategories] = useState(null);
 	const [tags, setTags] = useState(null);
 
@@ -56,6 +59,7 @@ const Create = props => {
 			setCategories(null);
 			setTags(null);
 			setDeadlineError(false);
+			setPrivacyError(false);
 		};
 	}, []);
 
@@ -65,6 +69,9 @@ const Create = props => {
 	};
 
 	const handleSubmit = data => {
+		if (!data.privacy) {
+			return setPrivacyError(t('core:errors.201'));
+		}
 		if (data.auctionPrice && moment().isAfter(data.auctionDeadline)) {
 			return setDeadlineError(t('core:errors.216'));
 		}
@@ -114,6 +121,16 @@ const Create = props => {
 	};
 
 	const validateMessages = { required: t('core:errors.201') };
+
+	const descriptionLabel = () => {
+		const opt = sprintf(t('create.fields.max'), '256');
+		return (
+			<>
+				{t('create.fields.description')}
+				<span className="opt">({opt})</span>
+			</>
+		);
+	};
 
 	return (
 		<section className="padded-content create-page">
@@ -167,14 +184,14 @@ const Create = props => {
 					<Col xs={24}>
 						<Form.Item
 							name="description"
-							label={t('create.fields.description')}
+							label={descriptionLabel()}
 							rules={[
 								{
 									required: true
 								}
 							]}
 						>
-							<Input.TextArea />
+							<Input.TextArea rows={6} maxLength="256" showCount />
 						</Form.Item>
 					</Col>
 					<Col xs={24} md={12}>
@@ -218,8 +235,8 @@ const Create = props => {
 					<Col xs={24} md={12}>
 						<Form.Item name="auctionPrice" label={t('create.fields.price')}>
 							<InputNumber
-								formatter={value => `ETH ${value}`}
-								parser={value => value.replace('ETH ', '')}
+								formatter={value => `${REACT_APP_CURRENCY} ${value}`}
+								parser={value => value.replace(REACT_APP_CURRENCY + ' ', '')}
 								min={0.01}
 								precision={2}
 								step={0.01}
@@ -239,7 +256,7 @@ const Create = props => {
 					</Col>
 					<Col xs={24}>
 						<Form.Item name="auctionDescription" label={t('create.fields.description')}>
-							<Input.TextArea />
+							<Input.TextArea rows={6} />
 						</Form.Item>
 					</Col>
 				</Row>
@@ -249,8 +266,11 @@ const Create = props => {
 				<Row gutter={{ xs: 8, md: 16 }}>
 					<Col xs={24}>
 						<Form.Item
-							name="check"
+							name="privacy"
 							valuePropName="checked"
+							validateStatus={privacyError ? 'error' : undefined}
+							help={privacyError || undefined}
+							onChange={() => setPrivacyError(false)}
 							rules={[
 								{
 									required: true

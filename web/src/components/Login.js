@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Form, Input, Button, Modal, Divider, Checkbox } from 'antd';
@@ -19,17 +19,23 @@ const Login = props => {
 
 	const [loginMode, setLoginMode] = useState(MODE.INIT);
 	const [pwdError, setPwdError] = useState(false);
+	const [reset, setReset] = useState(false);
 	const [accountError, setAccountError] = useState(false);
 	const [nicknameError, setNicknameError] = useState(false);
+	const [privacyError, setPrivacyError] = useState(false);
 	const [emailValue, setEmailValue] = useState('');
 
 	const [form] = Form.useForm();
 
 	const handleBack = () => setLoginMode(MODE.INIT);
-	const handleReset = () => {
-		setLoginMode(MODE.INIT);
-		form.resetFields();
-	};
+
+	useEffect(() => {
+		if (reset) {
+			setLoginMode(MODE.INIT);
+			setReset(false);
+			form.resetFields();
+		}
+	}, [reset]);
 
 	const handleCheckEmail = email =>
 		Api.get(`/auth/email/${email}`)
@@ -51,8 +57,8 @@ const Login = props => {
 			.then(res => {
 				setLogged(res.data);
 				i18n.changeLanguage(res.data.lang);
-				handleReset();
 				handleClose(true);
+				setReset(true);
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -61,13 +67,17 @@ const Login = props => {
 				return err.globalHandler && err.globalHandler();
 			});
 
-	const handleRegister = (email, password, nickname, account) =>
-		Api.post('/auth/register', { email, password, nickname, account, lang: i18n.language })
+	const handleRegister = (email, password, nickname, account, privacy) => {
+		if (!privacy) {
+			return setPrivacyError(t('core:errors.201'));
+		}
+
+		return Api.post('/auth/register', { email, password, nickname, account, lang: i18n.language })
 			.then(res => {
 				setLogged(res.data);
 				i18n.changeLanguage(res.data.lang);
-				handleReset();
 				handleClose(true);
+				setReset(true);
 			})
 			.catch(err => {
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
@@ -77,11 +87,11 @@ const Login = props => {
 
 				return err.globalHandler && err.globalHandler();
 			});
-
-	const handleSubmit = ({ email = '', password = '', nickname = '', account = '' }) => {
+	};
+	const handleSubmit = ({ email = '', password = '', nickname = '', account = '', privacy = false }) => {
 		if (loginMode === MODE.INIT) return handleCheckEmail(email);
 		if (loginMode === MODE.LOGIN) return handleLogin(email, password);
-		return handleRegister(email, password, nickname, account);
+		return handleRegister(email, password, nickname, account, privacy);
 	};
 
 	const footerBtn = (
@@ -188,8 +198,11 @@ const Login = props => {
 						</Form.Item>
 						<Divider />
 						<Form.Item
-							name="check"
+							name="privacy"
 							valuePropName="checked"
+							validateStatus={privacyError ? 'error' : undefined}
+							help={privacyError || undefined}
+							onChange={() => setPrivacyError(false)}
 							rules={[
 								{
 									required: true

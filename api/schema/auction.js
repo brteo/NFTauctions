@@ -16,6 +16,6 @@ module.exports = {
 	addAuction: {
 		type: 'object',
 		allOf: [{ $ref: 'auction' }],
-		required: ['description', 'basePrice', 'deadline', 'nft']
+		required: ['basePrice', 'deadline', 'nft']
 	}
 };

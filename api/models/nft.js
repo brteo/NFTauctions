@@ -15,7 +15,7 @@ const schema = Schema(
 		},
 		description: {
 			type: String,
-			maxlength: 128,
+			maxlength: 256,
 			required: true
 		},
 		category: {

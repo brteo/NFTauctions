@@ -2,10 +2,6 @@
 @import 'theme.less';
 
 /*HELPERS*/
-@dark-color:#1F1F1F;
-@gray-color:#777777;
-@dark-gray-color:#444444;
-
 .gray-text{color:@gray-color;}
 .dark-gray-text{color:@dark-gray-color;}
 
@@ -14,7 +10,8 @@
 .align-right{text-align:right;}
 
 .bg-cover{background-repeat: no-repeat;background-position: center center;background-size: cover;}
-
+.opt{color:@gray-color;font-size: 0.7em;font-style: italic;}
+.ant-form-item-label .opt{padding-left:5px;position: relative;top:2px;}
 .pre-line{white-space: pre-line;}
 
 /*FULLPAGE*/
@@ -133,6 +130,9 @@ input:-webkit-autofill:active {
 .ant-input-affix-wrapper-readonly{
 	background: @border-color-base;
 }
+
+/*ANT*/
+.ant-drawer{z-index:999;}
 
 .ant-btn{font-weight: 700;}
 .ant-btn.ant-btn-link{font-weight: 400;}
@@ -377,6 +377,11 @@ Image Uploader
 			text-align: center;
 			img{width: 100%;}
 		}
+		
+		.ant-skeleton{
+			width:100%;
+			.ant-skeleton-image{margin:auto;}
+		}
 
 		@media screen and (min-width: 996px) {
 			margin-bottom:0;
@@ -470,7 +475,6 @@ Image Uploader
 
 	.ant-divider-inner-text{
 		.ant-tag{background:@primary-color;color:@btn-primary-color;position: relative;top:-2px;}
-		.opt{color:@gray-color;font-size: 0.7em;font-style: italic;}
 	}
 }
 

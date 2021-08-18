@@ -7,6 +7,8 @@ import Api from '../helpers/api';
 import AppContext from '../helpers/AppContext';
 import Countdown from './CountdownTimer';
 
+const { REACT_APP_CURRENCY } = process.env;
+
 const AuctionBetForm = props => {
 	const { auction } = props;
 	const { t } = useTranslation();
@@ -46,7 +48,7 @@ const AuctionBetForm = props => {
 				<Col xs={12}>
 					<p>{t('auction.price')}</p>
 					<div className="price-label">
-						{auction.price} <span className="currency">ETH</span>
+						{auction.price} <span className="currency">{REACT_APP_CURRENCY}</span>
 					</div>
 				</Col>
 				<Col xs={12}>

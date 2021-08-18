@@ -25,6 +25,8 @@ const HeaderComponent = props => {
 	const [showMobileDrawer, setShowMobileDrawer] = useState(false);
 	const [goToCreate, setGoToCreate] = useState(false);
 
+	const { language } = i18n;
+
 	const history = useHistory();
 
 	useEffect(() => {
@@ -95,7 +97,7 @@ const HeaderComponent = props => {
 					{t('login.btn')}
 				</Button>
 			)}
-			<Select type="text" defaultValue={i18n.language} onChange={changeLanguage}>
+			<Select type="text" defaultValue={language} value={language} onChange={changeLanguage}>
 				<Select.Option value="it">
 					<img height="20" src={itFlag} alt="IT" />
 				</Select.Option>

@@ -5,6 +5,8 @@ import moment from 'moment';
 
 import UserPic from './UserPic';
 
+const { REACT_APP_CURRENCY } = process.env;
+
 const Bet = props => {
 	const { bet } = props;
 
@@ -33,7 +35,7 @@ const Bet = props => {
 				}
 				description={
 					<div className="price-label">
-						{bet.price} <span className="currency">ETH</span>
+						{bet.price} <span className="currency">{REACT_APP_CURRENCY}</span>
 					</div>
 				}
 			/>

@@ -8,6 +8,7 @@ import Countdown from './CountdownTimer';
 import UserPic from './UserPic';
 
 const { Title } = Typography;
+const { REACT_APP_CURRENCY } = process.env;
 
 const NftCard = props => {
 	const { t } = useTranslation();
@@ -21,7 +22,7 @@ const NftCard = props => {
 				<Col xs={12}>
 					<p>{t('auction.price')}</p>
 					<div className="price-label">
-						{nft.auction.price} <span className="currency">ETH</span>
+						{nft.auction.price} <span className="currency">{REACT_APP_CURRENCY}</span>
 					</div>
 				</Col>
 				<Col xs={12}>
@@ -54,7 +55,7 @@ const NftCard = props => {
 					}
 					cover={
 						<Link to={'/nft/' + nft._id}>
-							<img alt={nft.description} src={nft.url} />
+							<img alt={nft.title} src={nft.url} />
 						</Link>
 					}
 				>
