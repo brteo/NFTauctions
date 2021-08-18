@@ -151,34 +151,36 @@ exports.addBet = async (req, res, next) => {
 		price: betPrice
 	};
 
-	return Auction.findOneAndUpdate(
-		{ _id: auctionId, price: { $lt: betPrice } },
-		{
-			price: betPrice,
-			$push: {
-				lastBets: {
-					$each: [newBets],
-					$position: 0,
-					$slice: 10
+	try {
+		const auction = await Auction.findOneAndUpdate(
+			{ _id: auctionId, price: { $lt: betPrice } },
+			{
+				price: betPrice,
+				$push: {
+					lastBets: {
+						$each: [newBets],
+						$position: 0,
+						$slice: 10
+					}
 				}
-			}
-		},
-		{ new: true },
-		(err, auction) => {
-			if (err) return next(ServerError());
-			if (!auction) return next(CustomError('Bet not valid', 400, {}, 215));
+			},
+			{ new: true }
+		).exec();
 
-			newBets.auction = auctionId;
-			return new Bet(newBets).save((errBet, bet) => {
-				if (errBet) return next(ServerError(errBet));
+		if (!auction) return next(CustomError('Bet not valid', 400, { betPrice }, 215));
 
-				next(SendData(bet.response(), 201));
+		newBets.auction = auctionId;
+		return new Bet(newBets).save((errBet, bet) => {
+			if (errBet) return next(ServerError(errBet));
 
-				// socket
-				req.io.emit('auctions/' + auctionId, { price: auction.price });
-				req.io.emit('auctions/' + auctionId + '/bets', bet.response());
-				return true;
-			});
-		}
-	);
+			next(SendData(bet.response(), 201));
+
+			// socket
+			req.io.emit('auctions/' + auctionId, { price: auction.price });
+			req.io.emit('auctions/' + auctionId + '/bets', bet.response());
+			return true;
+		});
+	} catch (err) {
+		return next(ServerError());
+	}
 };

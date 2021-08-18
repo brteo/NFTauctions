@@ -136,7 +136,7 @@ exports.create = async (req, res, next) => {
 							}
 						],
 						data: {
-							data: { title: nft.title, url: nft.url },
+							data: JSON.stringify({ title: nft.title, url: nft.url }),
 							author: account,
 							owner: account
 						}
