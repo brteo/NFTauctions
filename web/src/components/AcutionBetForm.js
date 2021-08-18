@@ -16,14 +16,18 @@ const AuctionBetForm = props => {
 
 	const [form] = Form.useForm();
 	const [minValue, setMinValue] = useState((auction.price + 0.01).toFixed(2));
+	const [sendBet, setSendBet] = useState(false);
 
 	const betSubmit = ({ price }) => {
+		setSendBet(true);
 		Api.put('/auctions/' + auction._id + '/bets', { price })
 			.then(res => {
 				setMinValue((res.data.price + 0.01).toFixed(2));
+				setSendBet(false);
 				form.resetFields();
 			})
 			.catch(err => {
+				setSendBet(false);
 				const statusCode = err.response ? err.response.status : null;
 				const errorCode = err.response && err.response.data ? err.response.data.error : null;
 
@@ -65,7 +69,7 @@ const AuctionBetForm = props => {
 					</Form.Item>
 				</Col>
 				<Col xs={12}>
-					<Button type="primary" htmlType="submit" size="large">
+					<Button type="primary" htmlType="submit" size="large" disabled={sendBet} loading={sendBet}>
 						{t('auction.bet')}
 					</Button>
 				</Col>
