@@ -17,6 +17,7 @@ const AuctionBetForm = props => {
 	const [form] = Form.useForm();
 	const [minValue, setMinValue] = useState((auction.price + 0.01).toFixed(2));
 	const [sendBet, setSendBet] = useState(false);
+	const [betError, setBetError] = useState(false);
 
 	const betSubmit = ({ price }) => {
 		setSendBet(true);
@@ -33,6 +34,9 @@ const AuctionBetForm = props => {
 
 				if (statusCode === 401 && errorCode === 401) {
 					return setShowLogin(true);
+				}
+				if (errorCode === 215) {
+					return setBetError(t('core:errors.215'));
 				}
 				return err.globalHandler && err.globalHandler();
 			});
@@ -64,8 +68,8 @@ const AuctionBetForm = props => {
 					</div>
 				</Col>
 				<Col xs={12}>
-					<Form.Item name="price">
-						<InputNumber min={minValue} precision={2} step={0.01} size="large" />
+					<Form.Item name="price" validateStatus={betError ? 'error' : undefined} help={betError || undefined}>
+						<InputNumber min={minValue} precision={2} step={0.01} size="large" onChange={() => setBetError(false)} />
 					</Form.Item>
 				</Col>
 				<Col xs={12}>

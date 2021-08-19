@@ -54,7 +54,12 @@ const HeaderComponent = props => {
 		}
 	};
 
-	const create = () => {
+	const loginHandler = isLogged => {
+		setGoToCreate(false);
+		toggleLogin(false);
+	};
+
+	const createHandler = () => {
 		if (!logged) {
 			setGoToCreate(true);
 			toggleLogin();
@@ -66,7 +71,7 @@ const HeaderComponent = props => {
 
 	const buttons = mobile => (
 		<>
-			<Button type="primary" onClick={() => create()}>
+			<Button type="primary" onClick={() => createHandler()}>
 				{t('common.create')}
 			</Button>
 			{logged ? (
@@ -93,7 +98,7 @@ const HeaderComponent = props => {
 					</div>
 				)
 			) : (
-				<Button type="primary" onClick={() => toggleLogin(false)}>
+				<Button type="primary" onClick={() => loginHandler(false)}>
 					{t('login.btn')}
 				</Button>
 			)}
