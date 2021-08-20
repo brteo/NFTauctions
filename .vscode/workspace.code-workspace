@@ -15,7 +15,11 @@
    {
      "name": "Blockchain",
      "path": "../blockchain"
-  }
+  	},
+		{
+			"name": "Report",
+			"path": "../report"
+		 }
   ],
   "settings": {
     "eslint.workingDirectories": ["./api","./web"],
@@ -35,7 +39,8 @@
       "dbaeumer.vscode-eslint",
       "esbenp.prettier-vscode",
       "orta.vscode-jest",
-      "kavod-io.vscode-jest-test-adapter"
+      "kavod-io.vscode-jest-test-adapter",
+			"james-yu.latex-workshop"
     ],
   }
 }

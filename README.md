@@ -124,3 +124,9 @@ Starting with releases after v0.11.5, all services are now exposed via the edge 
 
 - WEB UI DEPRECATED -> PORT_WEB_UI: Port for the Web user interface / dashboard (default: 8080 mapped on 8055 on docker).
   Note that the Web UI is now deprecated (needs to be activated with START_WEB=1), and requires to use the localstack/localstack-full Docker image.
+
+## LaTeX
+
+- [install](https://www.latex-project.org/get/)
+- [vscode](https://marketplace.visualstudio.com/items?itemName=James-Yu.latex-workshop)
+- [learn latex in 30 minutes](https://it.overleaf.com/learn/latex/Learn_LaTeX_in_30_minutes)
