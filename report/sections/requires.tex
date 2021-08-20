@@ -1,0 +1,19 @@
+\section{Requisiti}
+Descrizione delle caratteristiche e funzionalità che il sistema prevede.
+
+Specifiche funzionali:
+
+Registrazione utenti
+Login utenti con autorizzazione JWT + RefreshToken
+Gestione di diversi ruoli utente tramite RBAC (Role Base Access Control)
+Profilo utente con possibilità di definire il wallet per lo scambio di NFT
+Possibilità di creare un’asta:
+Titolo, descrizione, categoria, tags, immagine
+Sarà creato un NFT collegato all’immagine inserita utilizzando l’API di EOS (https://developers.eos.io)
+Pagina con la lista delle aste in corso con possibilità di ricerca e filtri
+Pagina dell’asta con dettagli e possibilità di partecipare con delle proposte. La gestione del prezzo dell’asta sarà in real-time utilizzando Web Socket e si presterà particolare attenzione al salvataggio di dati su MongoDB al fine di non avere problemi di concorrenza.
+Una volta conclusa l’asta arriverà una email al vincitore con un link per il pagamento. (il pagamento sarà solo emulato e non sarà integrato nessun servizio esterno come PayPal o Stripe). Cliccando verrà eseguita la transazione sulla blockchain per lo scambio del NFT
+Caratteristiche aggiuntive tempo permettendo:
+
+Pannello di controllo per monitorare le aste e tutti gli utenti registrati
+Trasformare la Single Page Application in Progressive Web App per abilitare le Push Notification su browser per avvisare l’utente quando avviene una puntata sull’asta che segue.

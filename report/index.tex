@@ -1,6 +1,62 @@
-\documentclass{article}
+\documentclass[12pt,a4paper]{article}
+\usepackage[italian]{babel}
+\usepackage{newlfont}
+\usepackage{natbib}
+\usepackage{graphicx}
+
+\textwidth=450pt\oddsidemargin=0pt
+
+\title{Trading Virtual Goods}
+\author{Matteo Brocca, Alan Mancini, Mattia Achilli}
+\date{Settembre 2021}\let\Date
 
 \begin{document}
-First document. This is a simple example, with no 
-extra parameters or packages included.
+\begin{titlepage}
+\begin{center}
+	{{\Large{\textsc{Alma Mater Studiorum $\cdot$ Universit\`a di Bologna}}}} \rule[0.1cm]{15.8cm}{0.1mm}
+	\rule[0.5cm]{15.8cm}{0.6mm}
+	{\small{\bf Corso di\\Applciazioni e Servizi Web\\Docenti: Silvia Mirri, Roberto Girau}}
+\end{center}
+\vspace{15mm}
+\begin{center}
+	{\Huge{\bf TRADING}}\\
+	\vspace{4mm}
+	{\Huge{\bf VIRTUAL}}\\
+	\vspace{4mm}
+	{\Huge{\bf GOODS}}\\
+\end{center}
+\vspace{40mm}
+\par
+\noindent
+\begin{center}
+{\large{
+	\textit{Autori}:\\  
+	Matteo Brocca $\cdot$ 1005681\\
+	Alan Mancini $\cdot$ 1005481\\
+	Mattia Achilli $\cdot$ 979641
+}}
+\end{center}
+\vspace{40mm}
+\begin{center}
+	\large{Settembre 2021}
+\end{center}
+\end{titlepage}
+
+\newpage
+
+\tableofcontents
+\newpage
+
+\include{sections/intro.tex}
+\include{sections/requires.tex}
+\include{sections/design.tex}
+\include{sections/technologies.tex}
+\include{sections/code.tex}
+\include{sections/test.tex}
+\include{sections/deployment.tex}
+\include{sections/conclusion.tex}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
 \end{document}
