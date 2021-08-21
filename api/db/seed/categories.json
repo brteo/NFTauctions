@@ -1,14 +1,14 @@
 [
 	{ 
 		"_id": {"$oid":"60f1a329e7c5446dfdccd8fd"},
-		"name": {"it":"Immagini", "en":"Images"}
+		"name": {"it":"Illustrazioni", "en":"Illustrations"}
 	},
 	{ 
 		"_id": {"$oid":"60f1a3544906aed6b68f7f1c"},
-		"name": {"it":"Files", "en":"Files"}
+		"name": {"it":"Foto", "en":"Photos"}
 	},
 	{ 
 		"_id": {"$oid":"60f1a3591a83fb8f8b1778cc"},
-		"name":{"it":"Documenti", "en":"Documents"}
+		"name":{"it":"Gif", "en":"Gif"}
 	}
 ]

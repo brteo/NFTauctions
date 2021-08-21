@@ -1,14 +1,14 @@
 [
 	{ 
 		"_id" : {"$oid":"60f1a4006f959226fecb9ecb"},
-		"name" : "dormita"
+		"name" : "nature"
 	},
 	{ 
 		"_id" : {"$oid":"60f1a406ae5c72a37ea564ad"},
-		"name" : "paglia"
+		"name" : "art"
 	},
 	{ 
 		"_id" : {"$oid":"60f1a40a93509d55a4daa1b4"},
-		"name" : "figo"
+		"name" : "auto"
 	}
 ]

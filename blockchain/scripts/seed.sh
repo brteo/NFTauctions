@@ -102,9 +102,9 @@ cleos push action eosio.token transfer '[ "eosio", "tvguser14", "1000.0000 EOS",
 sleep 1s
 
 // NFTS
-cleos push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"Doppia dormita nella paglia\",\"url\":\"nft-1000001.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
+cleos push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"StarWars\",\"url\":\"nft-1000001.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser1", "tvguser2","{\"title\":\"Cowgirl appisolata\",\"url\":\"nft-1000002.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
-cleos push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"Mastro geppetto su paglia\",\"url\":\"nft-1000003.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
+cleos push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"What...?\",\"url\":\"nft-1000003.gif\"}"]' -p tvguser1@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser1", "tvguser11","{\"title\":\"Cavallo in stalla\",\"url\":\"nft-1000004.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser1", "tvguser11","{\"title\":\"Ragazza beata\",\"url\":\"nft-1000005.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser1", "tvguser1","{\"title\":\"Gattino dorme\",\"url\":\"nft-1000006.jpg\"}"]' -p tvguser1@active -p mebtradingvg@active
@@ -119,7 +119,7 @@ cleos push action mebtradingvg create '[ "tvguser3", "tvguser12","{\"title\":\"F
 cleos push action mebtradingvg create '[ "tvguser3", "tvguser3","{\"title\":\"GTA\",\"url\":\"nft-1000014.jpg\"}"]' -p tvguser3@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser3", "tvguser3","{\"title\":\"Ragnatela\",\"url\":\"nft-1000015.jpg\"}"]' -p tvguser3@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser3", "tvguser3","{\"title\":\"Porto illuminato\",\"url\":\"nft-1000016.jpg\"}"]' -p tvguser3@active -p mebtradingvg@active
-cleos push action mebtradingvg create '[ "tvguser3", "tvguser11","{\"title\":\"Bianco nero qualcosa\",\"url\":\"nft-1000017.jpg\"}"]' -p tvguser3@active -p mebtradingvg@active
+cleos push action mebtradingvg create '[ "tvguser3", "tvguser11","{\"title\":\"Bianco nero qualcosa\",\"url\":\"nft-1000017.gif\"}"]' -p tvguser3@active -p mebtradingvg@active
 
 cleos push action mebtradingvg create '[ "tvguser4", "tvguser12","{\"title\":\"Psicadelico\",\"url\":\"nft-1000018.jpg\"}"]' -p tvguser4@active -p mebtradingvg@active
 cleos push action mebtradingvg create '[ "tvguser4", "tvguser4","{\"title\":\"Astrattissimo\",\"url\":\"nft-1000019.jpg\"}"]' -p tvguser4@active -p mebtradingvg@active

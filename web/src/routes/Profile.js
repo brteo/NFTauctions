@@ -101,7 +101,7 @@ const Profile = props => {
 		page = (
 			<>
 				<Title level={2}>{user.nickname}</Title>
-				{bio}
+				<div className="pre-line">{bio}</div>
 			</>
 		);
 	} else {
