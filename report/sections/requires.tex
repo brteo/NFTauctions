@@ -1,19 +1,24 @@
 \section{Requisiti}
-Descrizione delle caratteristiche e funzionalità che il sistema prevede.
+Il progetto si pone l'obiettivo di realizzare un portale web accessibile a chiunque, 
+all'interno del quale utenti registrati possono creare e scambiarsi NFT.
+
+Le opere caricate in formato digitale dovranno essere le protagoniste del sito web
+quindi si dovrà realizzare un'estetica dal design minimalista ma allo stesso tempo funzionale.
+Considerando che almeno il 55\% degli utenti naviga sul web con dispositivi mobile \cite{require1}, 
+si dovrà inoltre prestare attenzione nello realizzare un'interfaccia responsive che si adatti a tutte le situazioni. 
 
 Specifiche funzionali:
+\begin{itemize}
+	\item Registrazione utenti con possibilità di definire l'account su blockchain
+	\item Accesso utenti con email e password
+	\item Gestione di diversi ruoli utente: \textit{amministratore} ed \textit{utente base}
+	\item Possibilità di creare nuovi NFT con \textit{titolo}, \textit{descrizione}, \textit{immagine}, \textit{categoria} e \textit{tags} salvando le informazioni necessarie su blockchain.
+	\item Possibilità di creare una nuova asta associata all'NFT con \textit{prezzo di partenza}, \textit{data di scadenza} e \textit{descrizione}.
+	\item Home page dove vengono visualizzati di tutti gli NFT, in vendita e non, con possibilità di ricerca
+	\item Pagina dettaglio NFT e nel caso ci fosse un'asta attiva, possibilità di partecipare e visualizzare lo storico delle puntate 
+	\item Profilo utente con lista di NFT creati e posseduti
+\end{itemize}
 
-Registrazione utenti
-Login utenti con autorizzazione JWT + RefreshToken
-Gestione di diversi ruoli utente tramite RBAC (Role Base Access Control)
-Profilo utente con possibilità di definire il wallet per lo scambio di NFT
-Possibilità di creare un’asta:
-Titolo, descrizione, categoria, tags, immagine
-Sarà creato un NFT collegato all’immagine inserita utilizzando l’API di EOS (https://developers.eos.io)
-Pagina con la lista delle aste in corso con possibilità di ricerca e filtri
-Pagina dell’asta con dettagli e possibilità di partecipare con delle proposte. La gestione del prezzo dell’asta sarà in real-time utilizzando Web Socket e si presterà particolare attenzione al salvataggio di dati su MongoDB al fine di non avere problemi di concorrenza.
-Una volta conclusa l’asta arriverà una email al vincitore con un link per il pagamento. (il pagamento sarà solo emulato e non sarà integrato nessun servizio esterno come PayPal o Stripe). Cliccando verrà eseguita la transazione sulla blockchain per lo scambio del NFT
-Caratteristiche aggiuntive tempo permettendo:
-
-Pannello di controllo per monitorare le aste e tutti gli utenti registrati
-Trasformare la Single Page Application in Progressive Web App per abilitare le Push Notification su browser per avvisare l’utente quando avviene una puntata sull’asta che segue.
+Per quanto riguarda la scelta della tecnlogia di blockchain da utilizzare 
+si dovrà fare una fase di studio per trovare quella più adatta alle esigenze 
+tra quelle che supportano gli NFT e smart contract. 

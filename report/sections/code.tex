@@ -1,2 +1,259 @@
 \section{Codice}
-Solo aspetti rilevanti.
+Durante la fase iniziale di sviluppo ci siamo preoccupati di realizzare delle funzionalità lato BackEnd e FrontEnd 
+che poi ci permettessero di standardizzare il metodo di lavoro e velocizzare la scrittura del codice,
+concentrandoci così sulla logica dell'applicativo.
+\bigbreak
+\noindent
+Di seguito sono riportati alcuni gli aspetti che riteniamo più rilevanti lato codice.
+
+\subsection{BackEnd}
+
+\textbf{Uniformate le risposte di express}
+\bigbreak
+\noindent
+Per prima cosa abbiamo cercato di uniformare tutte le risposte di Express per fare in modo di gestire agevolmente gli error, 
+creado un middleware che si occupasse di rispondere effettivamente alle chiamate.
+
+In questo modo, all'interno dei vari controllers che gestiscono le chiamate ci siamo permessi di utilizzare una funzione 
+che generasse la corretta risposta impostando i giusti parametri tra cui lo status code.
+
+Alcuni esempi:
+
+\begin{lstlisting}[language=java]
+	// invio errore generale con status code 500
+	next(ServerError()); 
+
+	// invio errore risorsa non trovata con status code 404
+	next(NotFound());
+
+	// invio dati richiesti in formato Json con status code 200
+	next(SendData({...}));
+\end{lstlisting}
+
+\bigbreak
+\noindent
+\textbf{Autenticazione}
+\bigbreak
+\noindent
+Abbiamo realizzato da zero il processo di autenticazione con l'ausilio dei pacchetti \textbf{passport} e \textbf{jwt}.
+
+Durante la fase di login, vengono inviate le credenziali email e password.
+Se le credenziali sono corrette vengono generati due JSON Web Token:
+\begin{itemize}
+	\item \textbf{authToken}: JWT contenente nel payload l'identificativo utente su database (durata 5 minuti)
+	\item \textbf{refreshToken}: JWT contenente nel payload il refresh token generato tramite uuid e salvato sul database in relazione all'utente (durata 30 giorni)
+\end{itemize}
+Per cercare la massima sicurezza ed evitare che il client salvi questi token riservati all'interno del browser, in posti accessibili, 
+abbiamo deciso di utilizzare i cookie http-only: cookie settati dal server e che il browser storicizza in uno spazio di memoria non accessibile dall'esterno.
+
+Una volta che il client è in possesso del authToker, questo viene inviato per ogni richiesta al server che, 
+tramite un middleware creato ad hoc, verifica la correttezza nelle route degli entpoint che richiedono l'accesso per essere richiamati e,
+in caso di errore, viene automaticamente restituito l'errore 401 (\textit{Unauthorized}) evitando di coinvolgere il controller ed interrompendo la richiesta.
+
+\begin{lstlisting}[language=java]
+	router.get('/check', isAuth, check);
+\end{lstlisting}
+
+Quando l'authToken scade, il client può richiedere automaticamente un nuovo token di autenticazione utilizzando il refreshToken.
+Ogni utente può avere più di un refreshToken attivo in quanto è previsto che possa fare accesso da più dispositivi e quindi sono salvati su database sotto forma di array.
+
+Infine è stato aggiunto un ulteriore controllo di sicurezza: nel caso venga inviato un refreshToken non più valido, 
+l'utente viene bloccato in quanto è stato probabilmente soggetto di furto del token. 
+Infatti l'unico modo per non avere un refreshToken valido è che qualcuno lo abbia utilizzato in precedenza e che quindi è stato rimosso sul database.
+Di conseguenza, se avviene una richiesta di questo tipo, significa che un malintenzionato ha rubato il token 
+e provato ad utilizzare per ottenere accesso dopo che è stato già utilizzato e quindi invalitato dall'utente o viceversa, 
+in entrambi i casi l'utente viene bloccato.
+
+\bigbreak
+\noindent
+\textbf{Role-Based Access Control}
+\bigbreak
+\noindent
+Sono stati realizzati ad hoc i Role-Based Access Control (RBAC) per gestire i permessi delle azioni CRUD della RestApi.
+Abbiamo previsto che esistano due tipi di utente: \textbf{admin} e \textbf{user}.
+
+Ogni ruolo ha un file Json che descrive per ogni risorsa la relativa policy, 
+definendo per ogni azione di tipo CRUD se ha il permesso 
+di manibilare o richiedere qualsiasi informazioni ("\textit{any}") o soltanto le proprie ("\textit{own}").
+
+\begin{lstlisting}[language=java]
+	// esempio ruolo "admin" per le risorse "users"
+	{
+		"users": { 
+			"create:any": ["*"],
+			"read:any": ["*"],
+			"update:any": ["*"],
+			"delete:any": ["*"]
+		}
+	}
+
+	// esempio ruolo "user" per le risorse "users"
+	{
+		"users": {
+			"read:own": ["*"],
+			"update:own": ["*","!active"] 
+			// can't change active field
+		}
+	}
+\end{lstlisting}
+
+A questo punto ci è bastato creare un middleware di controllo da inserire nelle richieste che necessitano di verifica del ruolo per essere eseguite.
+Questo middleware è sempre aggiunto in successione a quello dell'autenticazione 
+in quanto la verifica del ruolo necessita sicuramente di un'autenticazione che valida l'utente che effettua la richiesta e,
+in caso di errore, viene automaticamente restituito l'errore 403 (\textit{Forbidden}) evitando di coinvolgere il controller ed interrompendo la richiesta.
+
+\begin{lstlisting}[language=java]
+	router.route('/')
+		.get(isAuth, rbac('users', 'read:any'), controller.get);
+\end{lstlisting}
+
+\bigbreak
+\noindent
+\textbf{Plugins Mongoose}
+\bigbreak
+\noindent
+Per rendere il lavoro sui controller più automatizzato possibile,
+abbiamo realizzato due plugin per Mongoose: \textbf{SoftDelete} e \textbf{dbFileds}.
+
+Il plugin \textbf{SoftDelete} può essere aggiunto ad un Model del database per definire che la cancellazione di un documento di quella collezione
+è di tipo logica e non reale.
+Durante la progettazione del database, abbbiamo deciso di applicare questa tecnica, su alcune collezioni del database,
+che ci permette di cancellare le risorse definendo i campi aggiuntivi \textit{deleted} e \textit{deletedAt}. 
+In questo modo possiamo mantenere lo storico su database e ripristinare eventuali errori umani di cancellazione dati
+in quanto la risorsa non viene effettivamente cancellata.
+
+\begin{lstlisting}[language=java]
+	const softDelete = require('../helpers/softDelete');
+	const { Schema } = mongoose;
+
+	const schema = Schema({
+		// schema
+	});
+	schema.plugin(softDelete);
+\end{lstlisting}
+
+Per evitare di ricordare di aggiungere in ogni query sul database il filtro "\textit{deleted: false}",
+è stato automaticamente inserito in tutte le query del modello attraverso il plugin
+a meno che non sia esplicitamente definito dallo sviluppatore.
+
+Per quanto riguarda il plugin \textbf{dbFileds}, ci siamo accorti durante lo sviluppo di volere un automatismo per definire quali campi sono pubblici 
+e che quindi possono essere inviati dalle risposte della RestApi. 
+Ad esempio il campo \textit{password} sulla collezione degli utenti non deve mai ritornare come risposta.
+
+Di conseguenza abbiamo creato un plugin che ci permettese di definire una o più liste di campi pubblicida poter selezionare durante le query:
+
+\begin{lstlisting}[language=java]
+	const softDelete = require('../helpers/softDelete');
+	const { Schema } = mongoose;
+
+	const schema = Schema({
+		// schema
+	});
+
+	schema.plugin(dbFields, {
+		public: ['_id', 'nickname', 'pic', 'role', 'lang'],
+		profile: ['_id', 'nickname', 'pic', 'header', 'bio'],
+		cp: ['_id', 'email', 'account', 'nickname', 'name', 'lastname', 'pic', 'lang', 'role', 'active']
+	});
+\end{lstlisting}
+
+\bigbreak
+\noindent
+\textbf{Aggiunta di una nuova puntanta sull'asta}
+\bigbreak
+\noindent
+Particolare attenzione è stata riposta all'aggiunta di una nuova puntata su un'asta attiva.
+
+Nella progettazione del database, avevamo deciso di lasciare delle informazioni ridondanti all'interno dell'asta (collezione \textit{auction}),
+salvando le ultime 10 puntate andate a buon fine. 
+Ovviamente ognuna di queste puntate viene salvata anche nella relativa collezione \textit{bets} con il riferimento all'asta.
+
+Il problema principale era però l'eventuale concorrenza data da più richieste contemporantemente
+che si sarebbe presentato qualora avessimo eseguito due query in successione:
+\begin{itemize}
+	\item una per la verifica del prezzo della puntata, che deve essere maggiore di quello attuale
+	\item una per l'effettivo aggiornamento della risorsa
+\end{itemize}
+
+Anche se JavaScript è un linguaggio asincrono single thread, non abbiamo la garanzia che ogni callback delle query abbia la giusta sequenza.
+Potrebbe capitare che viene lanciato due volte il controllo sul prezzo, da due client diversi, 
+prima di inserire effettivamente la puntata e quindi permettere a due utenti diversidi effettuare anche la stessa puntata.
+
+Per risolvere tale problema, abbiamo approfondito la documentazione di Mongoose 
+dove abbbiamo scoperto che l'operazione \textbf{findOneAndUpdate} ci viene garantita come atomica.
+
+\begin{lstlisting}[language=java]
+	const auction = await Auction.findOneAndUpdate(
+		{ _id: auctionId, price: { $lt: betPrice } },
+		{
+			price: betPrice,
+			$push: {
+				lastBets: {
+					$each: [newBets],
+					$position: 0,
+					$slice: 10
+				}
+			}
+		},
+		{ new: true }
+	).exec();
+\end{lstlisting}
+
+\clearpage
+
+\subsection{FrontEnd}
+
+\bigbreak
+\noindent
+\textbf{Context}
+\bigbreak
+\noindent
+Tipicamente in React, i dati vengono passati dall'alto verso il basso (da genitore a figlio) tramite props, 
+ma per alcune informazioni avevamo la necessità di renderle disponibili a tutti i componenti.
+
+Per fare questo React ci permette di creare un \textit{contesto} ed utilizzarlo tramite l'hook \textbf{useContext}.
+
+Abbiamo quindi realizzato un contesto dove condividere a tutti i componenti le seguenti informazioni/funzioni:
+\begin{itemize}
+	\item \textbf{logged}: informazioni sull'utente che ha effettuato l'accesso al sito, se non presente significa che l'utente è un ospite
+	\item \textbf{setLogged} funzione per settare l'utente collegato una volta che ha effettuato l'accesso
+	\item \textbf{isMobile}: identifica se il dispositivo di visualizzazione è di tipo smartphone oppure no
+	\item \textbf{handleLogout}: funzione effettuare il logout dell'utente
+	\item \textbf{showLogin}: identifica se la popup di accesso/registrazione è visibile
+	\item \textbf{setShowLogin}: funzione per l'apertura della popup di accesso/registrazione
+\end{itemize}
+
+Inoltre, all'interno del contesto, abbiamo sfruttato gli \textit{interceptors} di axios per intercettare automaticamente tutte le chiamate http di tutto il FrontEnd.
+Grazie a questa funzionalità abbiamo gestito la seguente casistica: 
+se l'utente è loggato e riceve l'errore 401 che può trovarsi nella situazione che l'authToken è scaduto (la sua durata è di 5 minuti).
+In questo caso, viene automaticamente provata a richiedere una nuova autorizzazione tramite il refreshToken.
+Se questa va a buon fine allora viene nuovamente effettuata la chiamata originaria evitandoci di prevedere questa casistica in ogni chiamata http fatta dal FrontEnd.
+
+\bigbreak
+\noindent
+\textbf{Custom hook}
+Avendo la necessità di salvare alcune informazioni utili al sistema sul localstorage del browser, 
+abbiamo deciso di creare un Custom Hook che ci permettese di salvare le informazioni ed utilizzarle come lo stato all'interno dei componenti che lo necessitano.
+
+\begin{lstlisting}[language=java]
+	const useLocalStorage = (key, initValue) => {
+		const [value, setValue] = useState(() => {
+			try {
+				const item = window.localStorage.getItem(key);
+				return item ? JSON.parse(item) : initValue;
+			} catch (err) {
+				return initValue;
+			}
+		});
+
+		const setStoredValue = newValue => {
+			try {
+				const valueToStore = newValue instanceof Function ? newValue(value) : newValue;
+				setValue(valueToStore);
+				window.localStorage.setItem(key, JSON.stringify(valueToStore));
+			} catch (error) { }
+		};
+
+		return [value, setStoredValue];
+	};
+\end{lstlisting}

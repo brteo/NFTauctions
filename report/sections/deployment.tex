@@ -1,2 +1,36 @@
 \section{Deployment}
-Rilascio, installazione e messa in funzione.
+Il pregetto è condiviso su un repository GitHub al seguente link:
+\newline{\\}
+\noindent
+\underline{\href{https://github.com/brteo/TradingVG/}{https://github.com/brteo/TradingVG/}}
+\newline{\\}
+\noindent
+Clonare il progetto sul proprio dispositivo e seguire la indicazione.
+\newline{\\}
+\noindent
+\textbf{Requisiti}
+\begin{itemize}
+	\item{\underline{\href{https://docs.npmjs.com/downloading-and-installing-node-js-and-npm}{node and npm}}}
+	\item{\underline{\href{https://docs.docker.com/compose/install/}{docker compose}}}
+\end{itemize}
+\noindent
+\textbf{Installazione}
+\begin{enumerate}
+	\item{installare i pacchetti npm all'interno della cartella "api"}
+\begin{lstlisting}[language=bash]
+	npm i
+\end{lstlisting}		
+	\item{installare i pacchetti npm all'interno della cartella "web"}
+\begin{lstlisting}[language=bash]
+	npm i --legacy-peer-deps
+	# add flag --legacy-peer-deps with npm version > 7.0
+\end{lstlisting}
+	\item{avviare docker dalla cartella principale}
+\begin{lstlisting}[language=bash]
+	docker compose up -d
+\end{lstlisting}
+	\item{una volta che docker è avviato, inizializzare i seed del database all'interno della cartella "api"}
+\begin{lstlisting}[language=bash]
+	npm run seed
+\end{lstlisting}
+\end{enumerate}
