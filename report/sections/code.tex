@@ -212,8 +212,10 @@ Tipicamente in React, i dati vengono passati dall'alto verso il basso (da genito
 ma per alcune informazioni avevamo la necessità di renderle disponibili a tutti i componenti.
 
 Per fare questo React ci permette di creare un \textit{contesto} ed utilizzarlo tramite l'hook \textbf{useContext}.
+Quando un elemento del contesto viene modificato, tutti i componenti al suo interno vengono verificati ed eventualmente aggiornati, 
+come avviene normalmente per lo stato o le props.
 
-Abbiamo quindi realizzato un contesto dove condividere a tutti i componenti le seguenti informazioni/funzioni:
+Abbiamo quindi realizzato un contesto che racchiude l'intera struttura del sito web dove condividere a tutti i componenti le seguenti informazioni/funzioni:
 \begin{itemize}
 	\item \textbf{logged}: informazioni sull'utente che ha effettuato l'accesso al sito, se non presente significa che l'utente è un ospite
 	\item \textbf{setLogged} funzione per settare l'utente collegato una volta che ha effettuato l'accesso
@@ -223,6 +225,14 @@ Abbiamo quindi realizzato un contesto dove condividere a tutti i componenti le s
 	\item \textbf{setShowLogin}: funzione per l'apertura della popup di accesso/registrazione
 \end{itemize}
 
+Nel momento in cui il contesto viene inizializzato ed visualizzato sulla pagina, 
+tramite l'hook \textbf{useEffect} viene effettuato l'autologin: 
+se l'utente aveva già navigato sul sito ed aveva effettuato l'accesso senza eseguire il logout,
+allora probabilmente avrà un refreshToken (durata di 30 giorni) ancora impostato sui cookie http-only,
+di conseguenza viene automaticamente provato a richiedere un'autenticazione e,
+nel caso l'operazione vada a buon fine, 
+l'utente si ritroverà loggato senza dover effettuare nuovamente l'accesso.
+\bigbreak
 Inoltre, all'interno del contesto, abbiamo sfruttato gli \textit{interceptors} di axios per intercettare automaticamente tutte le chiamate http di tutto il FrontEnd.
 Grazie a questa funzionalità abbiamo gestito la seguente casistica: 
 se l'utente è loggato e riceve l'errore 401 che può trovarsi nella situazione che l'authToken è scaduto (la sua durata è di 5 minuti).
@@ -232,6 +242,8 @@ Se questa va a buon fine allora viene nuovamente effettuata la chiamata originar
 \bigbreak
 \noindent
 \textbf{Custom hook}
+\bigbreak
+\noindent
 Avendo la necessità di salvare alcune informazioni utili al sistema sul localstorage del browser, 
 abbiamo deciso di creare un Custom Hook che ci permettese di salvare le informazioni ed utilizzarle come lo stato all'interno dei componenti che lo necessitano.
 
