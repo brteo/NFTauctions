@@ -1,5 +1,5 @@
 \section{Design}
-Design dell'architettura del sistema e delle interfacce Utente
+In questa sezione è descritta la fase di design suddivisa in: metodologie di sviluppo, architettura del sistema ed interfacce Utente.
 
 \subsection{Metodologie di sviluppo}
 La prima fase di design si è concentrata nella definizione delle metodologie di sviluppo in team, in questo caso composto da 3 persone.
@@ -80,7 +80,8 @@ Immaginiamo un target per lo più composto da giovani, compreso tra i 15 ed i 35
 Con un target così giovane l'utilizzo di dispositivi mobile sarà sicuramente molto elevato,
 di conseguenze un'interfaccia responsive è fondamentale per permettere agli utenti di avere una User Experience appagante ed intuitiva. 
 
-Da questa riflessione iniziale sono state definite le seguenti \textbf{personas} utilizzate come riferimento per lo sviluippo dell'interfaccia.
+Da questa riflessione iniziale sono state definite le seguenti \textbf{personas} 
+utilizzate come riferimento per lo sviluippo dell'interfaccia e per il seed dei dati.
 
 \bigbreak
 \noindent
@@ -177,6 +178,204 @@ riciclando illustrazioni fatte dalla ex ragazza.
 	\item Infine crea il suo NFT, na ha giò creati tanti.
 \end{itemize}
 
-\subsubsection{Mockups/Prototipo}
-Immagini e flussi principali
+\clearpage
 
+\subsubsection{Mockups/Prototipo}
+Inizialmente abbiamo immaginato il layout del sito attraverso degli sketch su carta.
+
+Ci siamo concentrati a realizzare un web design incentrato sui contenuti e responsivo: diversi dispositivi, stessa esperienza.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,keepaspectratio]{sketch.jpg}
+	\caption{Sketch iniziale}
+	\label{fig:sketch}
+\end{figure}
+
+Partendo da questi sketch, la UI ha preso forma durante lo sviluppo ed è stata progressivamente migliorata.
+
+Per quanto riguarda l'estetica abbiamo pensato di incentrarla sul colore giallo oro, 
+per far percepire il contesto di "prezioso" che governa i contenuti.
+
+Scegliendo il colore giallo abbiamo subito capito che lo sfondo del sito sarebbe dovuto essere scuro 
+altrimenti ci sarebbero stati problemi di contrasto non rendendo semplice la lettura e comprensione dell'interfaccia, 
+soprattutto a persone con problemi di vista.
+\bigbreak
+\noindent
+Caratteristiche dell'interfaccia decise fin da subito:
+\begin{itemize}
+	\item Il colore giallo predominante sul sito e legato al brand sarebbe dovuto essere utilizzato per ogni componente interattivo: pulsanti e link.
+	\item Intestazione del sito sempre visibile con ricerca, pulsante per la creazione di NFT, accesso  e possibilità di cambiare lingua.
+	Su dispositivi smartphone, in mancanza di spazio, questi componenti saranno accessibili in un classico menu "mobile" 
+	che gli utenti sono abituati a trovare sul web ed accessibili tramite la classica "hamburger icon"
+	\item Sfruttare tutta la grandezza del monitor, anche su dispositivi di grandi dimensioni con risoluzione FullHD
+	\item Nella pagina dell'asta, l'interfaccia per eseguire la puntata deve essere sempre ben visibile, 
+	l'utente non deve far fatica a trovarla o perderla scorrendo la pagina
+	\item Accesso e registrazione in "Google style", descritto più aventi.
+\end{itemize}
+
+\clearpage
+
+\bigbreak
+\noindent
+\textbf{Desktop 1280x800px}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-desktop-home.jpg}
+	\caption{Homepage}
+	\label{fig:pDesktopHome}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-desktop-auction.jpg}
+	\caption{Pagina asta}
+	\label{fig:pDesktopAuction}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-desktop-profile.jpg}
+	\caption{Pagina profilo}
+	\label{fig:pDesktopProfile}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-desktop-create.jpg}
+	\caption{Pagina creazione NFT}
+	\label{fig:pDesktopCreate}
+\end{figure}
+
+\clearpage
+
+\bigbreak
+\noindent
+\textbf{Smartphone portrait 375x667px}
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-mobile-home.jpg}
+		\caption{Homepage}
+		\label{fig:pMobileHome}
+	\end{minipage}
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-mobile-auction.jpg}
+		\caption{Pagina asta}
+		\label{fig:pMobileAuction}
+	\end{minipage}	
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-mobile-home-menu.jpg}
+		\caption{Mobile menù aperto}
+		\label{fig:pMobileHomeMenu}
+	\end{minipage}
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-mobile-home-menu2.jpg}
+		\caption{Mobile menù loggato}
+		\label{fig:pMobileHomeMenu2}
+	\end{minipage}	
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-mobile-profile.jpg}
+		\caption{Pagina profilo}
+		\label{fig:pMobileProfile}
+	\end{minipage}	
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-mobile-create.jpg}
+		\caption{Pagina creazione NFT}
+		\label{fig:pMobileCreate}
+	\end{minipage}
+\end{figure}
+
+\clearpage
+
+\bigbreak
+\noindent
+\textbf{Tablet portrait 786x1024px}
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-tablet-home.jpg}
+		\caption{Homepage}
+		\label{fig:pTabletHome}
+	\end{minipage}	
+	\begin{minipage}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\linewidth,keepaspectratio]{p-tablet-profile.jpg}
+		\caption{Pagina profilo}
+		\label{fig:pTabletProfile}
+	\end{minipage}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-tablet-auction.jpg}
+	\caption{Pagina asta}
+	\label{fig:pTabletAuction}
+\end{figure}
+
+\clearpage
+
+\bigbreak
+\noindent
+\textbf{FullHD 1920x1080px}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth,keepaspectratio]{p-fullhd-auction.jpg}
+	\caption{Pagina asta}
+	\label{fig:pFullhdAuction}
+\end{figure}
+
+\clearpage
+
+\bigbreak
+\noindent
+\textbf{Accesso/Registrazione}
+\bigbreak
+\noindent
+Per quanto riguarda l'accesso e la registrazione al portale, abbiamo deciso di utilizzare un metodo "Google style": 
+l'utente inserisce la sua email, il sistema controlla se è presente tra gli utenti registrati 
+ed in caso positivo viene proposto il modulo di accesso con password.
+In caso negativo viene proposto il modulo per la registrazione.
+
+Questa scelta è data dal fatto che alcune tipologie di utente, soprattutto quelle di età adulta,
+fanno confusione tra accesso e registrazione, non hanno ben chiaro il flusso tipico di un servizio web.
+Può capitare che utenti registrati, per accedere al sito, tentano di registrarsi nuovamente.
+
+Inoltre con questo metodo si alleggerisce l'interfaccia, inserendo un'unico pulsante "accedi" invece di due pulsanti "accedi" e "registrati".
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-check.jpg}
+	\caption{Controllo email}
+	\label{fig:pCheck}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-login.jpg}
+	\caption{Accesso con credenziali}
+	\label{fig:pLogin}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\textwidth,keepaspectratio]{p-register.jpg}
+	\caption{Registrazione}
+	\label{fig:pRegister}
+\end{figure}
