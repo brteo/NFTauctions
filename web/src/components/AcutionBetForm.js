@@ -52,8 +52,6 @@ const AuctionBetForm = props => {
 		return setWinner(false);
 	}, [auction]);
 
-	console.log(winner);
-
 	return (
 		<Form
 			id="betForm"
