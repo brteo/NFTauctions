@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Skeleton, List, Empty } from 'antd';
+import { Skeleton, Empty } from 'antd';
 import io from 'socket.io-client';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import Api from '../helpers/api';
 import Bet from './Bet';
@@ -19,7 +20,8 @@ const BetsList = props => {
 				setBets(res.data);
 				socket = io(process.env.REACT_APP_ENDPOINT);
 
-				socket.on('auctions/' + auctionID + '/bets', newBet => {
+				socket.on('auctions/' + auctionID + '/bets', bet => {
+					const newBet = { ...bet, added: true };
 					setBets(prevState => [newBet, ...prevState]);
 				});
 			})
@@ -37,14 +39,19 @@ const BetsList = props => {
 	}
 
 	return (
-		<List
-			itemLayout="horizontal"
-			locale={{
-				emptyText: <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('auction.noBets')} />
-			}}
-			dataSource={bets}
-			renderItem={item => <Bet bet={item} />}
-		/>
+		<div className="ant-list ant-list-split">
+			{!bets.length ? (
+				<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={t('auction.noBets')} />
+			) : (
+				<TransitionGroup>
+					{bets.map(item => (
+						<CSSTransition key={item._id} in={item.added} classNames="newBet" timeout={4500}>
+							<Bet bet={item} />
+						</CSSTransition>
+					))}
+				</TransitionGroup>
+			)}
+		</div>
 	);
 };
 

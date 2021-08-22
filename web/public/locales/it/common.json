@@ -54,7 +54,9 @@
 		"noBets": "Nessuna puntanta... puoi essere il primo!",
 		"owner": "Proprietario",
 		"category": "Categoria",
-		"author": "Autore"
+		"author": "Autore",
+		"betConfirm": "La tua puntanta è stata inserita con successo!",
+		"tmpWinner":"Il prezzo più alto è il tuo!"
 	},
 	"create": {
 		"title": "Crea il tuo NFT",

@@ -22,7 +22,7 @@ const Bet = props => {
 		return () => {
 			if (timer) clearTimeout(timer);
 		};
-	});
+	}, []);
 
 	return (
 		<List.Item className="bet-tpl">

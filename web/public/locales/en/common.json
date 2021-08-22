@@ -54,7 +54,9 @@
 		"noBets": "No Bids... be the first!",
 		"owner": "Owner",
 		"category": "Category",
-		"author": "Author"
+		"author": "Author",
+		"betConfirm": "Your bet has been successfully placed!",
+		"tmpWinner":"The highest price is yours!"
 	},
 	"create": {
 		"title": "Crea il tuo NFT",

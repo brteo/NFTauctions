@@ -34,7 +34,8 @@ const Nft = props => {
 							...prevState,
 							auction: {
 								...prevState.auction,
-								price: data.price
+								price: data.price,
+								lastBets: data.lastBets
 							}
 						}));
 					});

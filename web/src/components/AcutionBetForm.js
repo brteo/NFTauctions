@@ -1,6 +1,6 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Form, InputNumber, Row, Col } from 'antd';
+import { Button, Form, InputNumber, Row, Col, notification } from 'antd';
 import { FieldTimeOutlined } from '@ant-design/icons';
 
 import Api from '../helpers/api';
@@ -12,12 +12,13 @@ const { REACT_APP_CURRENCY } = process.env;
 const AuctionBetForm = props => {
 	const { auction } = props;
 	const { t } = useTranslation();
-	const { setShowLogin } = useContext(AppContext);
+	const { logged, setShowLogin } = useContext(AppContext);
 
 	const [form] = Form.useForm();
 	const [minValue, setMinValue] = useState((auction.price + 0.01).toFixed(2));
 	const [sendBet, setSendBet] = useState(false);
 	const [betError, setBetError] = useState(false);
+	const [winner, setWinner] = useState(false);
 
 	const betSubmit = ({ price }) => {
 		setSendBet(true);
@@ -26,6 +27,7 @@ const AuctionBetForm = props => {
 				setMinValue((res.data.price + 0.01).toFixed(2));
 				setSendBet(false);
 				form.resetFields();
+				notification.success({ message: t('auction.betConfirm') });
 			})
 			.catch(err => {
 				setSendBet(false);
@@ -42,6 +44,16 @@ const AuctionBetForm = props => {
 			});
 	};
 
+	useEffect(() => {
+		if (logged && auction.lastBets && auction.lastBets[0] && auction.lastBets[0].user.id === logged.id) {
+			return setWinner(true);
+		}
+
+		return setWinner(false);
+	}, [auction]);
+
+	console.log(winner);
+
 	return (
 		<Form
 			id="betForm"
@@ -53,6 +65,13 @@ const AuctionBetForm = props => {
 			}}
 		>
 			<Row gutter={8}>
+				{winner && (
+					<Col xs={24}>
+						<div className="tmp-winner">
+							<p>{t('auction.tmpWinner')}</p>
+						</div>
+					</Col>
+				)}
 				<Col xs={12}>
 					<p>{t('auction.price')}</p>
 					<div className="price-label">

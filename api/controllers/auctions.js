@@ -176,7 +176,7 @@ exports.addBet = async (req, res, next) => {
 			next(SendData(bet.response(), 201));
 
 			// socket
-			req.io.emit('auctions/' + auctionId, { price: auction.price });
+			req.io.emit('auctions/' + auctionId, { price: auction.price, lastBets: auction.lastBets });
 			req.io.emit('auctions/' + auctionId + '/bets', bet.response());
 			return true;
 		});
