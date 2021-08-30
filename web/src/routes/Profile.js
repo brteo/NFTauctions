@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-bind */
 import React, { useState, useEffect, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Tabs, Typography, Skeleton, Input, Tooltip, Form } from 'antd';
