@@ -139,5 +139,21 @@ Pacchetti utilizzati a supporto del FrontEnd:
 
 \clearpage
 
-\subsection{Blockchain}
-Scelto EOS... perchè Alan?
+\subsection{EOS Blockchain}
+La blockchain che abbiamo scelto è \textbf{\underline{\href{https://eos.io/}{EOS}}} in quanto: 
+
+\begin{itemize}
+	\item permette di scaricare i costi di transazioni/mantenimento direttamente sulla piattaforma TVG anzichè sugli artisti/utilizzatori
+	\item è possibile interfacciarsi facilmente con Javascript
+	\item è sufficientemente diffusa, anche se meno famosa dell'alternativa Ethereum
+	\item è molto efficiente e veloce - è possibile eseguire una transazione in appena mezzo secondo contro svariati minuti delle altre alternative
+	\item è green: il meccanismo del consenso distribuito è Delegated Proof of Stake che, contrariamente al Proof Of Work di Ethereum e Bitcoin, non richiede per funzionare l'impiego di alcuna computazione la quale attualmente porta i miners delle altre blockchain a competere con un dispendio energetico elevatissimo su scala mondiale
+\end{itemize}
+
+Al fine di fornire il servizio di creazione e trasferimento NFT occorre sviluppare uno Smart Contract, questo non è altro che un programma che viene eseguito dalla blockchain.
+Abbiamo programmato lo Smart Conctract per EOS in \textbf{C++} utilizzando a supporto le seguenti librerie:
+
+\begin{itemize}
+	\item \textbf{\underline{\href{https://developers.eos.io/welcome/latest/getting-started-guide/local-development-environment/installing-eosiocdt}{eosio-cdt}}}: contract development toolkit
+	\item \textbf{\underline{\href{https://www.boost.org/}{boost}}}: libreria per utilizzare tabelle di dati indicizzati in RAM
+\end{itemize}

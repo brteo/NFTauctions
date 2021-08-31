@@ -54,11 +54,10 @@ Le SPA sono applicazioni composte da una singola pagina non renderizzata lato se
 contenente tutto il codice necessario (HTML, JavaScript e CSS) recuperato in un singolo caricamento al prima accesso alla pagina.
 
 Le altre risorse che compongono il portale saranno caricate dinamicamente secondo le esigenze attraverso chiamate al BackEnd dove sarà realizzata una RestApi 
-che mette a disposizione attraverso i suoi EndPoint le azioni di tipo CRUD (Create, Read, Update, Delete) 
+che metterà a disposizione attraverso i suoi EndPoint le azioni di tipo CRUD (Create, Read, Update, Delete) 
 utili a reperire e manipolare le informazioni salvate su \textbf{Database}.
 
-In questo progetto specifico si dovrà connetere la RestApi anche ad una \textbf{Blockchain} per la creazione e gestione degli NFT.
-Le caratteristiche della Blockchain dovranno essere... quali Alan?
+La RestApi si dovrà interfacciare ad una \textbf{Blockchain} per la creazione e gestione degli NFT: un apposito Smart Contract dovrà essere progettato, implementato ed installato.
 
 Infine le immagini saranno caricate su un'ulteriore Bucket \textbf{S3} per non appesantire la RestApi 
 che deve restare sempre reattiva nello rispondere alle richieste degli utenti.
